@@ -1,0 +1,281 @@
+
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>УчиУм | Учителска платформа</title>
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #0b1020;
+  --panel: #151c32;
+  --panel2: #1c2540;
+  --text: #f5f7ff;
+  --muted: #a6b1ce;
+  --purple: #9270ff;
+  --cyan: #55e4e8;
+  --border: #303b5c;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font-family: system-ui, Arial, sans-serif;
+}
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
+.layout { display: flex; min-height: 100vh; }
+.sidebar {
+  width: 245px; padding: 22px 15px; background: #10162a;
+  border-right: 1px solid var(--border); flex-shrink: 0;
+}
+.logo { font-size: 25px; font-weight: 800; margin: 5px 10px 8px; }
+.logo span { color: var(--cyan); }
+.tagline { color: var(--muted); font-size: 12px; margin: 0 10px 25px; }
+.nav { display: grid; gap: 7px; }
+.nav button {
+  text-align: left; border: 0; border-radius: 10px;
+  padding: 12px; color: var(--muted); background: transparent;
+}
+.nav button.active, .nav button:hover {
+  color: white; background: linear-gradient(100deg,#40316d,#243d60);
+}
+.main { min-width: 0; flex: 1; padding: 28px; }
+.top { display: flex; justify-content: space-between; gap: 15px; align-items: center; flex-wrap: wrap; }
+h1 { font-size: clamp(25px,4vw,35px); margin: 0 0 8px; }
+h2 { font-size: 20px; }
+p { line-height: 1.55; }
+.muted { color: var(--muted); }
+.panel, .stat, .card {
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: 16px; padding: 19px;
+}
+.stats { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 13px; margin: 24px 0; }
+.stat strong { display: block; font-size: 28px; margin-top: 8px; }
+.stat small { color: var(--muted); }
+.cards { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; }
+.card { cursor: pointer; transition: transform .15s; }
+.card:hover { transform: translateY(-2px); border-color: var(--purple); }
+.card .emoji { font-size: 27px; }
+button.primary {
+  background: linear-gradient(110deg,var(--purple),#667dff);
+  color: white; border: 0; border-radius: 10px; padding: 11px 15px; font-weight: 650;
+}
+button.secondary {
+  background: var(--panel2); border: 1px solid var(--border);
+  color: white; border-radius: 10px; padding: 10px 14px;
+}
+button:disabled { opacity: .5; cursor: not-allowed; }
+input, select, textarea {
+  width: 100%; color: white; background: #0d1427;
+  border: 1px solid var(--border); border-radius: 9px; padding: 11px;
+}
+textarea { min-height: 100px; resize: vertical; }
+label { display: grid; gap: 7px; margin: 13px 0; color: var(--muted); font-size: 14px; }
+form { max-width: 650px; }
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.actions { display: flex; gap: 9px; flex-wrap: wrap; margin-top: 14px; }
+.result { margin-top: 15px; padding: 14px; border-radius: 10px; background: #0d1427; white-space: pre-wrap; }
+.item { padding: 13px 0; border-bottom: 1px solid var(--border); }
+.item:last-child { border-bottom: 0; }
+.badge { display: inline-block; padding: 4px 8px; background: #263658; border-radius: 20px; color: var(--cyan); font-size: 12px; }
+.notice { border: 1px solid #69532d; background: #2a241a; color: #f5d9a2; padding: 12px; border-radius: 10px; margin: 14px 0; }
+.hidden { display: none !important; }
+.mobilebar { display:none; }
+@media(max-width:800px) {
+  .layout { display:block; }
+  .sidebar { width:100%; padding:13px; border-right:0; border-bottom:1px solid var(--border); }
+  .logo { margin:0 0 5px; font-size:22px; }
+  .tagline { margin:0 0 10px; }
+  .nav { display:flex; overflow-x:auto; padding-bottom:4px; }
+  .nav button { white-space:nowrap; padding:10px; }
+  .main { padding:18px 13px 35px; }
+  .stats { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .cards { grid-template-columns:1fr; }
+}
+@media(max-width:420px) { .row { grid-template-columns:1fr; } }
+@media print {
+  .sidebar, .top button, .actions, form, .no-print { display:none !important; }
+  body { background:white; color:black; }
+  .main { padding:0; }
+  .panel, .stat, .card { background:white; color:black; border:1px solid #ccc; }
+  .muted, .stat small { color:#444; }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="logo">Учи<span>Ум</span> ✦</div>
+    <div class="tagline">Твоето учителско пространство</div>
+    <nav class="nav" id="nav">
+      <button class="active" data-page="home">⌂ Табло</button>
+      <button data-page="games">🎮 Игри</button>
+      <button data-page="worksheets">📝 Работни листове</button>
+      <button data-page="tests">✓ Тестове</button>
+      <button data-page="presentations">▤ Презентации</button>
+      <button data-page="classes">🏫 Моите класове</button>
+      <button data-page="library">📚 Моите материали</button>
+      <button data-page="account">👤 Профил</button>
+    </nav>
+  </aside>
+  <main class="main">
+    <div class="top">
+      <div>
+        <h1 id="pageTitle">Добре дошъл в УчиУм!</h1>
+        <div class="muted" id="pageSubtitle">Инструментите за твоите уроци, събрани на едно място.</div>
+      </div>
+      <button class="secondary" onclick="window.print()">🖨️ Печат / PDF</button>
+    </div>
+    <div id="content"></div>
+    <p class="muted" style="font-size:12px;margin-top:30px">УчиУм • Учителска платформа</p>
+  </main>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+let materials = [];
+let classes = [];
+let currentPage = "home";
+
+const pageInfo = {
+  home:["Добре дошъл в УчиУм!","Инструментите за твоите уроци, събрани на едно място."],
+  games:["Игри","Създавай идеи за интерактивни учебни игри."],
+  worksheets:["Работни листове","Подготвяй задачи за работа в клас."],
+  tests:["Тестове","Създавай въпроси за проверка на знанията."],
+  presentations:["Презентации","Планирай съдържание за своите презентации."],
+  classes:["Моите класове","Организирай класовете си без ученически профили."],
+  library:["Моите материали","Преглеждай материалите, създадени в тази сесия."],
+  account:["Профил на учителя","Входът и регистрацията се свързват в следващата стъпка."]
+};
+
+function go(page) {
+  currentPage = page;
+  document.querySelectorAll("#nav button").forEach(b => b.classList.toggle("active", b.dataset.page === page));
+  $("pageTitle").textContent = pageInfo[page][0];
+  $("pageSubtitle").textContent = pageInfo[page][1];
+  render();
+}
+$("nav").addEventListener("click", e => {
+  const b = e.target.closest("button[data-page]");
+  if (b) go(b.dataset.page);
+});
+
+function field(label,id,placeholder="",type="text") {
+  return `<label>${label}<input id="${id}" type="${type}" placeholder="${placeholder}" required></label>`;
+}
+function selectField(label,id,options) {
+  return `<label>${label}<select id="${id}">${options.map(o=>`<option>${o}</option>`).join("")}</select></label>`;
+}
+function gradeOptions() {
+  return ["1. клас","2. клас","3. клас","4. клас","5. клас","6. клас","7. клас","8. клас","9. клас","10. клас","11. клас","12. клас","Професионално обучение","Други"];
+}
+function subjectOptions() {
+  return ["Български език и литература","Математика","Английски език","Друг чужд език","История и цивилизации","География и икономика","Човекът и природата","Биология","Физика","Химия","Информационни технологии","Компютърно моделиране","Гражданско образование","Изобразително изкуство","Музика","Физическо възпитание","Предприемачество","Икономика","Мениджмънт","Професионален предмет","Друг предмет"];
+}
+function formPage(type) {
+  const configs = {
+    games:["Нова игра","game","Въведи тема, въпроси и правила за играта.","Въпроси / правила"],
+    worksheets:["Нов работен лист","worksheet","Въведи инструкции и задачи за учениците.","Задачи"],
+    tests:["Нов тест","test","Въведи въпросите и възможните отговори.","Въпроси и отговори"],
+    presentations:["Нова презентация","presentation","Въведи план, цели и основни точки.","План на презентацията"]
+  };
+  const c = configs[type];
+  return `<section class="panel"><h2>${c[0]}</h2><p class="muted">${c[2]}</p>
+  <form id="materialForm">
+    ${field("Заглавие","title","Например: Дроби")}
+    <div class="row">${selectField("Предмет","subject",subjectOptions())}${selectField("Клас / ниво","grade",gradeOptions())}</div>
+    ${field("Тема","topic","Например: Основни понятия")}
+    ${type==="games"?selectField("Вид игра","gameType",["Въпроси с избор","Вярно или грешно","Свържи двойките","Познай думата","Бърз куиз","Отворена игра"]):""}
+    ${type==="presentations"?field("Брой слайдове","count","Например: 8","number"):""}
+    <label>${c[3]}<textarea id="details" placeholder="Напиши съдържанието тук..." required></textarea></label>
+    <div class="actions"><button class="primary" type="submit">＋ Създай материал</button><button class="secondary" type="button" onclick="window.print()">Печат / PDF</button></div>
+  </form><div id="result"></div></section>`;
+}
+function render() {
+  const c = $("content");
+  if (["games","worksheets","tests","presentations"].includes(currentPage)) {
+    c.innerHTML = formPage(currentPage);
+    $("materialForm").addEventListener("submit", saveMaterial);
+    return;
+  }
+  if (currentPage === "home") {
+    c.innerHTML = `<div class="stats">
+      <div class="stat"><small>Всички материали</small><strong>${materials.length}</strong></div>
+      <div class="stat"><small>Игри</small><strong>${materials.filter(m=>m.type==="games").length}</strong></div>
+      <div class="stat"><small>Работни листове</small><strong>${materials.filter(m=>m.type==="worksheets").length}</strong></div>
+      <div class="stat"><small>Класове</small><strong>${classes.length}</strong></div>
+    </div>
+    <h2>Какво ще подготвим днес?</h2>
+    <div class="cards">
+      <div class="card" onclick="go('games')"><div class="emoji">🎮</div><h2>Учебна игра</h2><p class="muted">Идеи за игри по всеки предмет.</p></div>
+      <div class="card" onclick="go('worksheets')"><div class="emoji">📝</div><h2>Работен лист</h2><p class="muted">Задачи за самостоятелна работа.</p></div>
+      <div class="card" onclick="go('tests')"><div class="emoji">✓</div><h2>Тест</h2><p class="muted">Въпроси за проверка на знанията.</p></div>
+      <div class="card" onclick="go('presentations')"><div class="emoji">▤</div><h2>Презентация</h2><p class="muted">План и цели за учебен урок.</p></div>
+    </div>
+    <div class="notice">Демонстрационна версия: докато не свържем Supabase, материалите се пазят само в текущата отворена страница.</div>`;
+  } else if (currentPage === "classes") {
+    c.innerHTML = `<section class="panel"><h2>Добави клас</h2><form id="classForm">
+      ${field("Име на класа","className","Например: 5. А клас")}
+      ${selectField("Учебна година","year",["2026/2027","2027/2028","2028/2029","Друга"])}
+      <label>Бележка (без лични данни на ученици)<textarea id="classNote" placeholder="Например: Математика, вторник"></textarea></label>
+      <button class="primary">Добави клас</button></form><div id="classList"></div></section>`;
+    $("classForm").addEventListener("submit", addClass);
+    showClasses();
+  } else if (currentPage === "library") {
+    c.innerHTML = `<section class="panel"><h2>Запазени материали</h2><div id="libraryList"></div></section>`;
+    showMaterials();
+  } else if (currentPage === "account") {
+    c.innerHTML = `<section class="panel"><h2>Учителски профил</h2>
+      <p>Платформата е предназначена за учители. Учениците нямат отделни профили.</p>
+      <div class="notice">Регистрацията с имейл и парола ще се включи, след като конфигурираме Supabase и правилата за сигурност.</div>
+      <p class="muted">Не въвеждай реални данни на ученици в тази демонстрационна версия.</p></section>`;
+  }
+}
+function saveMaterial(e) {
+  e.preventDefault();
+  const m = {
+    id: Date.now(), type: currentPage,
+    title: $("title").value.trim(),
+    subject: $("subject").value,
+    grade: $("grade").value,
+    topic: $("topic").value.trim(),
+    details: $("details").value.trim(),
+    gameType: $("gameType")?.value || "",
+    count: $("count")?.value || "",
+    createdAt: new Date().toLocaleString("bg-BG")
+  };
+  materials.unshift(m);
+  $("result").innerHTML = `<div class="result"><strong>✓ Материалът е добавен в тази сесия</strong><p>${escapeHTML(m.title)}</p><p class="muted">${escapeHTML(m.subject)} • ${escapeHTML(m.grade)}</p><pre style="white-space:pre-wrap">${escapeHTML(m.details)}</pre><button class="secondary" onclick="window.print()">Печат / PDF</button></div>`;
+}
+function addClass(e) {
+  e.preventDefault();
+  classes.push({name:$("className").value.trim(),year:$("year").value,note:$("classNote").value.trim()});
+  $("classForm").reset();
+  showClasses();
+}
+function showClasses() {
+  const el = $("classList");
+  if (!el) return;
+  el.innerHTML = classes.length ? classes.map(x=>`<div class="item"><strong>${escapeHTML(x.name)}</strong><p class="muted">${escapeHTML(x.year)} ${x.note?"• "+escapeHTML(x.note):""}</p></div>`).join("") : `<p class="muted">Все още няма добавени класове.</p>`;
+}
+function showMaterials() {
+  const el = $("libraryList");
+  if (!el) return;
+  el.innerHTML = materials.length ? materials.map(m=>`<div class="item"><span class="badge">${escapeHTML(m.type)}</span><h3>${escapeHTML(m.title)}</h3><p class="muted">${escapeHTML(m.subject)} • ${escapeHTML(m.grade)}</p><p>${escapeHTML(m.topic)}</p><button class="secondary" onclick="printOne(${m.id})">Отвори за печат</button></div>`).join("") : `<p class="muted">Още нямаш материали. Създай първия си от менюто.</p>`;
+}
+function printOne(id) {
+  const m = materials.find(x=>x.id===id);
+  if (!m) return;
+  const w = window.open("","_blank");
+  if (!w) { alert("Разреши отварянето на нов прозорец, за да отпечаташ материала."); return; }
+  w.document.write("<html lang='bg'><meta charset='utf-8'><title>"+escapeHTML(m.title)+"</title><body style='font-family:Arial;padding:28px'><h1>"+escapeHTML(m.title)+"</h1><p>"+escapeHTML(m.subject)+" • "+escapeHTML(m.grade)+"</p><h3>"+escapeHTML(m.topic)+"</h3><pre style='white-space:pre-wrap;font:16px Arial'>"+escapeHTML(m.details)+"</pre><script>window.print()<\/script></body></html>");
+  w.document.close();
+}
+function escapeHTML(s) {
+  return String(s ?? "").replace(/[&<>"']/g, ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+}
+render();
+</script>
+</body>
+</html>
