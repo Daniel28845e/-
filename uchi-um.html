@@ -2,376 +2,564 @@
 <!DOCTYPE html>
 <html lang="bg">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>УчиУм | Учителска платформа</title>
-<style>
-:root {
-  color-scheme: dark;
-  --bg: #0b1020;
-  --panel: #151c32;
-  --panel2: #1c2540;
-  --text: #f5f7ff;
-  --muted: #a6b1ce;
-  --purple: #9270ff;
-  --cyan: #55e4e8;
-  --border: #303b5c;
-}
-* { box-sizing: border-box; }
-body {
-  margin: 0; background: var(--bg); color: var(--text);
-  font-family: system-ui, Arial, sans-serif;
-}
-button, input, select, textarea { font: inherit; }
-button { cursor: pointer; }
-.layout { display: flex; min-height: 100vh; }
-.sidebar {
-  width: 245px; padding: 22px 15px; background: #10162a;
-  border-right: 1px solid var(--border); flex-shrink: 0;
-}
-.logo { font-size: 25px; font-weight: 800; margin: 5px 10px 8px; }
-.logo span { color: var(--cyan); }
-.tagline { color: var(--muted); font-size: 12px; margin: 0 10px 25px; }
-.nav { display: grid; gap: 7px; }
-.nav button {
-  text-align: left; border: 0; border-radius: 10px;
-  padding: 12px; color: var(--muted); background: transparent;
-}
-.nav button.active, .nav button:hover {
-  color: white; background: linear-gradient(100deg,#40316d,#243d60);
-}
-.main { min-width: 0; flex: 1; padding: 28px; }
-.top { display: flex; justify-content: space-between; gap: 15px; align-items: center; flex-wrap: wrap; }
-h1 { font-size: clamp(25px,4vw,35px); margin: 0 0 8px; }
-h2 { font-size: 20px; }
-p { line-height: 1.55; }
-.muted { color: var(--muted); }
-.panel, .stat, .card {
-  background: var(--panel); border: 1px solid var(--border);
-  border-radius: 16px; padding: 19px;
-}
-.stats { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 13px; margin: 24px 0; }
-.stat strong { display: block; font-size: 28px; margin-top: 8px; }
-.stat small { color: var(--muted); }
-.cards { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; }
-.card { cursor: pointer; transition: transform .15s; }
-.card:hover { transform: translateY(-2px); border-color: var(--purple); }
-.card .emoji { font-size: 27px; }
-button.primary {
-  background: linear-gradient(110deg,var(--purple),#667dff);
-  color: white; border: 0; border-radius: 10px; padding: 11px 15px; font-weight: 650;
-}
-button.secondary {
-  background: var(--panel2); border: 1px solid var(--border);
-  color: white; border-radius: 10px; padding: 10px 14px;
-}
-button:disabled { opacity: .5; cursor: not-allowed; }
-input, select, textarea {
-  width: 100%; color: white; background: #0d1427;
-  border: 1px solid var(--border); border-radius: 9px; padding: 11px;
-}
-textarea { min-height: 100px; resize: vertical; }
-label { display: grid; gap: 7px; margin: 13px 0; color: var(--muted); font-size: 14px; }
-form { max-width: 650px; }
-.row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.actions { display: flex; gap: 9px; flex-wrap: wrap; margin-top: 14px; }
-.result { margin-top: 15px; padding: 14px; border-radius: 10px; background: #0d1427; white-space: pre-wrap; }
-.item { padding: 13px 0; border-bottom: 1px solid var(--border); }
-.item:last-child { border-bottom: 0; }
-.badge { display: inline-block; padding: 4px 8px; background: #263658; border-radius: 20px; color: var(--cyan); font-size: 12px; }
-.notice { border: 1px solid #69532d; background: #2a241a; color: #f5d9a2; padding: 12px; border-radius: 10px; margin: 14px 0; }
-.hidden { display: none !important; }
-.mobilebar { display:none; }
-@media(max-width:800px) {
-  .layout { display:block; }
-  .sidebar { width:100%; padding:13px; border-right:0; border-bottom:1px solid var(--border); }
-  .logo { margin:0 0 5px; font-size:22px; }
-  .tagline { margin:0 0 10px; }
-  .nav { display:flex; overflow-x:auto; padding-bottom:4px; }
-  .nav button { white-space:nowrap; padding:10px; }
-  .main { padding:18px 13px 35px; }
-  .stats { grid-template-columns:repeat(2,minmax(0,1fr)); }
-  .cards { grid-template-columns:1fr; }
-}
-@media(max-width:420px) { .row { grid-template-columns:1fr; } }
-@media print {
-  .sidebar, .top button, .actions, form, .no-print { display:none !important; }
-  body { background:white; color:black; }
-  .main { padding:0; }
-  .panel, .stat, .card { background:white; color:black; border:1px solid #ccc; }
-  .muted, .stat small { color:#444; }
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b1024">
+  <title>УчиУм | Платформа за учители</title>
+  <style>
+    :root {
+      --bg: #0b1024;
+      --panel: #151c36;
+      --panel2: #1d2545;
+      --purple: #8b5cf6;
+      --cyan: #22d3ee;
+      --text: #f3f4ff;
+      --muted: #b7bfdc;
+      --border: #343d65;
+      --danger: #fca5a5;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, Arial, sans-serif;
+      line-height: 1.6;
+    }
+
+    header {
+      padding: 22px;
+      background: linear-gradient(120deg, #171638, #10243c);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .wrap { max-width: 1100px; margin: auto; }
+
+    .brand {
+      font-size: 30px;
+      font-weight: 850;
+      letter-spacing: -1px;
+    }
+
+    .brand span { color: var(--cyan); }
+
+    header p { color: var(--muted); margin-bottom: 0; }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 16px 0;
+    }
+
+    button, .nav-btn {
+      font: inherit;
+      cursor: pointer;
+      color: var(--text);
+      background: var(--panel2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px;
+    }
+
+    button:hover, .nav-btn:hover, .nav-btn.active {
+      border-color: var(--cyan);
+      background: #243052;
+    }
+
+    main { padding: 12px 0 50px; }
+
+    .hero {
+      padding: 28px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #24204e, #12334a);
+      border: 1px solid var(--border);
+      margin-bottom: 22px;
+    }
+
+    h1 { font-size: clamp(27px, 5vw, 42px); line-height: 1.2; }
+    h2 { margin-top: 0; }
+    h3 { margin-bottom: 8px; }
+
+    .accent { color: var(--cyan); }
+    .muted { color: var(--muted); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .card, .section-panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .card p { color: var(--muted); }
+    .emoji { font-size: 30px; }
+
+    label {
+      display: block;
+      margin: 14px 0 5px;
+      font-weight: 650;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      border-radius: 9px;
+      border: 1px solid var(--border);
+      background: #0d142b;
+      color: white;
+      font: inherit;
+    }
+
+    textarea { min-height: 100px; resize: vertical; }
+
+    input:focus, select:focus, textarea:focus {
+      outline: 2px solid var(--cyan);
+      outline-offset: 1px;
+    }
+
+    .primary {
+      background: linear-gradient(100deg, #7545e8, #3158bc);
+      border: none;
+      margin-top: 16px;
+      font-weight: 700;
+    }
+
+    .secondary { margin-top: 16px; }
+    .hidden { display: none !important; }
+
+    .status {
+      margin-top: 16px;
+      padding: 12px;
+      background: #101a32;
+      border-radius: 10px;
+      overflow-wrap: anywhere;
+    }
+
+    .status:empty { display: none; }
+
+    .material {
+      border-top: 1px solid var(--border);
+      padding: 12px 0;
+      overflow-wrap: anywhere;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 22px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .badge {
+      display: inline-block;
+      color: var(--cyan);
+      border: 1px solid #246276;
+      border-radius: 20px;
+      padding: 3px 10px;
+      font-size: 13px;
+    }
+  </style>
 </head>
+
 <body>
-<div class="layout">
-  <aside class="sidebar">
-    <div class="logo">Учи<span>Ум</span> ✦</div>
-    <div class="tagline">Твоето учителско пространство</div>
-    <nav class="nav" id="nav">
-      <button class="active" data-page="home">⌂ Табло</button>
-      <button data-page="games">🎮 Игри</button>
-      <button data-page="worksheets">📝 Работни листове</button>
-      <button data-page="tests">✓ Тестове</button>
-      <button data-page="presentations">▤ Презентации</button>
-      <button data-page="classes">🏫 Моите класове</button>
-      <button data-page="library">📚 Моите материали</button>
-      <button data-page="account">👤 Профил</button>
-    </nav>
-  </aside>
-  <main class="main">
-    <div class="top">
-      <div>
-        <h1 id="pageTitle">Добре дошъл в УчиУм!</h1>
-        <div class="muted" id="pageSubtitle">Инструментите за твоите уроци, събрани на едно място.</div>
+  <header>
+    <div class="wrap">
+      <div class="brand">Учи<span>Ум</span> ✦</div>
+      <p>Твоето пространство за преподаване, идеи и вдъхновение.</p>
+      <nav aria-label="Главно меню">
+        <button class="nav-btn active" data-page="home">Начало</button>
+        <button class="nav-btn" data-page="games">Игри</button>
+        <button class="nav-btn" data-page="worksheets">Работни листове</button>
+        <button class="nav-btn" data-page="tests">Тестове</button>
+        <button class="nav-btn" data-page="presentations">Презентации</button>
+        <button class="nav-btn" data-page="classes">Класове</button>
+        <button class="nav-btn" data-page="library">Моите материали</button>
+        <button class="nav-btn" data-page="account">Профил</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section id="home" class="page">
+      <div class="hero">
+        <span class="badge">Платформа за учители</span>
+        <h1>Преподавай с идеи.<br><span class="accent">Създавай с УчиУм.</span></h1>
+        <p class="muted">Организирай учебни материали, подготвяй игри и създавай ресурси за своите часове.</p>
+        <button class="primary" data-goto="account">Вход или регистрация →</button>
       </div>
-      <button class="secondary" onclick="window.print()">🖨️ Печат / PDF</button>
-    </div>
-    <div id="content"></div>
-    <p class="muted" style="font-size:12px;margin-top:30px">УчиУм • Учителска платформа</p>
+      <div class="grid">
+        <article class="card">
+          <div class="emoji">🎮</div>
+          <h3>Образователни игри</h3>
+          <p>Подготвяй идеи за интересни учебни предизвикателства.</p>
+          <button data-goto="games">Отвори игрите</button>
+        </article>
+        <article class="card">
+          <div class="emoji">📝</div>
+          <h3>Работни листове</h3>
+          <p>Организирай задачи по предмет и клас.</p>
+          <button data-goto="worksheets">Създай лист</button>
+        </article>
+        <article class="card">
+          <div class="emoji">📊</div>
+          <h3>Тестове</h3>
+          <p>Подготвяй въпроси за проверка на знанията.</p>
+          <button data-goto="tests">Към тестовете</button>
+        </article>
+        <article class="card">
+          <div class="emoji">📚</div>
+          <h3>Лична библиотека</h3>
+          <p>Преглеждай материалите, които си запазил в тази сесия.</p>
+          <button data-goto="library">Моята библиотека</button>
+        </article>
+      </div>
+    </section>
+
+    <section id="account" class="page hidden">
+      <div class="section-panel">
+        <h1>👩‍🏫 Учителски профил</h1>
+        <p class="muted">Регистрирай се с имейл и парола или влез в съществуващ профил.</p>
+        <div id="auth-form">
+          <label for="teacher-name">Име</label>
+          <input id="teacher-name" autocomplete="name" placeholder="Твоето име">
+
+          <label for="teacher-email">Имейл</label>
+          <input id="teacher-email" type="email" autocomplete="email" placeholder="name@example.com">
+
+          <label for="teacher-password">Парола</label>
+          <input id="teacher-password" type="password" autocomplete="current-password" placeholder="Най-малко 8 символа">
+
+          <button id="signup" class="primary">Създай профил</button>
+          <button id="login" class="secondary">Вход</button>
+        </div>
+
+        <div id="signed-in" class="hidden">
+          <h3>Добре дошъл!</h3>
+          <p id="user-info"></p>
+          <button id="logout">Изход</button>
+        </div>
+
+        <p id="auth-status" class="status" role="status" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <section id="games" class="page hidden">
+      <div class="section-panel">
+        <h2>🎮 Създай учебна игра</h2>
+        <p class="muted">Запиши идеята си за игра. Засега се пази само в текущата сесия на браузъра.</p>
+        <form class="material-form" data-kind="Игра">
+          <label>Име на играта</label>
+          <input name="title" required placeholder="Например: Мисия Древна Гърция">
+          <label>Предмет</label>
+          <input name="subject" required placeholder="Например: История">
+          <label>Клас</label>
+          <select name="grade">
+            <option>1. клас</option><option>2. клас</option>
+            <option>3. клас</option><option>4. клас</option>
+            <option>5. клас</option><option>6. клас</option>
+            <option>7. клас</option><option>8. клас</option>
+            <option>9. клас</option><option>10. клас</option>
+            <option>11. клас</option><option>12. клас</option>
+          </select>
+          <label>Правила и идеи</label>
+          <textarea name="details" placeholder="Как ще се играе?"></textarea>
+          <button class="primary">Запази идеята</button>
+        </form>
+      </div>
+    </section>
+
+    <section id="worksheets" class="page hidden">
+      <div class="section-panel">
+        <h2>📝 Работен лист</h2>
+        <form class="material-form" data-kind="Работен лист">
+          <label>Заглавие</label><input name="title" required>
+          <label>Предмет</label><input name="subject" required>
+          <label>Клас</label>
+          <select name="grade">
+            <option>1. клас</option><option>2. клас</option><option>3. клас</option>
+            <option>4. клас</option><option>5. клас</option><option>6. клас</option>
+            <option>7. клас</option><option>8. клас</option><option>9. клас</option>
+            <option>10. клас</option><option>11. клас</option><option>12. клас</option>
+          </select>
+          <label>Задачи</label><textarea name="details" required></textarea>
+          <button class="primary">Запази листа</button>
+        </form>
+      </div>
+    </section>
+
+    <section id="tests" class="page hidden">
+      <div class="section-panel">
+        <h2>📊 Нов тест</h2>
+        <form class="material-form" data-kind="Тест">
+          <label>Заглавие</label><input name="title" required>
+          <label>Предмет</label><input name="subject" required>
+          <label>Клас</label>
+          <select name="grade">
+            <option>1. клас</option><option>2. клас</option><option>3. клас</option>
+            <option>4. клас</option><option>5. клас</option><option>6. клас</option>
+            <option>7. клас</option><option>8. клас</option><option>9. клас</option>
+            <option>10. клас</option><option>11. клас</option><option>12. клас</option>
+          </select>
+          <label>Въпроси и отговори</label><textarea name="details" required></textarea>
+          <button class="primary">Запази теста</button>
+        </form>
+      </div>
+    </section>
+
+    <section id="presentations" class="page hidden">
+      <div class="section-panel">
+        <h2>📽️ Презентации</h2>
+        <p>Тук ще организираш линкове и описания на презентациите си.</p>
+        <form class="material-form" data-kind="Презентация">
+          <label>Заглавие</label><input name="title" required>
+          <label>Предмет</label><input name="subject" required>
+          <label>Клас</label><input name="grade" placeholder="Например: 6. клас">
+          <label>Линк или описание</label><textarea name="details" required></textarea>
+          <button class="primary">Запази презентацията</button>
+        </form>
+      </div>
+    </section>
+
+    <section id="classes" class="page hidden">
+      <div class="section-panel">
+        <h2>🏫 Моите класове</h2>
+        <p class="muted">Тази начална версия не съхранява класове в облака. Не въвеждай имена или други лични данни на ученици тук.</p>
+        <form id="class-form">
+          <label>Име на класа</label>
+          <input name="className" required placeholder="Например: 6. А клас">
+          <button class="primary">Добави клас</button>
+        </form>
+        <div id="class-list"></div>
+      </div>
+    </section>
+
+    <section id="library" class="page hidden">
+      <div class="section-panel">
+        <h2>📚 Моите материали</h2>
+        <p class="muted">Материалите в тази версия са временни и се губят при презареждане на страницата.</p>
+        <div id="material-list"></div>
+        <button id="print-materials">Печат / Запазване като PDF</button>
+      </div>
+    </section>
   </main>
-</div>
 
-<script>
-const $ = id => document.getElementById(id);
-let materials = [];
-let classes = [];
-let currentPage = "home";
+  <footer>
+    <div class="wrap">УчиУм · Пространство за учители 💜</div>
+  </footer>
 
-const pageInfo = {
-  home:["Добре дошъл в УчиУм!","Инструментите за твоите уроци, събрани на едно място."],
-  games:["Игри","Създавай идеи за интерактивни учебни игри."],
-  worksheets:["Работни листове","Подготвяй задачи за работа в клас."],
-  tests:["Тестове","Създавай въпроси за проверка на знанията."],
-  presentations:["Презентации","Планирай съдържание за своите презентации."],
-  classes:["Моите класове","Организирай класовете си без ученически профили."],
-  library:["Моите материали","Преглеждай материалите, създадени в тази сесия."],
-  account:["Профил на учителя","Входът и регистрацията се свързват в следващата стъпка."]
-};
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    // Замени двете стойности със своите данни от Supabase.
+    const PROJECT_URL = https://nlsccqsxnttgyikanjxj.supabase.co;
+    const PUBLISHABLE_KEY = sb_publishable_ZV07f9ohRwoLnsGUkZv2ag_3rmxfi6K;
 
-function go(page) {
-  currentPage = page;
-  document.querySelectorAll("#nav button").forEach(b => b.classList.toggle("active", b.dataset.page === page));
-  $("pageTitle").textContent = pageInfo[page][0];
-  $("pageSubtitle").textContent = pageInfo[page][1];
-  render();
-}
-$("nav").addEventListener("click", e => {
-  const b = e.target.closest("button[data-page]");
-  if (b) go(b.dataset.page);
-});
+    const statusBox = document.getElementById("auth-status");
+    let client = null;
+    let materials = [];
+    let classes = [];
 
-function field(label,id,placeholder="",type="text") {
-  return `<label>${label}<input id="${id}" type="${type}" placeholder="${placeholder}" required></label>`;
-}
-function selectField(label,id,options) {
-  return `<label>${label}<select id="${id}">${options.map(o=>`<option>${o}</option>`).join("")}</select></label>`;
-}
-function gradeOptions() {
-  return ["1. клас","2. клас","3. клас","4. клас","5. клас","6. клас","7. клас","8. клас","9. клас","10. клас","11. клас","12. клас","Професионално обучение","Други"];
-}
-function subjectOptions() {
-  return ["Български език и литература","Математика","Английски език","Друг чужд език","История и цивилизации","География и икономика","Човекът и природата","Биология","Физика","Химия","Информационни технологии","Компютърно моделиране","Гражданско образование","Изобразително изкуство","Музика","Физическо възпитание","Предприемачество","Икономика","Мениджмънт","Професионален предмет","Друг предмет"];
-}
-function formPage(type) {
-  const configs = {
-    games:["Нова игра","game","Въведи тема, въпроси и правила за играта.","Въпроси / правила"],
-    worksheets:["Нов работен лист","worksheet","Въведи инструкции и задачи за учениците.","Задачи"],
-    tests:["Нов тест","test","Въведи въпросите и възможните отговори.","Въпроси и отговори"],
-    presentations:["Нова презентация","presentation","Въведи план, цели и основни точки.","План на презентацията"]
-  };
-  const c = configs[type];
-  return `<section class="panel"><h2>${c[0]}</h2><p class="muted">${c[2]}</p>
-  <form id="materialForm">
-    ${field("Заглавие","title","Например: Дроби")}
-    <div class="row">${selectField("Предмет","subject",subjectOptions())}${selectField("Клас / ниво","grade",gradeOptions())}</div>
-    ${field("Тема","topic","Например: Основни понятия")}
-    ${type==="games"?selectField("Вид игра","gameType",["Въпроси с избор","Вярно или грешно","Свържи двойките","Познай думата","Бърз куиз","Отворена игра"]):""}
-    ${type==="presentations"?field("Брой слайдове","count","Например: 8","number"):""}
-    <label>${c[3]}<textarea id="details" placeholder="Напиши съдържанието тук..." required></textarea></label>
-    <div class="actions"><button class="primary" type="submit">＋ Създай материал</button><button class="secondary" type="button" onclick="window.print()">Печат / PDF</button></div>
-  </form><div id="result"></div></section>`;
-}
-function render() {
-  const c = $("content");
-  if (["games","worksheets","tests","presentations"].includes(currentPage)) {
-    c.innerHTML = formPage(currentPage);
-    $("materialForm").addEventListener("submit", saveMaterial);
-    return;
-  }
-  if (currentPage === "home") {
-    c.innerHTML = `<div class="stats">
-      <div class="stat"><small>Всички материали</small><strong>${materials.length}</strong></div>
-      <div class="stat"><small>Игри</small><strong>${materials.filter(m=>m.type==="games").length}</strong></div>
-      <div class="stat"><small>Работни листове</small><strong>${materials.filter(m=>m.type==="worksheets").length}</strong></div>
-      <div class="stat"><small>Класове</small><strong>${classes.length}</strong></div>
-    </div>
-    <h2>Какво ще подготвим днес?</h2>
-    <div class="cards">
-      <div class="card" onclick="go('games')"><div class="emoji">🎮</div><h2>Учебна игра</h2><p class="muted">Идеи за игри по всеки предмет.</p></div>
-      <div class="card" onclick="go('worksheets')"><div class="emoji">📝</div><h2>Работен лист</h2><p class="muted">Задачи за самостоятелна работа.</p></div>
-      <div class="card" onclick="go('tests')"><div class="emoji">✓</div><h2>Тест</h2><p class="muted">Въпроси за проверка на знанията.</p></div>
-      <div class="card" onclick="go('presentations')"><div class="emoji">▤</div><h2>Презентация</h2><p class="muted">План и цели за учебен урок.</p></div>
-    </div>
-    <div class="notice">Демонстрационна версия: докато не свържем Supabase, материалите се пазят само в текущата отворена страница.</div>`;
-  } else if (currentPage === "classes") {
-    c.innerHTML = `<section class="panel"><h2>Добави клас</h2><form id="classForm">
-      ${field("Име на класа","className","Например: 5. А клас")}
-      ${selectField("Учебна година","year",["2026/2027","2027/2028","2028/2029","Друга"])}
-      <label>Бележка (без лични данни на ученици)<textarea id="classNote" placeholder="Например: Математика, вторник"></textarea></label>
-      <button class="primary">Добави клас</button></form><div id="classList"></div></section>`;
-    $("classForm").addEventListener("submit", addClass);
-    showClasses();
-  } else if (currentPage === "library") {
-    c.innerHTML = `<section class="panel"><h2>Запазени материали</h2><div id="libraryList"></div></section>`;
-    showMaterials();
-  } else if (currentPage === "account") {
-    c.innerHTML = `<section class="panel"><h2>Учителски профил</h2>
-      <p>Платформата е предназначена за учители. Учениците нямат отделни профили.</p>
-      <div class="notice">Регистрацията с имейл и парола ще се включи, след като конфигурираме Supabase и правилата за сигурност.</div>
-      <p class="muted">Не въвеждай реални данни на ученици в тази демонстрационна версия.</p></section>`;
-  }
-}
-function saveMaterial(e) {
-  e.preventDefault();
-  const m = {
-    id: Date.now(), type: currentPage,
-    title: $("title").value.trim(),
-    subject: $("subject").value,
-    grade: $("grade").value,
-    topic: $("topic").value.trim(),
-    details: $("details").value.trim(),
-    gameType: $("gameType")?.value || "",
-    count: $("count")?.value || "",
-    createdAt: new Date().toLocaleString("bg-BG")
-  };
-  materials.unshift(m);
-  $("result").innerHTML = `<div class="result"><strong>✓ Материалът е добавен в тази сесия</strong><p>${escapeHTML(m.title)}</p><p class="muted">${escapeHTML(m.subject)} • ${escapeHTML(m.grade)}</p><pre style="white-space:pre-wrap">${escapeHTML(m.details)}</pre><button class="secondary" onclick="window.print()">Печат / PDF</button></div>`;
-}
-function addClass(e) {
-  e.preventDefault();
-  classes.push({name:$("className").value.trim(),year:$("year").value,note:$("classNote").value.trim()});
-  $("classForm").reset();
-  showClasses();
-}
-function showClasses() {
-  const el = $("classList");
-  if (!el) return;
-  el.innerHTML = classes.length ? classes.map(x=>`<div class="item"><strong>${escapeHTML(x.name)}</strong><p class="muted">${escapeHTML(x.year)} ${x.note?"• "+escapeHTML(x.note):""}</p></div>`).join("") : `<p class="muted">Все още няма добавени класове.</p>`;
-}
-function showMaterials() {
-  const el = $("libraryList");
-  if (!el) return;
-  el.innerHTML = materials.length ? materials.map(m=>`<div class="item"><span class="badge">${escapeHTML(m.type)}</span><h3>${escapeHTML(m.title)}</h3><p class="muted">${escapeHTML(m.subject)} • ${escapeHTML(m.grade)}</p><p>${escapeHTML(m.topic)}</p><button class="secondary" onclick="printOne(${m.id})">Отвори за печат</button></div>`).join("") : `<p class="muted">Още нямаш материали. Създай първия си от менюто.</p>`;
-}
-function printOne(id) {
-  const m = materials.find(x=>x.id===id);
-  if (!m) return;
-  const w = window.open("","_blank");
-  if (!w) { alert("Разреши отварянето на нов прозорец, за да отпечаташ материала."); return; }
-  w.document.write("<html lang='bg'><meta charset='utf-8'><title>"+escapeHTML(m.title)+"</title><body style='font-family:Arial;padding:28px'><h1>"+escapeHTML(m.title)+"</h1><p>"+escapeHTML(m.subject)+" • "+escapeHTML(m.grade)+"</p><h3>"+escapeHTML(m.topic)+"</h3><pre style='white-space:pre-wrap;font:16px Arial'>"+escapeHTML(m.details)+"</pre><script>window.print()<\/script></body></html>");
-  w.document.close();
-}
-function escapeHTML(s) {
-  return String(s ?? "").replace(/[&<>"']/g, ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
-}
-render();
-</script>
-  
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-const supabaseClient = window.supabase.createClient(
-  https://nlsccqsxnttgyikanjxj.supabase.co
-  sb_publishable_ZV07f9ohRwoLnsGUkZv2ag_3rmxfi6K
-);
-
-const account = document.getElementById("account");
-
-if (account) {
-  const panel = document.createElement("div");
-  panel.style.cssText =
-    "max-width:500px;margin:24px auto;padding:24px;" +
-    "border:1px solid #5141a5;border-radius:16px;" +
-    "background:#15152b;color:white;";
-
-  panel.innerHTML = `
-    <h2>👩‍🏫 Профил на учител</h2>
-    <p>Регистрирай се или влез в УчиУм.</p>
-
-    <label>Име</label>
-    <input id="uu-name" placeholder="Твоето име"
-      autocomplete="name" style="display:block;width:100%;
-      box-sizing:border-box;padding:12px;margin:8px 0 16px;">
-
-    <label>Имейл</label>
-    <input id="uu-email" type="email" placeholder="Имейл адрес"
-      autocomplete="email" style="display:block;width:100%;
-      box-sizing:border-box;padding:12px;margin:8px 0 16px;">
-
-    <label>Парола</label>
-    <input id="uu-password" type="password"
-      autocomplete="current-password" placeholder="Парола"
-      style="display:block;width:100%;box-sizing:border-box;
-      padding:12px;margin:8px 0 16px;">
-
-    <button id="uu-signup" type="button">Регистрация</button>
-    <button id="uu-login" type="button">Вход</button>
-    <button id="uu-logout" type="button">Изход</button>
-
-    <p id="uu-message" role="status" aria-live="polite"></p>
-  `;
-
-  account.appendChild(panel);
-
-  const message = document.getElementById("uu-message");
-
-  document.getElementById("uu-signup").onclick = async () => {
-    const name = document.getElementById("uu-name").value.trim();
-    const email = document.getElementById("uu-email").value.trim();
-    const password = document.getElementById("uu-password").value;
-
-    if (!name || !email || !password) {
-      message.textContent = "Попълни името, имейла и паролата.";
-      return;
+    function setStatus(message) {
+      statusBox.textContent = message;
     }
 
-    if (password.length < 8) {
-      message.textContent = "Паролата трябва да е поне 8 символа.";
-      return;
+    function showPage(pageId) {
+      document.querySelectorAll(".page").forEach(page => {
+        page.classList.toggle("hidden", page.id !== pageId);
+      });
+
+      document.querySelectorAll(".nav-btn").forEach(button => {
+        button.classList.toggle("active", button.dataset.page === pageId);
+      });
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
-    const { error } = await supabaseClient.auth.signUp({
-      email,
-      password,
-      options: { data: { display_name: name } }
+    document.querySelectorAll("[data-page]").forEach(button => {
+      button.addEventListener("click", () => showPage(button.dataset.page));
     });
 
-    message.textContent = error
-      ? "Грешка: " + error.message
-      : "Провери имейла си, ако се изисква потвърждение.";
-  };
-
-  document.getElementById("uu-login").onclick = async () => {
-    const email = document.getElementById("uu-email").value.trim();
-    const password = document.getElementById("uu-password").value;
-
-    const { error } = await supabaseClient.auth.signInWithPassword({
-      email, password
+    document.querySelectorAll("[data-goto]").forEach(button => {
+      button.addEventListener("click", () => showPage(button.dataset.goto));
     });
 
-    message.textContent = error
-      ? "Грешка: " + error.message
-      : "Влезе успешно в УчиУм!";
-  };
+    function renderMaterials() {
+      const list = document.getElementById("material-list");
+      list.replaceChildren();
 
-  document.getElementById("uu-logout").onclick = async () => {
-    const { error } = await supabaseClient.auth.signOut();
-    message.textContent = error
-      ? "Грешка: " + error.message
-      : "Излезе от профила си.";
-  };
-}
-</script>
+      if (!materials.length) {
+        list.textContent = "Все още няма запазени материали в тази сесия.";
+        return;
+      }
 
+      materials.forEach(item => {
+        const article = document.createElement("article");
+        article.className = "material";
+        const heading = document.createElement("h3");
+        heading.textContent = item.title;
+        const info = document.createElement("p");
+        info.textContent = item.kind + " · " + item.subject + " · " + item.grade;
+        const details = document.createElement("p");
+        details.textContent = item.details;
+        article.append(heading, info, details);
+        list.appendChild(article);
+      });
+    }
+
+    document.querySelectorAll(".material-form").forEach(form => {
+      form.addEventListener("submit", event => {
+        event.preventDefault();
+        const data = new FormData(form);
+        materials.unshift({
+          kind: form.dataset.kind,
+          title: String(data.get("title") || ""),
+          subject: String(data.get("subject") || ""),
+          grade: String(data.get("grade") || ""),
+          details: String(data.get("details") || "")
+        });
+        renderMaterials();
+        form.reset();
+        alert("Материалът е добавен временно. Облачното запазване ще се добави отделно.");
+      });
+    });
+
+    document.getElementById("class-form").addEventListener("submit", event => {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const name = String(new FormData(form).get("className") || "").trim();
+      if (!name) return;
+
+      classes.push(name);
+      const list = document.getElementById("class-list");
+      list.replaceChildren();
+
+      classes.forEach(className => {
+        const p = document.createElement("p");
+        p.className = "material";
+        p.textContent = "🏫 " + className;
+        list.appendChild(p);
+      });
+      form.reset();
+    });
+
+    document.getElementById("print-materials").addEventListener("click", () => window.print());
+
+    function showAuthState(session) {
+      const signedIn = Boolean(session && session.user);
+      document.getElementById("auth-form").classList.toggle("hidden", signedIn);
+      document.getElementById("signed-in").classList.toggle("hidden", !signedIn);
+
+      if (signedIn) {
+        document.getElementById("user-info").textContent =
+          "Влязъл профил: " + session.user.email;
+      }
+    }
+
+    async function startApp() {
+      if (!window.supabase || !window.supabase.createClient) {
+        setStatus("Не успяхме да заредим библиотеката за вход. Провери интернет връзката.");
+        return;
+      }
+
+      if (
+        PROJECT_URL.includes("PASTE_YOUR") ||
+        PUBLISHABLE_KEY.includes("PASTE_YOUR")
+      ) {
+        setStatus("Добави своя Project URL и Publishable key в кода.");
+        return;
+      }
+
+      try {
+        client = window.supabase.createClient(PROJECT_URL, PUBLISHABLE_KEY);
+
+        const { data, error } = await client.auth.getSession();
+        if (error) throw error;
+
+        showAuthState(data.session);
+        client.auth.onAuthStateChange((_event, session) => {
+          showAuthState(session);
+        });
+
+        setStatus("Връзката със Supabase е заредена. Можеш да се регистрираш или да влезеш.");
+      } catch (error) {
+        setStatus("Грешка при връзката: " + error.message);
+      }
+    }
+
+    document.getElementById("signup").addEventListener("click", async () => {
+      if (!client) {
+        setStatus("Връзката не е готова. Провери настройките на Supabase.");
+        return;
+      }
+
+      const name = document.getElementById("teacher-name").value.trim();
+      const email = document.getElementById("teacher-email").value.trim();
+      const password = document.getElementById("teacher-password").value;
+
+      if (!name || !email || !password) {
+        setStatus("Попълни името, имейла и паролата.");
+        return;
+      }
+
+      if (password.length < 8) {
+        setStatus("Паролата трябва да е поне 8 символа.");
+        return;
+      }
+
+      setStatus("Изпращане на регистрацията...");
+
+      const { data, error } = await client.auth.signUp({
+        email,
+        password,
+        options: { data: { display_name: name } }
+      });
+
+      if (error) {
+        setStatus("Регистрацията не беше успешна: " + error.message);
+      } else if (data.session) {
+        setStatus("Регистрацията е успешна!");
+      } else {
+        setStatus("Заявката е приета. Провери имейла си за потвърждение, ако е необходимо.");
+      }
+    });
+
+    document.getElementById("login").addEventListener("click", async () => {
+      if (!client) {
+        setStatus("Връзката не е готова. Провери настройките на Supabase.");
+        return;
+      }
+
+      const email = document.getElementById("teacher-email").value.trim();
+      const password = document.getElementById("teacher-password").value;
+
+      if (!email || !password) {
+        setStatus("Въведи имейла и паролата.");
+        return;
+      }
+
+      setStatus("Влизане...");
+
+      const { error } = await client.auth.signInWithPassword({ email, password });
+
+      setStatus(error ? "Неуспешен вход: " + error.message : "Влезе успешно в УчиУм!");
+    });
+
+    document.getElementById("logout").addEventListener("click", async () => {
+      if (!client) return;
+      const { error } = await client.auth.signOut();
+      setStatus(error ? "Грешка при изход: " + error.message : "Излезе от профила си.");
+    });
+
+    startApp();
+  </script>
 </body>
 </html>
+
