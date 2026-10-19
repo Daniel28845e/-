@@ -277,5 +277,101 @@ function escapeHTML(s) {
 }
 render();
 </script>
+  
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const supabaseClient = window.supabase.createClient(
+  https://nlsccqsxnttgyikanjxj.supabase.co
+  sb_publishable_ZV07f9ohRwoLnsGUkZv2ag_3rmxfi6K
+);
+
+const account = document.getElementById("account");
+
+if (account) {
+  const panel = document.createElement("div");
+  panel.style.cssText =
+    "max-width:500px;margin:24px auto;padding:24px;" +
+    "border:1px solid #5141a5;border-radius:16px;" +
+    "background:#15152b;color:white;";
+
+  panel.innerHTML = `
+    <h2>👩‍🏫 Профил на учител</h2>
+    <p>Регистрирай се или влез в УчиУм.</p>
+
+    <label>Име</label>
+    <input id="uu-name" placeholder="Твоето име"
+      autocomplete="name" style="display:block;width:100%;
+      box-sizing:border-box;padding:12px;margin:8px 0 16px;">
+
+    <label>Имейл</label>
+    <input id="uu-email" type="email" placeholder="Имейл адрес"
+      autocomplete="email" style="display:block;width:100%;
+      box-sizing:border-box;padding:12px;margin:8px 0 16px;">
+
+    <label>Парола</label>
+    <input id="uu-password" type="password"
+      autocomplete="current-password" placeholder="Парола"
+      style="display:block;width:100%;box-sizing:border-box;
+      padding:12px;margin:8px 0 16px;">
+
+    <button id="uu-signup" type="button">Регистрация</button>
+    <button id="uu-login" type="button">Вход</button>
+    <button id="uu-logout" type="button">Изход</button>
+
+    <p id="uu-message" role="status" aria-live="polite"></p>
+  `;
+
+  account.appendChild(panel);
+
+  const message = document.getElementById("uu-message");
+
+  document.getElementById("uu-signup").onclick = async () => {
+    const name = document.getElementById("uu-name").value.trim();
+    const email = document.getElementById("uu-email").value.trim();
+    const password = document.getElementById("uu-password").value;
+
+    if (!name || !email || !password) {
+      message.textContent = "Попълни името, имейла и паролата.";
+      return;
+    }
+
+    if (password.length < 8) {
+      message.textContent = "Паролата трябва да е поне 8 символа.";
+      return;
+    }
+
+    const { error } = await supabaseClient.auth.signUp({
+      email,
+      password,
+      options: { data: { display_name: name } }
+    });
+
+    message.textContent = error
+      ? "Грешка: " + error.message
+      : "Провери имейла си, ако се изисква потвърждение.";
+  };
+
+  document.getElementById("uu-login").onclick = async () => {
+    const email = document.getElementById("uu-email").value.trim();
+    const password = document.getElementById("uu-password").value;
+
+    const { error } = await supabaseClient.auth.signInWithPassword({
+      email, password
+    });
+
+    message.textContent = error
+      ? "Грешка: " + error.message
+      : "Влезе успешно в УчиУм!";
+  };
+
+  document.getElementById("uu-logout").onclick = async () => {
+    const { error } = await supabaseClient.auth.signOut();
+    message.textContent = error
+      ? "Грешка: " + error.message
+      : "Излезе от профила си.";
+  };
+}
+</script>
+
 </body>
 </html>
