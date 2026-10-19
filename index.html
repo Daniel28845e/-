@@ -1,633 +1,281 @@
+from pathlib import Path
 
-
-<!DOCTYPE html>
+html = r'''<!DOCTYPE html>
 <html lang="bg">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>УчиУм | Образователна платформа</title>
-
-<link rel="stylesheet"
- href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-
+<meta name="theme-color" content="#11152e">
+<title>УчиУм | Учи по свой начин</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
+:root{--bg:#0b1023;--panel:#151c38;--panel2:#1c2547;--ink:#f4f6ff;--muted:#aab5d6;--violet:#a78bfa;--blue:#69a7ff;--cyan:#65e6df;--line:#2d385f;--pink:#ff8dc7;--gold:#ffd477}
 *{box-sizing:border-box}
-:root{--blue:#2463eb;--purple:#7954d9;--ink:#192447;--bg:#f2f5ff}
-body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--ink)}
-header{background:linear-gradient(120deg,var(--blue),var(--purple));color:white;padding:22px 16px}
-.header-inner{max-width:1100px;margin:auto}
-header h1{margin:0;font-size:32px}
-header p{margin:8px 0 0}
-nav{display:flex;gap:8px;flex-wrap:wrap;max-width:1100px;margin:14px auto;padding:0 12px}
-button,.nav-btn{border:0;border-radius:10px;padding:11px 15px;background:var(--blue);color:white;font-weight:bold;cursor:pointer}
-button:hover,.nav-btn:hover{filter:brightness(.92)}
-.nav-btn{background:white;color:var(--ink);border:1px solid #dce3fa}
-main{max-width:1100px;margin:0 auto;padding:12px}
-.page{display:none}
+body{margin:0;background:radial-gradient(ellipse at top left,#202451 0,transparent 40%),var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;line-height:1.5}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;border:0;border-radius:13px;padding:11px 15px;color:#11152e;background:linear-gradient(120deg,var(--cyan),var(--blue));font-weight:800;transition:transform .15s,filter .15s}
+button:hover{transform:translateY(-1px);filter:brightness(1.07)}
+button.secondary{background:#252f56;color:var(--ink);border:1px solid #3b4772}
+button.pink{background:linear-gradient(120deg,var(--pink),var(--violet))}
+header{padding:28px 18px 18px;border-bottom:1px solid #ffffff12}
+.wrap{max-width:1180px;margin:auto}
+.brand{display:flex;align-items:center;gap:13px}
+.logo{width:52px;height:52px;border-radius:17px;display:grid;place-items:center;font-size:27px;background:linear-gradient(135deg,var(--violet),var(--blue));box-shadow:0 8px 30px #7c65ff40}
+h1{font-size:clamp(27px,4vw,40px);line-height:1.1;margin:0;letter-spacing:-1.3px}
+.brand p{margin:7px 0 0;color:var(--muted)}
+nav{display:flex;gap:8px;flex-wrap:wrap;padding:15px 0}
+nav button{background:#182142;color:#dce5ff;border:1px solid #303b65;font-size:14px}
+nav button.active{background:linear-gradient(120deg,var(--violet),var(--blue));color:#10142a;border:0}
+main{max-width:1180px;margin:auto;padding:8px 18px 35px}
+.page{display:none;animation:appear .25s ease}
 .page.active{display:block}
-.hero,.panel,.tile{background:white;border-radius:18px;padding:20px;margin-bottom:16px;box-shadow:0 4px 18px #24345b0b}
-.hero{background:linear-gradient(120deg,#e2ebff,#f5eaff)}
-h2{margin-top:0}
-h3{margin-top:8px}
+@keyframes appear{from{opacity:.3;transform:translateY(4px)}to{opacity:1;transform:none}}
+.hero{border:1px solid #ffffff12;border-radius:27px;padding:clamp(22px,4vw,42px);background:linear-gradient(115deg,#252451,#1a2c52 65%,#173b51);position:relative;overflow:hidden;margin-bottom:18px}
+.hero:after{content:"✦";position:absolute;font-size:190px;color:#ffffff09;right:28px;top:-50px;pointer-events:none}
+.eyebrow{color:var(--cyan);font-weight:900;letter-spacing:1.8px;font-size:12px;text-transform:uppercase}
+.hero h2{font-size:clamp(28px,4vw,45px);line-height:1.12;max-width:680px;margin:10px 0}
+.hero p{max-width:650px;color:#cbd5f5}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.section-title{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:24px 0 13px}
+h2,h3{letter-spacing:-.4px}
+.section-title h2{margin:0;font-size:24px}
+.section-title p{margin:3px 0 0;color:var(--muted);font-size:14px}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
-.tile{margin:0}
-label{display:block;font-weight:bold;margin:12px 0 6px}
-input,select,textarea{width:100%;padding:11px;border:1px solid #cbd4ec;border-radius:9px;font:inherit;background:white;color:var(--ink)}
-textarea{min-height:80px;resize:vertical}
-.result{margin-top:14px;padding:14px;background:#f2f5ff;border-radius:12px;line-height:1.65}
-.muted{color:#66708b;font-size:14px}
-#map{height:480px;border-radius:14px;z-index:1}
-.map-note{line-height:1.6}
-.worksheet{background:white;padding:24px;border-radius:12px}
+.card,.panel{background:linear-gradient(155deg,#192141,#131a34);border:1px solid #ffffff12;border-radius:20px;padding:19px;box-shadow:0 10px 35px #00000012}
+.card{min-height:145px}
+.card .emoji{font-size:28px}
+.card h3{margin:10px 0 5px}
+.card p,.muted{color:var(--muted);font-size:14px}
+.card button{margin-top:7px}
+label{display:block;font-weight:750;font-size:14px;margin:13px 0 6px}
+input,select,textarea{width:100%;padding:12px 13px;border-radius:12px;border:1px solid #34416d;background:#0e1530;color:var(--ink);outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--violet);box-shadow:0 0 0 3px #a78bfa20}
+textarea{min-height:90px;resize:vertical}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:13px}
+.result{margin-top:14px;background:#0d1530;border:1px solid #2d3b66;padding:14px;border-radius:13px;line-height:1.65}
+#map{height:500px;border-radius:18px;overflow:hidden;background:#e6ebf2}
+.map-controls{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.subject-list{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0}
+.chip{border:1px solid #3b4772;background:#202a4e;color:#e5eaff;border-radius:999px;padding:7px 11px;font-size:13px}
+.worksheet{background:#fff;color:#17203c;border-radius:14px;padding:26px}
 .worksheet h2{text-align:center}
-.task{padding:10px 0;border-bottom:1px solid #e2e6f0;line-height:1.7}
-footer{text-align:center;padding:25px;color:#68718b}
-@media(max-width:600px){header h1{font-size:27px}#map{height:390px}.hero,.panel{padding:15px}}
+.task{padding:11px 0;border-bottom:1px solid #dfe4ef;line-height:1.8}
+footer{text-align:center;color:var(--muted);padding:24px 16px;border-top:1px solid #ffffff12}
+.small{font-size:12px;color:var(--muted)}
+hr{border:0;border-top:1px solid var(--line);margin:18px 0}
+@media(max-width:600px){header{padding-top:20px}nav{gap:6px}nav button{flex:1 1 auto;padding:10px;font-size:13px}main{padding:5px 12px 25px}.hero{border-radius:20px}#map{height:400px}}
 @media print{
- body{background:white}
- header,nav,footer,.no-print,.hero,.other-pages{display:none!important}
- main{max-width:none;margin:0;padding:0}
+ body{background:white;color:#111}
+ header,nav,footer,.no-print,.hero,.section-title{display:none!important}
+ main{padding:0;max-width:none}
  .page{display:none!important}
  #worksheets{display:block!important}
- #worksheetOutput{display:block!important;box-shadow:none!important;padding:0!important}
+ #worksheetOutput{display:block!important;padding:0!important;border:0!important;background:white!important}
  .worksheet{padding:0}
 }
 </style>
 </head>
-
 <body>
-<header>
-  <div class="header-inner">
-    <h1>📚 УчиУм</h1>
-    <p>Учи, играй, откривай и се забавлявай!</p>
-  </div>
-</header>
-
-<nav>
-  <button class="nav-btn" onclick="showPage('home')">🏠 Начало</button>
-  <button class="nav-btn" onclick="showPage('games')">🎮 Игри</button>
-  <button class="nav-btn" onclick="showPage('quiz')">🧠 Тест</button>
-  <button class="nav-btn" onclick="showPage('maps')">🗺️ Карта</button>
-  <button class="nav-btn" onclick="showPage('worksheets')">📝 Работни листове</button>
-  <button class="nav-btn" onclick="showPage('helper')">💡 Помощник</button>
-</nav>
-
+<header><div class="wrap">
+  <div class="brand"><div class="logo">✦</div><div><h1>УчиУм</h1><p>Учи по свой начин. Откривай без граници.</p></div></div>
+  <nav id="nav">
+    <button class="active" data-page="home">⌂ Начало</button>
+    <button data-page="subjects">▦ Предмети</button>
+    <button data-page="games">🎮 Игри</button>
+    <button data-page="quiz">🧠 Тест</button>
+    <button data-page="maps">🌍 Карта</button>
+    <button data-page="worksheets">📝 Работни листове</button>
+    <button data-page="helper">✦ Помощник</button>
+  </nav>
+</div></header>
 <main>
 <section id="home" class="page active">
   <div class="hero">
-    <h2>Добре дошъл в УчиУм!</h2>
-    <p>Тук можеш да учиш различни предмети, да решаваш задачи, да играеш и да откриваш света.</p>
-    <label for="homeGrade">Избери своя клас</label>
-    <select id="homeGrade">
-      <option value="1">1. клас</option><option value="2">2. клас</option>
-      <option value="3">3. клас</option><option value="4">4. клас</option>
-      <option value="5">5. клас</option><option value="6">6. клас</option>
-      <option value="7">7. клас</option><option value="8">8. клас</option>
-      <option value="9">9. клас</option><option value="10">10. клас</option>
-      <option value="11">11. клас</option><option value="12">12. клас</option>
-    </select>
+    <div class="eyebrow">ТВОЯТА УЧЕБНА ВСЕЛЕНА</div>
+    <h2>Големите открития започват с един въпрос.</h2>
+    <p>Учи, играй, проверявай знанията си и изследвай света. Избери предмет и започни своето приключение.</p>
+    <div class="actions"><button onclick="showPage('subjects')">Разгледай предметите →</button><button class="secondary" onclick="showPage('maps')">Отвори картата 🌍</button></div>
   </div>
-
+  <div class="section-title"><div><h2>Бърз старт</h2><p>Всичко важно, на едно място.</p></div></div>
   <div class="grid">
-    <div class="tile"><h3>🎮 Играй</h3><p>Упражнявай знанията си с кратки игри.</p><button onclick="showPage('games')">Към игрите</button></div>
-    <div class="tile"><h3>🗺️ Откривай света</h3><p>Разглеждай градове и държави на картата.</p><button onclick="showPage('maps')">Отвори картата</button></div>
-    <div class="tile"><h3>📝 Упражнявай се</h3><p>Създавай работни листове по различни предмети.</p><button onclick="showPage('worksheets')">Създай лист</button></div>
+    <div class="card"><div class="emoji">📚</div><h3>Предмети</h3><p>Каталог за класове 1–12 и различни учебни направления.</p><button class="secondary" onclick="showPage('subjects')">Разгледай</button></div>
+    <div class="card"><div class="emoji">🧩</div><h3>Игри и тестове</h3><p>Упражнявай се с кратки въпроси и забавни задачи.</p><button class="secondary" onclick="showPage('games')">Играй</button></div>
+    <div class="card"><div class="emoji">🗺️</div><h3>Изследвай света</h3><p>Разглеждай градове, държави и географски обекти.</p><button class="secondary" onclick="showPage('maps')">Изследвай</button></div>
+    <div class="card"><div class="emoji">🖨️</div><h3>Работни листове</h3><p>Подготви лист за упражнение и го отпечатай или запази като PDF.</p><button class="secondary" onclick="showPage('worksheets')">Създай</button></div>
+  </div>
+</section>
+
+<section id="subjects" class="page">
+  <div class="section-title"><div><h2>Каталог на предметите</h2><p>Избери клас и търси предмет по име.</p></div></div>
+  <div class="panel">
+    <div class="row"><div><label for="subjectGrade">Клас</label><select id="subjectGrade"></select></div><div><label for="subjectSearch">Търсене</label><input id="subjectSearch" placeholder="Например: история, английски…"></div></div>
+    <div id="subjectChips" class="subject-list"></div><div id="subjectCards" class="grid"></div>
+    <p class="small">Списъкът включва общообразователни, профилирани и допълнителни учебни направления. Предметите и изучаването им варират според класа и учебния план.</p>
   </div>
 </section>
 
 <section id="games" class="page">
-  <div class="panel">
-    <h2>🎮 Образователни игри</h2>
-    <div class="grid">
-      <div class="tile">
-        <h3>✖️ Умножение</h3>
-        <p id="mathQuestion">Натисни бутона, за да започнеш.</p>
-        <input id="mathAnswer" type="number" placeholder="Твоят отговор">
-        <button onclick="checkMath()">Провери</button>
-        <button onclick="newMath()">Нова задача</button>
-        <div id="mathResult" class="result" aria-live="polite"></div>
-      </div>
-      <div class="tile">
-        <h3>🇧🇬 Столица на България</h3>
-        <p>Кой е столичният град на България?</p>
-        <button onclick="capitalAnswer('София')">София</button>
-        <button onclick="capitalAnswer('Пловдив')">Пловдив</button>
-        <button onclick="capitalAnswer('Варна')">Варна</button>
-        <div id="capitalResult" class="result" aria-live="polite"></div>
-      </div>
-    </div>
+  <div class="section-title"><div><h2>Игрова зона</h2><p>Малки предизвикателства за големи мозъци.</p></div></div>
+  <div class="grid">
+    <div class="card"><div class="emoji">✖️</div><h3>Математически спринт</h3><p id="mathQuestion">Натисни „Нова задача“, за да започнеш.</p><input id="mathAnswer" type="number" placeholder="Твоят отговор"><div class="actions"><button onclick="checkMath()">Провери</button><button class="secondary" onclick="newMath()">Нова задача</button></div><div id="mathResult" class="result" aria-live="polite"></div></div>
+    <div class="card"><div class="emoji">🇧🇬</div><h3>Столицата на България</h3><p>Кой е столичният град на България?</p><div class="actions"><button onclick="capitalAnswer('София')">София</button><button class="secondary" onclick="capitalAnswer('Пловдив')">Пловдив</button><button class="secondary" onclick="capitalAnswer('Варна')">Варна</button></div><div id="capitalResult" class="result" aria-live="polite"></div></div>
   </div>
 </section>
 
 <section id="quiz" class="page">
-  <div class="panel">
-    <h2>🧠 Кратък тест</h2>
-    <p>Отговори на пет въпроса и провери резултата си.</p>
-    <div id="quizQuestions"></div>
-    <button onclick="checkQuiz()">Провери резултата</button>
-    <button onclick="makeQuiz()">Нов тест</button>
-    <div id="quizResult" class="result" aria-live="polite"></div>
-  </div>
+  <div class="section-title"><div><h2>Пет въпроса</h2><p>Провери знанията си в кратък тест.</p></div></div>
+  <div class="panel"><div id="quizQuestions"></div><div class="actions"><button onclick="checkQuiz()">Провери резултата</button><button class="secondary" onclick="makeQuiz()">Нов тест</button></div><div id="quizResult" class="result" aria-live="polite"></div></div>
 </section>
 
 <section id="maps" class="page">
+  <div class="section-title"><div><h2>Атлас на УчиУм</h2><p>Разглеждай света и избирай отбелязаните места.</p></div></div>
   <div class="panel">
-    <h2>🗺️ Интерактивна карта</h2>
-    <p class="map-note">Приближавай, отдалечавай и мести картата. Натисни върху отбелязан град или място, за да научиш повече.</p>
+    <div class="map-controls"><button onclick="goMap(42.7,25.3,6)">🇧🇬 България</button><button class="secondary" onclick="goMap(48,15,4)">🇪🇺 Европа</button><button class="secondary" onclick="goMap(20,0,2)">🌍 Светът</button></div>
     <div id="map"></div>
-    <div class="result">
-      <strong>Какво можеш да разглеждаш?</strong>
-      <p>Градове, столици, държави, планини, реки, морета и океани. Засега са добавени избрани места с кратки описания.</p>
-      <p class="muted">Забележка: картата и фоновите надписи се зареждат от интернет. Някои надписи по фоновата карта може да не са на български.</p>
-    </div>
+    <div id="mapMessage" class="result">Избери маркер на картата, за да видиш информация на български.</div>
+    <p class="small">Картният слой е от CARTO Voyager и се зарежда през интернет. При нужда от собствен API ключ може да се наложи настройка според условията на доставчика. Някои имена във фоновата карта може да са на друг език.</p>
   </div>
 </section>
 
 <section id="worksheets" class="page">
+  <div class="section-title"><div><h2>Създай работен лист</h2><p>Избери предмет, клас и тема.</p></div></div>
   <div class="panel no-print">
-    <h2>📝 Генератор на работни листове</h2>
-    <p>Избери клас, предмет и тема. След това създай лист за упражнение и го отпечатай или запази като PDF.</p>
-
-    <label for="grade">Клас</label>
-    <select id="grade">
-      <option value="1">1. клас</option><option value="2">2. клас</option>
-      <option value="3">3. клас</option><option value="4">4. клас</option>
-      <option value="5">5. клас</option><option value="6">6. клас</option>
-      <option value="7">7. клас</option><option value="8">8. клас</option>
-      <option value="9">9. клас</option><option value="10">10. клас</option>
-      <option value="11">11. клас</option><option value="12">12. клас</option>
-    </select>
-
-    <label for="subject">Предмет</label>
-    <select id="subject">
-      <option>Български език и литература</option>
-      <option>Математика</option>
-      <option>Английски език</option>
-      <option>Друг чужд език</option>
-      <option>Човекът и природата</option>
-      <option>Човекът и обществото</option>
-      <option>История и цивилизации</option>
-      <option>География и икономика</option>
-      <option>Биология и здравно образование</option>
-      <option>Физика и астрономия</option>
-      <option>Химия и опазване на околната среда</option>
-      <option>Компютърно моделиране и информационни технологии</option>
-      <option>Информатика</option>
-      <option>Технологии и предприемачество</option>
-      <option>Изобразително изкуство</option>
-      <option>Музика</option>
-      <option>Физическо възпитание и спорт</option>
-      <option>Гражданско образование</option>
-      <option>Философия</option>
-      <option>Психология</option>
-      <option>Икономика</option>
-      <option>Предприемачество</option>
-    </select>
-
-    <label for="topic">Тема (по желание)</label>
-    <input id="topic" placeholder="Например: Древна Гърция, дроби, глагол">
-
-    <label for="taskCount">Брой задачи</label>
-    <select id="taskCount">
-      <option value="5">5 задачи</option>
-      <option value="10">10 задачи</option>
-      <option value="15">15 задачи</option>
-    </select>
-
-    <label for="studentName">Име на ученика (по желание)</label>
-    <input id="studentName" placeholder="Име и фамилия">
-
-    <label for="sheetDate">Дата (по желание)</label>
-    <input id="sheetDate" type="date">
-
-    <br><br>
-    <button onclick="generateWorksheet()">Създай работен лист</button>
+    <div class="row"><div><label for="grade">Клас</label><select id="grade"></select></div><div><label for="subject">Предмет</label><select id="subject"></select></div></div>
+    <div class="row"><div><label for="topic">Тема (по желание)</label><input id="topic" placeholder="Например: Древна Гърция, дроби"></div><div><label for="taskCount">Брой задачи</label><select id="taskCount"><option value="5">5 задачи</option><option value="10">10 задачи</option><option value="15">15 задачи</option></select></div></div>
+    <div class="row"><div><label for="studentName">Име на ученика</label><input id="studentName" placeholder="Име и фамилия"></div><div><label for="sheetDate">Дата</label><input id="sheetDate" type="date"></div></div>
+    <div class="actions"><button onclick="generateWorksheet()">✦ Създай работен лист</button><button class="secondary" onclick="window.print()">🖨️ Печат / Запази като PDF</button></div>
   </div>
-
-  <div id="worksheetOutput" class="panel">
-    <p class="muted">Тук ще се появи твоят работен лист.</p>
-  </div>
-  <div class="no-print">
-    <button onclick="window.print()">🖨️ Печат / Запази като PDF</button>
-  </div>
+  <div id="worksheetOutput" class="panel"><p class="muted">Твоят работен лист ще се появи тук.</p></div>
 </section>
 
 <section id="helper" class="page">
-  <div class="panel">
-    <h2>💡 Учебен помощник</h2>
-    <p>Напиши учебен въпрос и ще получиш примерен отговор от вградената демонстрация.</p>
-    <textarea id="helperQuestion" placeholder="Например: Какво е дроб?"></textarea>
-    <br><br>
-    <button onclick="askHelper()">Попитай</button>
-    <div id="helperResult" class="result" aria-live="polite"></div>
-    <p class="muted">Това е демонстрационен помощник с предварително зададени отговори, а не пълноценен ИИ чат.</p>
-  </div>
+  <div class="section-title"><div><h2>Учебен помощник</h2><p>Попитай за някоя от темите в демонстрационния помощник.</p></div></div>
+  <div class="panel"><label for="helperQuestion">Твоят въпрос</label><textarea id="helperQuestion" placeholder="Например: Какво е фотосинтеза?"></textarea><div class="actions"><button onclick="askHelper()">Попитай ✦</button></div><div id="helperResult" class="result" aria-live="polite"></div><p class="small">Това е демонстрационен помощник с предварително зададени отговори, а не пълноценен ИИ чат.</p></div>
 </section>
 </main>
-
-<footer>УчиУм • Ученето може да бъде приключение! 🌟</footer>
+<footer>УчиУм ✦ Създадено за любопитни умове.</footer>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
+const subjects=[
+['Български език и литература','📖'],['Математика','➗'],['Английски език','🇬🇧'],['Друг чужд език','🌐'],
+['Човекът и природата','🌱'],['Човекът и обществото','🏘️'],['История и цивилизации','🏛️'],['География и икономика','🌍'],
+['Биология и здравно образование','🧬'],['Физика и астрономия','🪐'],['Химия и опазване на околната среда','⚗️'],
+['Компютърно моделиране и информационни технологии','💻'],['Информатика','⌨️'],['Технологии и предприемачество','🛠️'],
+['Изобразително изкуство','🎨'],['Музика','🎵'],['Физическо възпитание и спорт','⚽'],['Гражданско образование','🤝'],
+['Философия','💭'],['Психология','🧠'],['Икономика','📈'],['Предприемачество','🚀'],
+['Религия','🕊️'],['Домашен бит и техника','🧵'],['Роботика','🤖'],['Програмиране','👨‍💻'],
+['Статистика','📊'],['Екология','🌿'],['Здравно образование','❤️'],['Логика','🔎'],
+['Латински език','🏺'],['Испански език','🇪🇸'],['Немски език','🇩🇪'],['Френски език','🇫🇷'],
+['Руски език','🇷🇺'],['Италиански език','🇮🇹'],['Китайски език','🇨🇳'],['Турски език','🇹🇷'],
+['Технологии','⚙️'],['Дизайн','✏️'],['Финансова грамотност','💶'],['Кариерно ориентиране','🧭'],
+['Проектна работа','🗂️'],['Медийна грамотност','📰'],['Етика','⚖️'],['Световна литература','📚']
+];
+const $=id=>document.getElementById(id);
+function fillGrades(id){$(id).innerHTML=Array.from({length:12},(_,i)=>`<option value="${i+1}">${i+1}. клас</option>`).join('')}
+fillGrades('grade');fillGrades('subjectGrade');
+$('subject').innerHTML=subjects.map(s=>`<option>${s[0]}</option>`).join('');
 function showPage(id){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  if(id==='maps') setTimeout(initMap,100);
+ document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));
+ document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
+ if(id==='maps')setTimeout(initMap,120);
+ if(id==='subjects')renderSubjects();
+ window.scrollTo({top:0,behavior:'smooth'});
 }
-
-let mapInstance=null;
-function initMap(){
-  const mapEl=document.getElementById('map');
-  if(!mapEl || typeof L==='undefined') return;
-
-  if(!mapInstance){
-    mapInstance=L.map('map').setView([42.7,25.3],6);
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
-      attribution:'Карта: OpenStreetMap contributors',
-      maxZoom:19
-    }).addTo(mapInstance);
-
-    const places=[
-      {name:'София',coords:[42.6977,23.3219],info:'Столицата на България. Тук се намират важни културни и исторически забележителности.'},
-      {name:'Пазарджик',coords:[42.1928,24.3336],info:'Град в Южна България, разположен в Горнотракийската низина.'},
-      {name:'Пловдив',coords:[42.1354,24.7453],info:'Един от най-старите градове в Европа.'},
-      {name:'Варна',coords:[43.2141,27.9147],info:'Голям български град на Черно море.'},
-      {name:'Бургас',coords:[42.5048,27.4626],info:'Град и пристанище на Черно море.'},
-      {name:'Рила',coords:[42.1,23.55],info:'Планина в България. В нея се намира връх Мусала, най-високият връх на Балканския полуостров.'},
-      {name:'Река Дунав',coords:[44.1,25.5],info:'Голяма европейска река, която образува голяма част от северната граница на България.'},
-      {name:'Черно море',coords:[42.7,29.0],info:'Море, до което България има излаз на изток.'},
-      {name:'Атина',coords:[37.9838,23.7275],info:'Столицата на Гърция, известна с историята на Древна Гърция.'},
-      {name:'Рим',coords:[41.9028,12.4964],info:'Столицата на Италия и важен център на историята на Древен Рим.'},
-      {name:'Париж',coords:[48.8566,2.3522],info:'Столицата на Франция.'},
-      {name:'Лондон',coords:[51.5072,-0.1276],info:'Столицата на Обединеното кралство.'},
-      {name:'Кайро',coords:[30.0444,31.2357],info:'Столицата на Египет, разположена близо до река Нил.'},
-      {name:'Токио',coords:[35.6762,139.6503],info:'Столицата на Япония.'},
-      {name:'Вашингтон',coords:[38.9072,-77.0369],info:'Столицата на Съединените американски щати.'}
-    ];
-
-    places.forEach(place=>{
-      L.marker(place.coords).addTo(mapInstance)
-       .bindPopup('<strong>'+place.name+'</strong><br>'+place.info);
-    });
-  }
-  setTimeout(()=>mapInstance.invalidateSize(),100);
+document.querySelectorAll('#nav button').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
+function renderSubjects(){
+ const q=$('subjectSearch').value.toLocaleLowerCase('bg');
+ const grade=$('subjectGrade').value;
+ $('subjectChips').innerHTML=`<span class="chip">Клас ${grade}</span><span class="chip">${subjects.length} учебни направления</span><span class="chip">1.–12. клас</span>`;
+ const found=subjects.filter(s=>s[0].toLocaleLowerCase('bg').includes(q));
+ $('subjectCards').innerHTML=found.map(s=>`<div class="card"><div class="emoji">${s[1]}</div><h3>${esc(s[0])}</h3><p>Подходящо направление за учене и упражнение.</p><button class="secondary" onclick="selectSubject('${escAttr(s[0])}')">Работен лист →</button></div>`).join('')||'<p>Няма намерени предмети.</p>';
 }
+function selectSubject(name){$('subject').value=name;showPage('worksheets')}
+$('subjectSearch').addEventListener('input',renderSubjects);$('subjectGrade').addEventListener('change',renderSubjects);renderSubjects();
 
 let a=0,b=0;
-function newMath(){
-  a=Math.floor(Math.random()*12)+1;
-  b=Math.floor(Math.random()*12)+1;
-  document.getElementById('mathQuestion').textContent=`Колко е ${a} × ${b}?`;
-  document.getElementById('mathAnswer').value='';
-  document.getElementById('mathResult').textContent='';
-}
-function checkMath(){
-  const value=document.getElementById('mathAnswer').value;
-  if(value===''){document.getElementById('mathResult').textContent='Въведи отговор.';return}
-  document.getElementById('mathResult').textContent=
-    Number(value)===a*b?'Браво! Верен отговор! 🎉':`Опитай отново. Подсказка: ${a} × ${b}.`;
-}
-function capitalAnswer(answer){
-  document.getElementById('capitalResult').textContent=
-    answer==='София'?'Правилно! София е столицата на България. 🇧🇬':'Не е това. Опитай със София.';
-}
+function newMath(){a=Math.floor(Math.random()*12)+1;b=Math.floor(Math.random()*12)+1;$('mathQuestion').textContent=`Колко е ${a} × ${b}?`;$('mathAnswer').value='';$('mathResult').textContent=''}
+function checkMath(){if($('mathAnswer').value===''){$('mathResult').textContent='Въведи отговор.';return}$('mathResult').textContent=Number($('mathAnswer').value)===a*b?'Верен отговор! Браво! 🎉':'Опитай отново. Помисли за таблицата за умножение.'}
+function capitalAnswer(x){$('capitalResult').textContent=x==='София'?'Правилно! София е столицата на България. 🇧🇬':'Не е това. Опитай отново.'}
 newMath();
 
 const quizBank=[
- {q:'Коя е столицата на България?',o:['София','Варна','Русе'],a:0},
- {q:'Колко е 7 × 8?',o:['54','56','64'],a:1},
- {q:'Коя планета е известна като Червената планета?',o:['Венера','Марс','Сатурн'],a:1},
- {q:'Коя река минава покрай северната граница на България?',o:['Марица','Искър','Дунав'],a:2},
- {q:'Кой е написал „Под игото“?',o:['Иван Вазов','Елин Пелин','Христо Ботев'],a:0},
- {q:'Колко страни има триъгълникът?',o:['Три','Четири','Пет'],a:0},
- {q:'Коя е най-голямата планета в Слънчевата система?',o:['Земя','Юпитер','Меркурий'],a:1},
- {q:'На кой континент се намира България?',o:['Европа','Африка','Азия'],a:0},
- {q:'Как се нарича процесът, при който растенията използват светлина за създаване на хранителни вещества?',o:['Изпарение','Фотосинтеза','Замръзване'],a:1},
- {q:'Коя дума е съществително име?',o:['Красив','Тичам','Ученик'],a:2}
-];
+{q:'Коя е столицата на България?',o:['София','Варна','Русе'],a:0},
+{q:'Колко е 7 × 8?',o:['54','56','64'],a:1},
+{q:'Коя планета е известна като Червената планета?',o:['Венера','Марс','Сатурн'],a:1},
+{q:'Коя река образува голяма част от северната граница на България?',o:['Марица','Искър','Дунав'],a:2},
+{q:'Кой е авторът на „Под игото“?',o:['Иван Вазов','Елин Пелин','Христо Ботев'],a:0},
+{q:'Колко страни има триъгълникът?',o:['Три','Четири','Пет'],a:0},
+{q:'Коя е най-голямата планета в Слънчевата система?',o:['Земя','Юпитер','Меркурий'],a:1},
+{q:'На кой континент се намира България?',o:['Европа','Африка','Австралия'],a:0},
+{q:'Как се нарича процесът, при който растенията използват светлина за образуване на хранителни вещества?',o:['Изпарение','Фотосинтеза','Замръзване'],a:1},
+{q:'Коя дума е съществително име?',o:['Красив','Тичам','Ученик'],a:2}];
 let currentQuiz=[];
 function makeQuiz(){
-  currentQuiz=[...quizBank].sort(()=>Math.random()-.5).slice(0,5);
-  const area=document.getElementById('quizQuestions');
-  area.innerHTML='';
-  currentQuiz.forEach((q,i)=>{
-    const div=document.createElement('div');
-    div.className='tile';
-    div.style.marginBottom='12px';
-    const title=document.createElement('h3');
-    title.textContent=`${i+1}. ${q.q}`;
-    div.appendChild(title);
-    q.o.forEach((option,j)=>{
-      const label=document.createElement('label');
-      label.style.fontWeight='normal';
-      const radio=document.createElement('input');
-      radio.type='radio';radio.name='q'+i;radio.value=j;
-      radio.style.width='auto';radio.style.marginRight='8px';
-      label.appendChild(radio);label.appendChild(document.createTextNode(option));
-      div.appendChild(label);
-    });
-    area.appendChild(div);
-  });
-  document.getElementById('quizResult').textContent='';
+ currentQuiz=[...quizBank].sort(()=>Math.random()-.5).slice(0,5);
+ $('quizQuestions').innerHTML=currentQuiz.map((q,i)=>`<div class="card" style="margin-bottom:12px"><h3>${i+1}. ${q.q}</h3>${q.o.map((o,j)=>`<label style="font-weight:500"><input style="width:auto;margin-right:8px" type="radio" name="q${i}" value="${j}">${o}</label>`).join('')}</div>`).join('');
+ $('quizResult').textContent='';
 }
-function checkQuiz(){
-  let score=0;
-  currentQuiz.forEach((q,i)=>{
-    const chosen=document.querySelector(`input[name="q${i}"]:checked`);
-    if(chosen && Number(chosen.value)===q.a) score++;
-  });
-  document.getElementById('quizResult').textContent=`Твоят резултат е ${score} от ${currentQuiz.length}. ${score===5?'Отлично! 🏆':score>=3?'Добра работа! Продължавай да се упражняваш.':'Опитай отново, за да подобриш резултата си!'}`;
-}
+function checkQuiz(){let score=0;currentQuiz.forEach((q,i)=>{const x=document.querySelector(`input[name="q${i}"]:checked`);if(x&&+x.value===q.a)score++});$('quizResult').textContent=`Резултат: ${score} от ${currentQuiz.length}. ${score===5?'Отлично! 🏆':score>=3?'Добра работа!':'Упражнявай се и опитай пак!'}`}
 makeQuiz();
 
-const worksheetBanks={
-'Математика':[
-'Реши: 24 + 18 = _____.',
-'Реши: 75 − 29 = _____.',
-'Изчисли: 6 × 7 = _____.',
-'Изчисли: 56 ÷ 8 = _____.',
-'Състави текстова задача и я реши.',
-'Запиши дробта, която представя една от четири равни части.',
-'Намери периметъра на квадрат със страна 5 см.',
-'Един билет струва 8 лв. Колко струват 4 билета?',
-'Подреди числата във възходящ ред: 19, 7, 35, 12.',
-'Запиши пример за число, което се дели на 3.'],
-'Български език и литература':[
-'Напиши пет съществителни имена.',
-'Напиши три прилагателни имена.',
-'Състави изречение с думата „приятелство“.',
-'Открий подлога и сказуемото в изречението: „Децата четат книга.“',
-'Напиши кратък текст по тема „Моят любим сезон“.',
-'Напиши синоним на думата „красив“.',
-'Напиши антоним на думата „смел“.',
-'Определи частта на речта на думата „тичам“.',
-'Напиши правилно изречение с главна буква и препинателен знак.',
-'Опиши любим литературен герой с три изречения.'],
-'Английски език':[
-'Преведи на английски: „Здравей!“',
-'Напиши на английски числата от 1 до 5.',
-'Преведи: „училище“, „книга“ и „приятел“.',
-'Напиши три цвята на английски.',
-'Състави изречение с „I like…“.',
-'Напиши на английски дните от седмицата.',
-'Попълни: I ___ a student. (am/is/are)',
-'Напиши пет думи, свързани с училището.',
-'Преведи на български: „Good morning!“',
-'Опиши себе си с три кратки английски изречения.'],
-'История и цивилизации':[
-'Назови две характеристики на Древен Египет.',
-'Кои са олимпийските богове в древногръцката митология? Назови три.',
-'Обясни какво е исторически извор.',
-'Напиши две факта за Древен Рим.',
-'Какво представлява археологията?',
-'Обясни защо хората създават първите селища.',
-'Назови важна историческа личност и опиши нейното дело.',
-'Какво е цивилизация?',
-'Посочи две разлики между миналото и настоящето.',
-'Състави кратка хронология на три исторически събития.'],
-'География и икономика':[
-'Назови столицата на България.',
-'На кой континент се намира България?',
-'Назови три планини в България.',
-'Кое море граничи с България?',
-'Обясни какво е географска карта.',
-'Каква е разликата между река и езеро?',
-'Назови три държави в Европа и техните столици.',
-'Обясни какво показва физическата карта.',
-'Какво е екватор?',
-'Назови два начина за опазване на природата.'],
-'Човекът и природата':[
-'Назови три състояния на водата.',
-'Какво е необходимо на растенията, за да растат?',
-'Назови три източника на светлина.',
-'Какво представлява кръговратът на водата?',
-'Посочи две правила за безопасност в природата.',
-'Каква е разликата между живата и неживата природа?',
-'Назови три животни и средата им на живот.',
-'Какво е магнит?',
-'Защо е важно да пестим водата?',
-'Опиши накратко смяната на сезоните.'],
-'Човекът и обществото':[
-'Назови столицата на България.',
-'Как се нарича знамето на държавата?',
-'Напиши две правила за безопасност на улицата.',
-'Какво означава да си отговорен член на общността?',
-'Назови три обществени места.',
-'Защо са важни правилата в училище?',
-'Какво е семейство?',
-'Назови три професии и с какво се занимават хората в тях.',
-'Как можем да пазим чистотата в населеното място?',
-'Какво означава да помагаме на другите?'],
-'Биология и здравно образование':[
-'Назови основните части на растението.',
-'Каква е ролята на корените?',
-'Посочи три бозайника.',
-'Какво представлява хранителната верига?',
-'Назови органи от храносмилателната система.',
-'Какво е клетка?',
-'Обясни защо сънят е важен за здравето.',
-'Назови три начина за опазване на биоразнообразието.',
-'Каква е ролята на сърцето?',
-'Обясни как растенията се приспособяват към средата.'],
-'Физика и астрономия':[
-'Какво е сила?',
-'Назови три източника на енергия.',
-'Какво е температура?',
-'Как се измерва времето?',
-'Обясни разликата между маса и тегло.',
-'Какво представлява електрическият ток?',
-'Защо виждаме Луната през нощта?',
-'Назови планетите в Слънчевата система.',
-'Какво е отражение на светлината?',
-'Посочи пример за преобразуване на енергия.'],
-'Химия и опазване на околната среда':[
-'Какво е химичен елемент?',
-'Назови три вещества от ежедневието.',
-'Каква е разликата между твърдо и течно състояние?',
-'Какво показва химичният символ H?',
-'Обясни защо трябва да разделяме отпадъците.',
-'Какво представлява смес?',
-'Назови два начина за намаляване на замърсяването.',
-'Какво е молекула?',
-'Посочи пример за обратима промяна.',
-'Защо е важно да използваме ресурсите разумно?'],
-'Компютърно моделиране и информационни технологии':[
-'Какво е алгоритъм?',
-'Назови две устройства за въвеждане на информация.',
-'Какво е интернет?',
-'Защо трябва да пазим паролите си в тайна?',
-'Какво е програма?',
-'Каква е ролята на операционната система?',
-'Назови два начина за безопасно поведение онлайн.',
-'Какво представлява електронната таблица?',
-'Какво е файл и какво е папка?',
-'Опиши стъпките за създаване на кратка презентация.'],
-'Информатика':[
-'Какво е променлива в програмирането?',
-'Обясни какво е условие в алгоритъм.',
-'Какво е цикъл в програмирането?',
-'Напиши стъпки за алгоритъм, който подрежда книги.',
-'Какво е двоична бройна система?',
-'Какво представлява структурата от данни?',
-'Обясни какво е грешка в програма.',
-'Каква е разликата между входни и изходни данни?',
-'Опиши алгоритъм за намиране на по-голямото от две числа.',
-'Защо е полезно да тестваме програма?'],
-'Технологии и предприемачество':[
-'Измисли продукт, който би улеснил учениците.',
-'Назови три инструмента и правилата за безопасното им използване.',
-'Какво е план за работа?',
-'Защо е важно да използваме материалите пестеливо?',
-'Опиши стъпките за изработване на хартиен модел.',
-'Какво означава рециклиране?',
-'Измисли идея за полезна услуга.',
-'Какво е бюджет?',
-'Назови три качества на добрия екип.',
-'Как можеш да подобриш предмет от ежедневието?'],
-'Изобразително изкуство':[
-'Нарисувай пейзаж с три различни цвята.',
-'Назови трите основни цвята в традиционния модел за рисуване.',
-'Какво е композиция?',
-'Нарисувай предмет от натура.',
-'Обясни разликата между топли и студени цветове.',
-'Създай орнамент от повтарящи се форми.',
-'Назови две художествени техники.',
-'Нарисувай плакат за опазване на природата.',
-'Как линиите могат да създават усещане за движение?',
-'Измисли символ за училището си и го нарисувай.'],
-'Музика':[
-'Назови три музикални инструмента.',
-'Каква е разликата между бързо и бавно темпо?',
-'Обясни какво е мелодия.',
-'Назови два вида гласове в хоровото пеене.',
-'Изброй три музикални жанра.',
-'Какво е ритъм?',
-'Посочи инструмент от семейството на струнните.',
-'Как музиката може да изразява настроение?',
-'Назови две български народни песни.',
-'Измисли кратък ритмичен модел с пляскане.'],
-'Физическо възпитание и спорт':[
-'Назови три отборни спорта.',
-'Защо загрявката е важна преди тренировка?',
-'Назови две правила за безопасност при спорт.',
-'Какво означава честна игра?',
-'Изброй три качества, които развива движението.',
-'Как помагаме на съотборник?',
-'Назови два вида упражнения за координация.',
-'Защо е важно да пием вода при физическа активност?',
-'Опиши правилата на свой любим спорт.',
-'Какво означава да уважаваш противника?'],
-'Гражданско образование':[
-'Какво означава да спазваме правилата?',
-'Назови две права на детето.',
-'Какво е отговорност?',
-'Как можем да разрешаваме спорове спокойно?',
-'Какво означава да уважаваш различията?',
-'Назови пример за доброволчество.',
-'Защо е важно да пазим обществените места?',
-'Какво означава активно гражданско участие?',
-'Как можем да помогнем на човек в нужда?',
-'Защо трябва да проверяваме информацията, преди да я споделяме?'],
-'Философия':[
-'Какво означава да мислим критично?',
-'Каква е разликата между факт и мнение?',
-'Защо е важно да задаваме въпроси?',
-'Обясни какво е справедливост.',
-'Какво означава да имаш аргумент?',
-'Може ли двама души да имат различни гледни точки? Обясни.',
-'Какво е етичен избор?',
-'Защо трябва да изслушваме другите?',
-'Какво означава да провериш доказателство?',
-'Напиши кратък текст за това какво прави едно решение добро.'],
-'Психология':[
-'Назови три човешки емоции.',
-'Как можем да изразим несъгласие уважително?',
-'Защо е важно да разпознаваме собствените си емоции?',
-'Какво е активно слушане?',
-'Назови два начина за справяне със стреса в ежедневието.',
-'Какво означава сътрудничество?',
-'Защо хората понякога възприемат една ситуация различно?',
-'Как можем да покажем съпричастност?',
-'Какво е навик?',
-'Защо е полезно да си поставяме реалистични цели?'],
-'Икономика':[
-'Какво е бюджет?',
-'Каква е разликата между нужда и желание?',
-'Какво означава да спестяваме?',
-'Какво е цена?',
-'Какво представлява пазарът?',
-'Какво е доход?',
-'Защо е важно да сравняваме цени?',
-'Какво означава ограничен ресурс?',
-'Състави примерен бюджет за малък проект.',
-'Какво е предприемач?'],
-'Предприемачество':[
-'Измисли идея за малък бизнес.',
-'Коя потребност би задоволил твоят продукт?',
-'Назови три качества на предприемача.',
-'Какво е целева група?',
-'Какво е начален капитал?',
-'Измисли име и лого за своята идея.',
-'Как би рекламирал полезен продукт?',
-'Назови два възможни разхода за малък бизнес.',
-'Как можеш да разбереш дали клиентите харесват идеята ти?',
-'Напиши кратък план за своя проект.']
+const banks={
+'Математика':['Реши: 24 + 18 = _____.','Реши: 75 − 29 = _____.','Изчисли: 6 × 7 = _____.','Изчисли: 56 ÷ 8 = _____.','Състави текстова задача и я реши.','Запиши дробта, която представя една от четири равни части.','Намери периметъра на квадрат със страна 5 см.','Един билет струва 8 лв. Колко струват 4 билета?'],
+'Български език и литература':['Напиши пет съществителни имена.','Напиши три прилагателни имена.','Състави изречение с думата „приятелство“.','Открий подлога и сказуемото в „Децата четат книга.“','Напиши кратък текст по тема „Моят любим сезон“.','Напиши синоним на думата „красив“.','Напиши антоним на думата „смел“.','Опиши любим литературен герой.'],
+'Английски език':['Преведи на английски: „Здравей!“','Напиши числата от 1 до 5 на английски.','Преведи: „училище“, „книга“ и „приятел“.','Напиши три цвята на английски.','Състави изречение с „I like…“.','Попълни: I ___ a student. (am/is/are)','Напиши пет думи, свързани с училището.','Преведи: „Good morning!“'],
+'История и цивилизации':['Назови две характеристики на Древен Египет.','Назови три божества от Древна Гърция.','Обясни какво е исторически извор.','Напиши два факта за Древен Рим.','Какво представлява археологията?','Обясни защо хората създават първите селища.','Какво е цивилизация?','Състави кратка хронология на три исторически събития.'],
+'География и икономика':['Назови столицата на България.','На кой континент се намира България?','Назови три планини в България.','Кое море граничи с България?','Обясни какво е географска карта.','Каква е разликата между река и езеро?','Назови три държави в Европа и техните столици.','Какво показва физическата карта?'],
+'Човекът и природата':['Назови три състояния на водата.','Какво е необходимо на растенията, за да растат?','Назови три източника на светлина.','Какво представлява кръговратът на водата?','Каква е разликата между живата и неживата природа?','Назови три животни и средата им на живот.','Какво е магнит?','Защо е важно да пестим водата?'],
+'Биология и здравно образование':['Назови основните части на растението.','Каква е ролята на корените?','Посочи три бозайника.','Какво представлява хранителната верига?','Какво е клетка?','Обясни защо сънят е важен за здравето.','Каква е ролята на сърцето?','Как растенията се приспособяват към средата?'],
+'Физика и астрономия':['Какво е сила?','Назови три източника на енергия.','Какво е температура?','Как се измерва времето?','Обясни разликата между маса и тегло.','Какво представлява електрическият ток?','Защо виждаме Луната през нощта?','Назови планетите в Слънчевата система.'],
+'Химия и опазване на околната среда':['Какво е химичен елемент?','Назови три вещества от ежедневието.','Каква е разликата между твърдо и течно състояние?','Какво показва химичният символ H?','Защо трябва да разделяме отпадъците?','Какво представлява смес?','Назови два начина за намаляване на замърсяването.','Какво е молекула?'],
+'Компютърно моделиране и информационни технологии':['Какво е алгоритъм?','Назови две устройства за въвеждане на информация.','Какво е интернет?','Защо трябва да пазим паролите си в тайна?','Какво е програма?','Каква е ролята на операционната система?','Назови два начина за безопасно поведение онлайн.','Какво е файл и какво е папка?'],
+'Информатика':['Какво е променлива в програмирането?','Какво е условие в алгоритъм?','Какво е цикъл в програмирането?','Напиши стъпки за алгоритъм, който подрежда книги.','Какво е двоична бройна система?','Какво е грешка в програма?','Каква е разликата между входни и изходни данни?','Защо е полезно да тестваме програма?'],
+'Технологии и предприемачество':['Измисли продукт, който би улеснил учениците.','Назови три инструмента и правила за безопасност.','Какво е план за работа?','Защо е важно да използваме материалите пестеливо?','Опиши стъпките за изработване на хартиен модел.','Какво означава рециклиране?','Измисли идея за полезна услуга.','Какво е бюджет?'],
+'Изобразително изкуство':['Нарисувай пейзаж с три различни цвята.','Назови три основни цвята в традиционния модел за рисуване.','Какво е композиция?','Нарисувай предмет от натура.','Обясни разликата между топли и студени цветове.','Създай орнамент от повтарящи се форми.','Назови две художествени техники.','Нарисувай плакат за опазване на природата.'],
+'Музика':['Назови три музикални инструмента.','Каква е разликата между бързо и бавно темпо?','Обясни какво е мелодия.','Изброй три музикални жанра.','Какво е ритъм?','Назови инструмент от семейството на струнните.','Как музиката може да изразява настроение?','Назови две български народни песни.'],
+'Физическо възпитание и спорт':['Назови три отборни спорта.','Защо загрявката е важна преди тренировка?','Назови две правила за безопасност при спорт.','Какво означава честна игра?','Изброй три качества, които развива движението.','Как помагаме на съотборник?','Защо е важно да пием вода при физическа активност?','Какво означава да уважаваш противника?'],
+'Гражданско образование':['Какво означава да спазваме правилата?','Назови две права на детето.','Какво е отговорност?','Как можем да разрешаваме спорове спокойно?','Какво означава да уважаваш различията?','Назови пример за доброволчество.','Защо е важно да пазим обществените места?','Как можем да помогнем на човек в нужда?'],
+'Философия':['Какво означава да мислим критично?','Каква е разликата между факт и мнение?','Защо е важно да задаваме въпроси?','Обясни какво е справедливост.','Какво означава да имаш аргумент?','Може ли двама души да имат различни гледни точки? Обясни.','Какво е етичен избор?','Защо трябва да изслушваме другите?'],
+'Икономика':['Какво е бюджет?','Каква е разликата между нужда и желание?','Какво означава да спестяваме?','Какво е цена?','Какво представлява пазарът?','Какво е доход?','Защо е важно да сравняваме цени?','Какво е предприемач?'],
+'Предприемачество':['Измисли идея за малък бизнес.','Каква потребност би задоволил твоят продукт?','Назови три качества на предприемача.','Какво е целева група?','Какво е начален капитал?','Измисли име за своята идея.','Как би рекламирал полезен продукт?','Назови два възможни разхода за малък бизнес.']
 };
-
+const generalTasks=['Обясни основните понятия по избраната тема.','Назови три важни факта и ги обясни.','Дай пример от ежедневието, свързан с темата.','Състави въпрос по темата и напиши отговора.','Напиши кратко обобщение на наученото.','Сравни две идеи или понятия от темата.','Направи списък с пет ключови думи.','Напиши какво би искал да научиш допълнително.'];
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function escAttr(s){return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'")}
 function generateWorksheet(){
-  const grade=document.getElementById('grade').value;
-  const subject=document.getElementById('subject').value;
-  const topic=document.getElementById('topic').value.trim();
-  const count=Number(document.getElementById('taskCount').value);
-  const name=document.getElementById('studentName').value.trim();
-  const date=document.getElementById('sheetDate').value;
-  const bank=worksheetBanks[subject] || [
-    'Напиши кратко обяснение по избраната тема.',
-    'Назови три важни понятия.',
-    'Дай пример от ежедневието.',
-    'Състави въпрос и отговор по темата.',
-    'Напиши кратко обобщение на наученото.'
-  ];
-
-  let tasks='';
-  for(let i=0;i<count;i++){
-    let question=bank[i%bank.length];
-    if(topic) question+=` (Тема: ${topic})`;
-    if(i>=bank.length) question+=' Дай и допълнителен пример.';
-    tasks+=`<div class="task"><strong>${i+1}.</strong> ${escapeHTML(question)}<br>________________________________________________________</div>`;
-  }
-
-  document.getElementById('worksheetOutput').innerHTML=`
-    <div class="worksheet">
-      <h2>УчиУм • Работен лист</h2>
-      <p><strong>Предмет:</strong> ${escapeHTML(subject)}</p>
-      <p><strong>Клас:</strong> ${grade}. клас</p>
-      ${topic?`<p><strong>Тема:</strong> ${escapeHTML(topic)}</p>`:''}
-      <p><strong>Ученик:</strong> ${escapeHTML(name||'________________________')}</p>
-      <p><strong>Дата:</strong> ${escapeHTML(date||'________________')}</p>
-      <hr>
-      ${tasks}
-      <p><strong>Самооценка:</strong> □ Отлично  □ Добре  □ Ще се упражнявам още</p>
-    </div>`;
+ const grade=$('grade').value,subject=$('subject').value,topic=$('topic').value.trim(),count=+$('taskCount').value,name=$('studentName').value.trim(),date=$('sheetDate').value;
+ const bank=banks[subject]||generalTasks;
+ let tasks='';
+ for(let i=0;i<count;i++){let q=bank[i%bank.length];if(topic)q+=' Тема: '+topic+'.';if(i>=bank.length)q+=' Добави още един пример.';tasks+=`<div class="task"><strong>${i+1}.</strong> ${esc(q)}<br>__________________________________________________________</div>`}
+ $('worksheetOutput').innerHTML=`<div class="worksheet"><h2>УчиУм ✦ Работен лист</h2><p><strong>Предмет:</strong> ${esc(subject)}</p><p><strong>Клас:</strong> ${grade}. клас</p>${topic?`<p><strong>Тема:</strong> ${esc(topic)}</p>`:''}<p><strong>Ученик:</strong> ${esc(name||'________________________')}</p><p><strong>Дата:</strong> ${esc(date||'________________')}</p><hr>${tasks}<p><strong>Самооценка:</strong> □ Отлично　□ Добре　□ Ще се упражнявам още</p></div>`;
 }
-function escapeHTML(str){
-  return String(str).replace(/[&<>"']/g,ch=>({
-    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-  }[ch]));
-}
-
 function askHelper(){
-  const q=document.getElementById('helperQuestion').value.toLowerCase().trim();
-  let answer='Това е демонстрационен помощник. Опитай да попиташ за дроби, столицата на България, Древна Гърция или планетите.';
-  if(!q){answer='Напиши въпрос първо.'}
-  else if(q.includes('дроб')) answer='Дробта показва част от едно цяло. Например 1/2 означава една от две равни части.';
-  else if(q.includes('столица')&&q.includes('българ')) answer='Столицата на България е София.';
-  else if(q.includes('древна гърция')||q.includes('олимп')) answer='Древна Гърция е известна със своите градове държави, митология, философия и начало на Олимпийските игри.';
-  else if(q.includes('планет')) answer='В Слънчевата система има осем планети: Меркурий, Венера, Земя, Марс, Юпитер, Сатурн, Уран и Нептун.';
-  else if(q.includes('фотосинтеза')) answer='Фотосинтезата е процес, при който растенията използват светлинна енергия, вода и въглероден диоксид, за да образуват хранителни вещества.';
-  document.getElementById('helperResult').textContent=answer;
+ const q=$('helperQuestion').value.toLocaleLowerCase('bg').trim();let a='Това е демонстрационен помощник. Опитай с въпрос за дроби, столицата на България, Древна Гърция, планетите или фотосинтезата.';
+ if(!q)a='Напиши въпрос първо.';
+ else if(q.includes('дроб'))a='Дробта показва част от едно цяло. Например 1/2 означава една от две равни части.';
+ else if(q.includes('столица')&&q.includes('българ'))a='Столицата на България е София.';
+ else if(q.includes('древна гърция')||q.includes('олимп'))a='Древна Гърция е известна със своите градове-държави, митология, философия и древните Олимпийски игри.';
+ else if(q.includes('планет'))a='В Слънчевата система има осем планети: Меркурий, Венера, Земя, Марс, Юпитер, Сатурн, Уран и Нептун.';
+ else if(q.includes('фотосинтез'))a='Фотосинтезата е процес, при който растенията използват светлинна енергия, вода и въглероден диоксид, за да образуват хранителни вещества.';
+ $('helperResult').textContent=a;
 }
+let mapInstance=null;
+const places=[
+['София',[42.6977,23.3219],'Столицата на България.'],['Пазарджик',[42.1928,24.3336],'Град в Южна България, в Горнотракийската низина.'],['Пловдив',[42.1354,24.7453],'Един от най-старите градове в Европа.'],['Варна',[43.2141,27.9147],'Голям град на Черно море.'],['Бургас',[42.5048,27.4626],'Град и пристанище на Черно море.'],['Рила',[42.1,23.55],'Планина, в която се намира връх Мусала.'],['Река Дунав',[44.1,25.5],'Голяма европейска река, която образува част от северната граница на България.'],['Черно море',[42.7,29.0],'Море, до което България има излаз на изток.'],['Атина',[37.9838,23.7275],'Столицата на Гърция, важна за историята на Древна Гърция.'],['Рим',[41.9028,12.4964],'Столицата на Италия и център на историята на Древен Рим.'],['Париж',[48.8566,2.3522],'Столицата на Франция.'],['Лондон',[51.5072,-0.1276],'Столицата на Обединеното кралство.'],['Кайро',[30.0444,31.2357],'Столицата на Египет, близо до река Нил.'],['Токио',[35.6762,139.6503],'Столицата на Япония.'],['Вашингтон',[38.9072,-77.0369],'Столицата на Съединените американски щати.']];
+function initMap(){
+ if(mapInstance||!$('map')||typeof L==='undefined')return;
+ mapInstance=L.map('map').setView([42.7,25.3],6);
+ // CARTO Voyager tiles; if the provider changes its access policy, replace this URL with an approved tile endpoint.
+ L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap contributors © CARTO',subdomains:'abcd',maxZoom:20}).addTo(mapInstance);
+ places.forEach(p=>L.marker(p[1]).addTo(mapInstance).bindPopup(`<strong>${esc(p[0])}</strong><br>${esc(p[2])}`).on('click',()=>{$('mapMessage').textContent=p[0]+': '+p[2]}));
+ setTimeout(()=>mapInstance.invalidateSize(),100);
+}
+function goMap(lat,lon,zoom){showPage('maps');setTimeout(()=>{initMap();if(mapInstance)mapInstance.setView([lat,lon],zoom)},180)}
 </script>
 </body>
-</html>
+</html>'''
+path = Path("/mnt/data/uchium_nova_versiya.html")
+path.write_text(html, encoding="utf-8")
+print(f"Създаден файл: {path} ({len(html)} знака)")
+
