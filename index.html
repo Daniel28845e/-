@@ -5,16 +5,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>УчиУм | Образователна платформа</title>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
 <style>
 *{box-sizing:border-box}
 body{margin:0;font-family:Arial,sans-serif;background:#f2f5ff;color:#192447}
 header{background:linear-gradient(120deg,#2463eb,#7954e8);color:white;text-align:center;padding:28px 15px}
 header h1{font-size:42px;margin:0 0 8px}
-nav{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;padding:12px;background:white;position:sticky;top:0;box-shadow:0 3px 10px #0001}
+nav{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;padding:12px;background:white;position:sticky;top:0;z-index:500;box-shadow:0 3px 10px #0001}
 button{border:0;border-radius:11px;padding:12px 16px;cursor:pointer;font-weight:bold;background:#e8edff;color:#244bb3}
 button:hover{filter:brightness(.95)}
 main{max-width:1050px;margin:auto;padding:20px 14px}
-.page{display:none}.page.active{display:block}
+.page{display:none}
+.page.active{display:block}
 .hero,.card{background:white;padding:22px;border-radius:18px;margin-bottom:16px;box-shadow:0 4px 18px #2233660c}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
 .emoji{font-size:36px}
@@ -25,14 +29,38 @@ input,select,textarea{display:block;width:100%;padding:12px;border:1px solid #cb
 .question{background:#f2f5ff;padding:14px;border-radius:12px;margin:12px 0}
 .small{font-size:13px;color:#64748b}
 footer{text-align:center;padding:24px;color:#667085}
+#map{height:470px;width:100%;border-radius:14px;z-index:1}
+.map-help{background:#edf3ff;padding:12px;border-radius:10px;margin:12px 0}
+.map-buttons{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.map-buttons button{margin:0}
+.sheet-paper{background:white;color:#172033;border:1px solid #dbe3f5;border-radius:12px;padding:24px;margin-top:16px}
+.sheet-paper h3{text-align:center;margin-top:0}
+.sheet-meta{display:flex;gap:25px;flex-wrap:wrap;margin:18px 0}
+.sheet-task{margin:20px 0;break-inside:avoid}
+.sheet-answer{min-height:28px;border-bottom:1px solid #cbd5e1;margin-top:8px}
+@media(max-width:600px){
+ header h1{font-size:34px}
+ #map{height:380px}
+ .hero,.card{padding:17px}
+}
+@media print{
+ body *{visibility:hidden!important}
+ #sheetResult,#sheetResult *{visibility:visible!important}
+ #sheetResult{position:absolute;left:0;top:0;width:100%;margin:0;padding:0}
+ .sheet-paper{border:0;border-radius:0;padding:0;margin:0;box-shadow:none}
+ .sheet-task{break-inside:avoid}
+ @page{margin:1.5cm}
+}
 </style>
 </head>
+
 <body>
 <header>
 <h1>📚 УчиУм</h1>
 <p>Учи, играй и откривай! 🚀</p>
 <p>Образователна платформа за ученици от 1. до 12. клас</p>
 </header>
+
 <nav>
 <button onclick="page('home')">🏠 Начало</button>
 <button onclick="page('games')">🎮 Игри</button>
@@ -41,27 +69,62 @@ footer{text-align:center;padding:24px;color:#667085}
 <button onclick="page('worksheets')">📝 Работни листове</button>
 <button onclick="page('ai')">🤖 ИИ помощник</button>
 </nav>
+
 <main>
+
+<!-- НАЧАЛО -->
 <section id="home" class="page active">
 <div class="hero">
 <h2>Добре дошъл в УчиУм! 🎉</h2>
 <p>Ученето може да бъде приключение! Избери клас и започни да откриваш нови знания.</p>
 <label for="grade">Избери своя клас:</label>
 <select id="grade">
-<option>1. клас</option><option>2. клас</option><option>3. клас</option><option>4. клас</option><option>5. клас</option><option>6. клас</option><option selected>7. клас</option><option>8. клас</option><option>9. клас</option><option>10. клас</option><option>11. клас</option><option>12. клас</option>
+<option value="1">1. клас</option>
+<option value="2">2. клас</option>
+<option value="3">3. клас</option>
+<option value="4">4. клас</option>
+<option value="5">5. клас</option>
+<option value="6">6. клас</option>
+<option value="7" selected>7. клас</option>
+<option value="8">8. клас</option>
+<option value="9">9. клас</option>
+<option value="10">10. клас</option>
+<option value="11">11. клас</option>
+<option value="12">12. клас</option>
 </select>
 <button class="action" onclick="welcome()">Започни! ✨</button>
 <div id="welcomeResult"></div>
 </div>
+
 <div class="grid">
-<div class="card"><div class="emoji">🎮</div><h3>Игри</h3><p>Учи чрез забавни задачи.</p><button onclick="page('games')">Играй</button></div>
-<div class="card"><div class="emoji">🧠</div><h3>Викторини</h3><p>Провери какво знаеш.</p><button onclick="page('quiz')">Отговори</button></div>
-<div class="card"><div class="emoji">📝</div><h3>Работни листове</h3><p>Подготви упражнения.</p><button onclick="page('worksheets')">Създай</button></div>
+<div class="card">
+<div class="emoji">🎮</div>
+<h3>Игри</h3>
+<p>Учи чрез забавни задачи.</p>
+<button onclick="page('games')">Играй</button>
+</div>
+<div class="card">
+<div class="emoji">🧠</div>
+<h3>Викторини</h3>
+<p>Провери какво знаеш.</p>
+<button onclick="page('quiz')">Отговори</button>
+</div>
+<div class="card">
+<div class="emoji">📝</div>
+<h3>Работни листове</h3>
+<p>Създавай упражнения за училище.</p>
+<button onclick="page('worksheets')">Създай</button>
+</div>
 </div>
 </section>
 
+<!-- ИГРИ -->
 <section id="games" class="page">
-<div class="hero"><h2>🎮 Игри за ума</h2><p>Избери правилния отговор!</p></div>
+<div class="hero">
+<h2>🎮 Игри за ума</h2>
+<p>Избери правилния отговор!</p>
+</div>
+
 <div class="card">
 <h3>Игра: Бърза сметка</h3>
 <p id="mathQuestion">Колко е 7 × 8?</p>
@@ -70,6 +133,7 @@ footer{text-align:center;padding:24px;color:#667085}
 <button onclick="newMath()">Нова задача</button>
 <div id="mathResult"></div>
 </div>
+
 <div class="card">
 <h3>Игра: Познай столицата</h3>
 <p>Коя е столицата на България?</p>
@@ -80,39 +144,130 @@ footer{text-align:center;padding:24px;color:#667085}
 </div>
 </section>
 
+<!-- ВИКТОРИНА -->
 <section id="quiz" class="page">
-<div class="hero"><h2>🧠 Викторина</h2><p>Отговори на пет въпроса и виж резултата си.</p></div>
+<div class="hero">
+<h2>🧠 Викторина</h2>
+<p>Отговори на пет въпроса и виж резултата си.</p>
+</div>
 <div class="card" id="quizBox"></div>
 </section>
 
+<!-- ИНТЕРАКТИВНИ КАРТИ -->
 <section id="maps" class="page">
-<div class="hero"><h2>🌍 Интерактивен географски кът</h2><p>Избери място, за да научиш повече.</p></div>
-<div class="grid">
-<div class="card"><div class="emoji">🇧🇬</div><h3>България</h3><p>Столица: София. България се намира в Югоизточна Европа.</p></div>
-<div class="card"><div class="emoji">🇬🇷</div><h3>Гърция</h3><p>Столица: Атина. Известна е с древната си история и островите.</p></div>
-<div class="card"><div class="emoji">🇮🇹</div><h3>Италия</h3><p>Столица: Рим. Тук се намира древният Колизеум.</p></div>
-<div class="card"><div class="emoji">🌍</div><h3>Континенти</h3><p>Седемте континента са Азия, Африка, Северна Америка, Южна Америка, Антарктида, Европа и Австралия.</p></div>
+<div class="hero">
+<h2>🌍 Интерактивни географски карти</h2>
+<p>Разглеждай света, увеличавай картата и натискай върху маркерите, за да научиш повече.</p>
 </div>
-<p class="small">Това е учебен кът с факти, а не карта с реално географско мащабиране.</p>
-</section>
 
-<section id="worksheets" class="page">
-<div class="hero"><h2>📝 Работни листове</h2><p>Създай упражнения и ги подготви за печат.</p></div>
 <div class="card">
-<label for="subject">Учебен предмет</label>
-<select id="subject"><option>Математика</option><option>Български език</option><option>История</option><option>География</option><option>Човекът и природата</option><option>Английски език</option></select>
-<label for="topic">Тема на работния лист</label>
-<input id="topic" placeholder="Например: Древна Гърция">
-<label for="tasks">Колко задачи искаш?</label>
-<select id="tasks"><option>5</option><option>10</option><option>15</option></select>
-<button class="action" onclick="makeSheet()">Създай работен лист</button>
-<button onclick="window.print()">🖨️ Печат</button>
-<div id="sheetResult"></div>
+<div class="map-buttons">
+<button onclick="goToPlace('world')">🌐 Цял свят</button>
+<button onclick="goToPlace('bulgaria')">🇧🇬 България</button>
+<button onclick="goToPlace('europe')">🇪🇺 Европа</button>
+<button onclick="goToPlace('asia')">🌏 Азия</button>
+</div>
+
+<div id="map"></div>
+
+<div class="map-help">
+💡 <b>Как се използва картата?</b>
+<ul>
+<li>Натискай + и −, за да увеличаваш и намаляваш.</li>
+<li>Плъзгай картата с мишката, за да се придвижваш.</li>
+<li>Натискай върху маркер, за да прочетеш информация.</li>
+</ul>
+</div>
+<p class="small">Картата използва OpenStreetMap и изисква интернет връзка.</p>
+</div>
+
+<div class="grid">
+<div class="card">
+<div class="emoji">🇧🇬</div>
+<h3>България</h3>
+<p>Столица: София. България се намира в Югоизточна Европа.</p>
+<button onclick="goToPlace('bulgaria')">Покажи на картата</button>
+</div>
+<div class="card">
+<div class="emoji">🇬🇷</div>
+<h3>Гърция</h3>
+<p>Столица: Атина. Известна е с древната си история и островите.</p>
+<button onclick="goToPlace('greece')">Покажи на картата</button>
+</div>
+<div class="card">
+<div class="emoji">🇮🇹</div>
+<h3>Италия</h3>
+<p>Столица: Рим. Тук се намира древният Колизеум.</p>
+<button onclick="goToPlace('italy')">Покажи на картата</button>
+</div>
+<div class="card">
+<div class="emoji">🇯🇵</div>
+<h3>Япония</h3>
+<p>Столица: Токио. Островна държава в Източна Азия.</p>
+<button onclick="goToPlace('japan')">Покажи на картата</button>
+</div>
 </div>
 </section>
 
+<!-- РАБОТНИ ЛИСТОВЕ -->
+<section id="worksheets" class="page">
+<div class="hero">
+<h2>📝 Работни листове</h2>
+<p>Създавай упражнения според класа и предмета, след което ги отпечатай или запази като PDF.</p>
+</div>
+
+<div class="card">
+<label for="sheetGrade">Клас</label>
+<select id="sheetGrade">
+<option value="1">1. клас</option>
+<option value="2">2. клас</option>
+<option value="3">3. клас</option>
+<option value="4">4. клас</option>
+<option value="5">5. клас</option>
+<option value="6">6. клас</option>
+<option value="7" selected>7. клас</option>
+<option value="8">8. клас</option>
+<option value="9">9. клас</option>
+<option value="10">10. клас</option>
+<option value="11">11. клас</option>
+<option value="12">12. клас</option>
+</select>
+
+<label for="subject">Учебен предмет</label>
+<select id="subject">
+<option>Математика</option>
+<option>Български език</option>
+<option>История</option>
+<option>География</option>
+<option>Човекът и природата</option>
+<option>Английски език</option>
+</select>
+
+<label for="topic">Тема (по желание)</label>
+<input id="topic" placeholder="Например: Древна Гърция, дроби, глаголи">
+
+<label for="tasks">Брой задачи</label>
+<select id="tasks">
+<option value="5">5 задачи</option>
+<option value="10">10 задачи</option>
+<option value="15">15 задачи</option>
+</select>
+
+<button class="action" onclick="makeSheet()">✨ Създай работен лист</button>
+<button onclick="printSheet()">🖨️ Печат / Запази като PDF</button>
+
+<div id="sheetResult"></div>
+
+<p class="small">За PDF избери „Запазване като PDF“ в прозореца за печат.</p>
+</div>
+</section>
+
+<!-- ИИ ПОМОЩНИК -->
 <section id="ai" class="page">
-<div class="hero"><h2>🤖 ИИ помощник</h2><p>Напиши въпрос или тема, по която искаш помощ.</p></div>
+<div class="hero">
+<h2>🤖 ИИ помощник</h2>
+<p>Напиши въпрос или тема, по която искаш помощ.</p>
+</div>
 <div class="card">
 <label for="aiQuestion">Твоят въпрос</label>
 <textarea id="aiQuestion" rows="4" placeholder="Например: Обясни ми дробите с лесен пример."></textarea>
@@ -121,79 +276,472 @@ footer{text-align:center;padding:24px;color:#667085}
 <p class="small">Демонстрационен режим: този помощник използва предварително зададени обяснения, а не свързан онлайн ИИ модел.</p>
 </div>
 </section>
+
 </main>
-<footer>📚 УчиУм · Учи, играй и откривай!<br><span class="small">Образованието е приключение.</span></footer>
+
+<footer>
+📚 УчиУм · Учи, играй и откривай!<br>
+<span class="small">Образованието е приключение.</span>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
+/* НАВИГАЦИЯ */
 function page(id){
-document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
-document.getElementById(id).classList.add('active');
-window.scrollTo({top:0,behavior:'smooth'});
+ document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+ document.getElementById(id).classList.add('active');
+
+ if(id==='maps'){
+  setTimeout(initMap,150);
+ }
+
+ window.scrollTo({top:0,behavior:'smooth'});
 }
+
+/* НАЧАЛО */
 function welcome(){
-document.getElementById('welcomeResult').innerHTML='<div class="result">Страхотно! Избра '+document.getElementById('grade').value+'. Избери игра или викторина и започни! 🎉</div>';
+ const grade=document.getElementById('grade').value;
+ document.getElementById('welcomeResult').innerHTML=
+ '<div class="result">Страхотно! Избра '+grade+'. клас. Избери игра, викторина или работен лист и започни! 🎉</div>';
 }
+
+/* ИГРА С УМНОЖЕНИЕ */
 let a=7,b=8;
+
 function newMath(){
-a=Math.floor(Math.random()*12)+1;b=Math.floor(Math.random()*12)+1;
-document.getElementById('mathQuestion').textContent='Колко е '+a+' × '+b+'?';
-document.getElementById('mathAnswer').value='';
-document.getElementById('mathResult').textContent='';
+ a=Math.floor(Math.random()*12)+1;
+ b=Math.floor(Math.random()*12)+1;
+ document.getElementById('mathQuestion').textContent='Колко е '+a+' × '+b+'?';
+ document.getElementById('mathAnswer').value='';
+ document.getElementById('mathResult').textContent='';
 }
+
 function checkMath(){
-let v=document.getElementById('mathAnswer').value;
-document.getElementById('mathResult').innerHTML=v!==''&&Number(v)===a*b?'<div class="result">✅ Вярно! Браво!</div>':'<div class="result">Опитай отново! Подсказка: умножи '+a+' по '+b+'.</div>';
+ const v=document.getElementById('mathAnswer').value;
+ document.getElementById('mathResult').innerHTML=
+ v!==''&&Number(v)===a*b
+ ?'<div class="result">✅ Вярно! Браво!</div>'
+ :'<div class="result">Опитай отново! Подсказка: умножи '+a+' по '+b+'.</div>';
 }
+
+/* СТОЛИЦИ */
 function capital(v){
-document.getElementById('capitalResult').innerHTML=v==='София'?'<div class="result">✅ Точно така! София е столицата на България.</div>':'<div class="result">❌ Не е това. Опитай отново!</div>';
+ document.getElementById('capitalResult').innerHTML=
+ v==='София'
+ ?'<div class="result">✅ Точно така! София е столицата на България.</div>'
+ :'<div class="result">❌ Не е това. Опитай отново!</div>';
 }
+
+/* ВИКТОРИНА */
 const qs=[
-{q:'Колко е 9 × 6?',a:['42','54','63'],c:1},
-{q:'Коя е столицата на България?',a:['Варна','София','Бургас'],c:1},
-{q:'Коя планета наричаме Червената планета?',a:['Марс','Венера','Юпитер'],c:0},
-{q:'Колко страни има триъгълникът?',a:['Три','Четири','Пет'],c:0},
-{q:'Кой е написал „Под игото“?',a:['Иван Вазов','Елин Пелин','Христо Ботев'],c:0}
+ {q:'Колко е 9 × 6?',a:['42','54','63'],c:1},
+ {q:'Коя е столицата на България?',a:['Варна','София','Бургас'],c:1},
+ {q:'Коя планета наричаме Червената планета?',a:['Марс','Венера','Юпитер'],c:0},
+ {q:'Колко страни има триъгълникът?',a:['Три','Четири','Пет'],c:0},
+ {q:'Кой е написал „Под игото“?',a:['Иван Вазов','Елин Пелин','Христо Ботев'],c:0}
 ];
+
 function buildQuiz(){
-let h='';
-qs.forEach((q,i)=>{
-h+='<div class="question"><b>'+(i+1)+'. '+q.q+'</b>';
-q.a.forEach((x,j)=>h+='<label style="display:block;margin:10px 0"><input style="width:auto" type="radio" name="q'+i+'" value="'+j+'"> '+x+'</label>');
-h+='</div>';
-});
-h+='<button class="action" onclick="gradeQuiz()">Провери резултата</button><div id="quizResult"></div>';
-document.getElementById('quizBox').innerHTML=h;
+ let h='';
+ qs.forEach((q,i)=>{
+  h+='<div class="question"><b>'+(i+1)+'. '+q.q+'</b>';
+  q.a.forEach((x,j)=>{
+   h+='<label style="display:block;margin:10px 0"><input style="width:auto;display:inline-block" type="radio" name="q'+i+'" value="'+j+'"> '+x+'</label>';
+  });
+  h+='</div>';
+ });
+ h+='<button class="action" onclick="gradeQuiz()">Провери резултата</button><div id="quizResult"></div>';
+ document.getElementById('quizBox').innerHTML=h;
 }
+
 function gradeQuiz(){
-let score=0;
-qs.forEach((q,i)=>{
-let x=document.querySelector('input[name="q'+i+'"]:checked');
-if(x&&Number(x.value)===q.c)score++;
-});
-document.getElementById('quizResult').innerHTML='<div class="result">Резултат: '+score+' от '+qs.length+'. '+(score===qs.length?'Перфектно! 🏆':'Продължавай да упражняваш знанията си! 💪')+'</div>';
+ let score=0;
+ qs.forEach((q,i)=>{
+  const x=document.querySelector('input[name="q'+i+'"]:checked');
+  if(x&&Number(x.value)===q.c)score++;
+ });
+ document.getElementById('quizResult').innerHTML=
+ '<div class="result">Резултат: '+score+' от '+qs.length+'. '+
+ (score===qs.length?'Перфектно! 🏆':'Продължавай да упражняваш знанията си! 💪')+'</div>';
 }
+
+/* ПОМОЩНИ ФУНКЦИИ ЗА РАБОТНИТЕ ЛИСТОВЕ */
+function escapeHTML(value){
+ return String(value).replace(/[&<>"']/g,function(ch){
+  return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];
+ });
+}
+
+function rand(min,max){
+ return Math.floor(Math.random()*(max-min+1))+min;
+}
+
+/* Задачи по предмет и възрастова група */
+function taskBank(subject,grade,topic){
+ const band=grade<=4?'young':grade<=7?'middle':'upper';
+ const theme=topic||'избраната тема';
+
+ const banks={
+ 'Математика':{
+ young:[
+  ()=>{let x=rand(1,50),y=rand(1,50);return 'Пресметни: '+x+' + '+y+' = ____.';},
+  ()=>{let x=rand(20,90),y=rand(1,Math.min(19,x));return 'Пресметни: '+x+' − '+y+' = ____.';},
+  ()=>{let x=rand(2,10),y=rand(2,10);return 'Пресметни: '+x+' × '+y+' = ____.';},
+  ()=>{let x=rand(2,10),y=rand(2,10);return 'Колко е '+(x*y)+' : '+x+'?';},
+  ()=> 'Начертай триъгълник и запиши колко страни и върха има.'
+ ],
+ middle:[
+  ()=>{let x=rand(12,99),y=rand(2,9);return 'Пресметни: '+x+' × '+y+' = ____.';},
+  ()=>{let d=rand(3,12),n=rand(1,d-1);return 'Посочи числителя и знаменателя на дробта '+n+'/'+d+'.';},
+  ()=>{let x=rand(2,20)*4;return 'Намери 25% от '+x+'.';},
+  ()=>{let x=rand(3,15),y=rand(3,15);return 'Правоъгълник има страни '+x+' cm и '+y+' cm. Намери обиколката му.';},
+  ()=> 'Състави числов израз по темата „'+theme+'“ и го пресметни.'
+ ],
+ upper:[
+  ()=>{let x=rand(2,12),y=rand(2,20);return 'Реши уравнението: '+x+'x + '+y+' = '+(x*5+y)+'.';},
+  ()=>{let x=rand(2,10),y=rand(1,10);return 'Опрости израза: '+x+'a + '+y+'a − '+x+'a.';},
+  ()=>{let x=rand(2,12);return 'Намери положителното x, ако x² = '+(x*x)+'.';},
+  ()=> 'Състави и реши задача с проценти по темата „'+theme+'“. Покажи стъпките.',
+  ()=> 'Обясни с пример как се решава линейно уравнение.'
+ ]},
+
+ 'Български език':{
+ young:[
+  ()=> 'Напиши пет съществителни имена по темата „'+theme+'“.',
+  ()=> 'Състави три изречения и подчертай глаголите.',
+  ()=> 'Напиши дума, която започва с „Б“, и я използвай в изречение.',
+  ()=> 'Напиши кратко изречение и постави правилно главната буква и точката.',
+  ()=> 'Запиши три прилагателни имена и думите, които описват.'
+ ],
+ middle:[
+  ()=> 'Открий подлога и сказуемото в изречението: „Децата четат интересна книга“.',
+  ()=> 'Напиши пет синонима или антонима и ги означи.',
+  ()=> 'Състави кратък текст по темата „'+theme+'“ от 4–5 изречения.',
+  ()=> 'Определи частите на речта в изречението: „Малкото куче тича бързо“.',
+  ()=> 'Напиши две изречения и провери правописа и пунктуацията.'
+ ],
+ upper:[
+  ()=> 'Направи синтактичен разбор на сложно изречение по избор.',
+  ()=> 'Напиши кратък аргументиран текст по темата „'+theme+'“ с теза и два аргумента.',
+  ()=> 'Дай пример за метафора, сравнение и олицетворение и обясни значенията им.',
+  ()=> 'Посочи правописно правило и дай два примера.',
+  ()=> 'Редактирай кратък текст, като обясниш три поправки.'
+ ]},
+
+ 'История':{
+ young:[
+  ()=> 'Избери историческа личност по темата „'+theme+'“ и запиши три факта за нея.',
+  ()=> 'Подреди три исторически събития по време.',
+  ()=> 'Обясни какво е исторически източник и дай два примера.',
+  ()=> 'Направи времева линия с три събития.',
+  ()=> 'Запиши две причини и една последица от историческо събитие.'
+ ],
+ middle:[
+  ()=> 'Посочи причините и последиците на важно събитие по темата „'+theme+'“.',
+  ()=> 'Сравни две исторически личности по две прилики и две разлики.',
+  ()=> 'Направи времева линия с четири дати по темата „'+theme+'“.',
+  ()=> 'Обясни как исторически източник помага да разберем миналото.',
+  ()=> 'Опиши ролята на един владетел или историческа институция.'
+ ],
+ upper:[
+  ()=> 'Анализирай причините и дългосрочните последици на събитие по темата „'+theme+'“.',
+  ()=> 'Сравни два исторически източника по автор, време, цел и информация.',
+  ()=> 'Напиши аргументиран отговор: защо събитието е важно?',
+  ()=> 'Разграничи непосредствените и дългосрочните причини за събитие.',
+  ()=> 'Подреди пет ключови събития и обясни връзката между тях.'
+ ]},
+
+ 'География':{
+ young:[
+  ()=> 'Назови три държави и техните столици.',
+  ()=> 'Запиши четирите основни посоки на света.',
+  ()=> 'Назови три природни обекта и обясни какво представляват.',
+  ()=> 'Избери континент и запиши три факта за него.',
+  ()=> 'Обясни разликата между планина, равнина и долина.'
+ ],
+ middle:[
+  ()=> 'Намери на карта три обекта по темата „'+theme+'“ и опиши къде се намират.',
+  ()=> 'Обясни как географската ширина влияе върху климата.',
+  ()=> 'Сравни две държави по местоположение, релеф и население.',
+  ()=> 'Посочи две причини и две последици от природно явление.',
+  ()=> 'Обясни какво показват мащабът и легендата на географската карта.'
+ ],
+ upper:[
+  ()=> 'Анализирай как местоположението влияе върху икономиката на държава.',
+  ()=> 'Сравни два региона по климат, население и стопанство.',
+  ()=> 'Обясни връзката между природните ресурси и разположението на населението.',
+  ()=> 'Посочи данни, необходими за анализ на населението.',
+  ()=> 'Направи географски анализ на проблем по темата „'+theme+'“.'
+ ]},
+
+ 'Човекът и природата':{
+ young:[
+  ()=> 'Назови три живи и три неживи компонента на природата.',
+  ()=> 'Опиши кръговрата на водата с три стъпки.',
+  ()=> 'Обясни от какво се нуждаят растенията, за да растат.',
+  ()=> 'Запиши три начина за опазване на природата.',
+  ()=> 'Избери животно и опиши средата, в която живее.'
+ ],
+ middle:[
+  ()=> 'Обясни разликата между смес и чисто вещество.',
+  ()=> 'Опиши как се предава енергия в хранителна верига.',
+  ()=> 'Посочи пример за физична и за химична промяна.',
+  ()=> 'Обясни ролята на една система в човешкото тяло.',
+  ()=> 'Формулирай хипотеза за природно явление и предложи безопасна проверка.'
+ ],
+ upper:[
+  ()=> 'Обясни причинно-следствена връзка в екосистема по темата „'+theme+'“.',
+  ()=> 'Сравни възобновяем и невъзобновяем енергиен източник.',
+  ()=> 'Опиши променливите в научен експеримент.',
+  ()=> 'Обясни как човешката дейност влияе върху биоразнообразието.',
+  ()=> 'Напиши научно обяснение на явление, като използваш точни понятия.'
+ ]},
+
+ 'Английски език':{
+ young:[
+  ()=> 'Напиши пет английски думи по темата „'+theme+'“ и ги преведи.',
+  ()=> 'Попълни: I ___ a student. (am / is / are)',
+  ()=> 'Напиши три изречения за себе си на английски.',
+  ()=> 'Преведи на английски: „Добро утро. Как си?“',
+  ()=> 'Напиши числата от 1 до 10 на английски.'
+ ],
+ middle:[
+  ()=> 'Попълни правилната форма: Yesterday, I ___ (play) football.',
+  ()=> 'Напиши пет изречения на английски по темата „'+theme+'“.',
+  ()=> 'Преведи кратко изречение на английски и после обратно на български.',
+  ()=> 'Състави въпрос и отрицателно изречение в Present Simple.',
+  ()=> 'Напиши пет прилагателни на английски и използвай две в изречения.'
+ ],
+ upper:[
+  ()=> 'Напиши кратък текст на английски по темата „'+theme+'“ от 80–100 думи.',
+  ()=> 'Сравни Present Perfect и Past Simple с по два примера.',
+  ()=> 'Пренапиши подходящо изречение в пасивен залог.',
+  ()=> 'Напиши аргументиран абзац на английски по темата „'+theme+'“.',
+  ()=> 'Създай пет въпроса на английски и напиши примерни отговори.'
+ ]}
+ };
+
+ const bank=banks[subject][band];
+ return bank.map(fn=>fn());
+}
+
 function makeSheet(){
-let sub=document.getElementById('subject').value;
-let topic=document.getElementById('topic').value.trim()||'Общи знания';
-let n=Number(document.getElementById('tasks').value);
-let h='<div class="result"><h3>Работен лист</h3><p><b>Предмет:</b> '+sub+'</p><p><b>Тема:</b> '+topic.replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</p><ol>';
-for(let i=1;i<=n;i++)h+='<li style="margin:14px 0">Запиши задача или въпрос по темата: '+topic.replace(/</g,'&lt;').replace(/>/g,'&gt;')+'.<br>Отговор: __________________________</li>';
-h+='</ol><p>Име: __________________ Дата: __________</p></div>';
-document.getElementById('sheetResult').innerHTML=h;
+ const grade=Number(document.getElementById('sheetGrade').value);
+ const subject=document.getElementById('subject').value;
+ const topic=document.getElementById('topic').value.trim();
+ const count=Number(document.getElementById('tasks').value);
+
+ let tasks=taskBank(subject,grade,topic);
+
+ /* Разбъркване на задачите */
+ tasks.sort(()=>Math.random()-0.5);
+
+ let output='';
+
+ for(let i=0;i<count;i++){
+  let task=tasks[i%tasks.length];
+
+  if(i>=tasks.length){
+   task+=' Използвай различен пример от предишните задачи.';
+  }
+
+  output+=
+   '<div class="sheet-task">'+
+   '<b>'+(i+1)+'. '+escapeHTML(task)+'</b>'+
+   '<div class="sheet-answer"></div>'+
+   '<div class="sheet-answer"></div>'+
+   '</div>';
+ }
+
+ document.getElementById('sheetResult').innerHTML=
+ '<div class="sheet-paper">'+
+ '<h3>📚 РАБОТЕН ЛИСТ</h3>'+
+ '<p><b>Предмет:</b> '+escapeHTML(subject)+'</p>'+
+ '<p><b>Клас:</b> '+grade+'. клас</p>'+
+ '<p><b>Тема:</b> '+escapeHTML(topic||'Общи упражнения')+'</p>'+
+ '<div class="sheet-meta">'+
+ '<span>Име: ________________________</span>'+
+ '<span>Дата: ______________</span>'+
+ '</div><hr>'+output+
+ '<p style="margin-top:28px"><b>Самооценка:</b></p>'+
+ '<p>□ Беше лесно &nbsp;&nbsp; □ Беше средно &nbsp;&nbsp; □ Искам още упражнения</p>'+
+ '</div>';
 }
+
+function printSheet(){
+ if(!document.getElementById('sheetResult').innerHTML.trim()){
+  makeSheet();
+ }
+ window.print();
+}
+
+/* ИНТЕРАКТИВНА КАРТА */
+let schoolMap=null;
+
+const places={
+ bulgaria:{
+  coords:[42.7,25.4],zoom:6,
+  title:'България 🇧🇬',
+  info:'Столица: София. България е в Югоизточна Европа и е член на Европейския съюз.'
+ },
+ sofia:{
+  coords:[42.6977,23.3219],zoom:10,
+  title:'София 🇧🇬',
+  info:'София е столицата и най-големият град на България.'
+ },
+ pazardzhik:{
+  coords:[42.1928,24.3336],zoom:11,
+  title:'Пазарджик 🇧🇬',
+  info:'Пазарджик е град в Южна България, разположен в Горнотракийската низина.'
+ },
+ greece:{
+  coords:[39.0742,21.8243],zoom:6,
+  title:'Гърция 🇬🇷',
+  info:'Столица: Атина. Гърция е известна с древната си история и множеството острови.'
+ },
+ athens:{
+  coords:[37.9838,23.7275],zoom:10,
+  title:'Атина 🇬🇷',
+  info:'Атина е столицата на Гърция и важен център на древногръцката цивилизация.'
+ },
+ italy:{
+  coords:[41.8719,12.5674],zoom:5,
+  title:'Италия 🇮🇹',
+  info:'Столица: Рим. Италия се намира в Южна Европа.'
+ },
+ rome:{
+  coords:[41.9028,12.4964],zoom:10,
+  title:'Рим 🇮🇹',
+  info:'Рим е столицата на Италия. В града се намира Колизеумът.'
+ },
+ france:{
+  coords:[46.2276,2.2137],zoom:5,
+  title:'Франция 🇫🇷',
+  info:'Столица: Париж. Франция се намира в Западна Европа.'
+ },
+ paris:{
+  coords:[48.8566,2.3522],zoom:10,
+  title:'Париж 🇫🇷',
+  info:'Париж е столицата на Франция и е известен с Айфеловата кула.'
+ },
+ uk:{
+  coords:[55.3781,-3.436],zoom:5,
+  title:'Обединеното кралство 🇬🇧',
+  info:'Столица: Лондон. Държавата се намира край северозападния бряг на Европа.'
+ },
+ london:{
+  coords:[51.5072,-0.1276],zoom:10,
+  title:'Лондон 🇬🇧',
+  info:'Лондон е столицата на Обединеното кралство.'
+ },
+ egypt:{
+  coords:[26.8206,30.8025],zoom:5,
+  title:'Египет 🇪🇬',
+  info:'Столица: Кайро. Египет се намира в Североизточна Африка.'
+ },
+ cairo:{
+  coords:[30.0444,31.2357],zoom:9,
+  title:'Кайро 🇪🇬',
+  info:'Кайро е столицата на Египет и се намира близо до река Нил.'
+ },
+ japan:{
+  coords:[36.2048,138.2529],zoom:5,
+  title:'Япония 🇯🇵',
+  info:'Столица: Токио. Япония е островна държава в Източна Азия.'
+ },
+ tokyo:{
+  coords:[35.6762,139.6503],zoom:9,
+  title:'Токио 🇯🇵',
+  info:'Токио е столицата на Япония и един от най-големите градски центрове в света.'
+ },
+ usa:{
+  coords:[39.8283,-98.5795],zoom:4,
+  title:'САЩ 🇺🇸',
+  info:'Столица: Вашингтон. Съединените американски щати се намират в Северна Америка.'
+ },
+ washington:{
+  coords:[38.9072,-77.0369],zoom:9,
+  title:'Вашингтон 🇺🇸',
+  info:'Вашингтон, окръг Колумбия, е столицата на Съединените американски щати.'
+ }
+};
+
+function initMap(){
+ if(schoolMap)return;
+
+ if(!window.L){
+  document.getElementById('map').innerHTML=
+  'Картата не може да се зареди. Провери интернет връзката и презареди страницата.';
+  return;
+ }
+
+ schoolMap=L.map('map').setView([25,15],2);
+
+ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+  maxZoom:19,
+  attribution:'&copy; OpenStreetMap contributors'
+ }).addTo(schoolMap);
+
+ Object.keys(places).forEach(function(key){
+  const p=places[key];
+
+  L.marker(p.coords)
+   .addTo(schoolMap)
+   .bindPopup('<b>'+escapeHTML(p.title)+'</b><br>'+escapeHTML(p.info));
+ });
+}
+
+function goToPlace(key){
+ initMap();
+
+ if(!schoolMap)return;
+
+ const presets={
+  world:{coords:[20,0],zoom:2},
+  europe:{coords:[50,15],zoom:4},
+  asia:{coords:[30,100],zoom:3}
+ };
+
+ const p=presets[key]||places[key];
+
+ if(!p)return;
+
+ schoolMap.setView(p.coords,p.zoom);
+
+ if(places[key]){
+  L.popup()
+   .setLatLng(p.coords)
+   .setContent('<b>'+escapeHTML(p.title)+'</b><br>'+escapeHTML(p.info))
+   .openOn(schoolMap);
+ }
+}
+
+/* ИИ ПОМОЩНИК: демонстрационни отговори */
 function askAI(){
-let q=document.getElementById('aiQuestion').value.trim();
-let answer='Напиши въпрос, за да ти помогна.';
-if(q){
-let s=q.toLowerCase();
-if(s.includes('дроб'))answer='Дробта показва част от едно цяло. Например 1/2 означава една от две равни части. В 3/4 числото 3 е числител, а 4 е знаменател.';
-else if(s.includes('българ')&&s.includes('столиц'))answer='Столицата на България е София.';
-else if(s.includes('древна гърция'))answer='Древна Гърция е цивилизация, известна с полисите, митологията, философията и развитието на демокрацията в Атина.';
-else if(s.includes('планет'))answer='В Слънчевата система има осем планети: Меркурий, Венера, Земя, Марс, Юпитер, Сатурн, Уран и Нептун.';
-else answer='Това е демонстрационният режим на УчиУм. За истински ИИ отговори трябва да свържем сайта с ИИ услуга. Междувременно опитай да зададеш въпрос за дроби, столицата на България, планетите или Древна Гърция.';
+ const q=document.getElementById('aiQuestion').value.trim();
+ let answer='Напиши въпрос, за да ти помогна.';
+
+ if(q){
+  const s=q.toLowerCase();
+
+  if(s.includes('дроб')){
+   answer='Дробта показва част от едно цяло. Например 1/2 означава една от две равни части. В 3/4 числото 3 е числител, а 4 е знаменател.';
+  }else if(s.includes('българ')&&s.includes('столиц')){
+   answer='Столицата на България е София.';
+  }else if(s.includes('древна гърция')){
+   answer='Древна Гърция е цивилизация, известна с полисите, митологията, философията и развитието на демокрацията в Атина.';
+  }else if(s.includes('планет')){
+   answer='В Слънчевата система има осем планети: Меркурий, Венера, Земя, Марс, Юпитер, Сатурн, Уран и Нептун.';
+  }else{
+   answer='Това е демонстрационният режим на УчиУм. За истински ИИ отговори трябва да свържем сайта с ИИ услуга. Засега можеш да питаш за дроби, столицата на България, планетите или Древна Гърция.';
+  }
+ }
+
+ document.getElementById('aiResult').textContent=answer;
 }
-document.getElementById('aiResult').textContent=answer;
-}
+
+/* Стартираме викторината */
 buildQuiz();
 </script>
 </body>
