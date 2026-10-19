@@ -1,0 +1,200 @@
+
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>УчиУм | Образователна платформа</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f2f5ff;color:#192447}
+header{background:linear-gradient(120deg,#2463eb,#7954e8);color:white;text-align:center;padding:28px 15px}
+header h1{font-size:42px;margin:0 0 8px}
+nav{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;padding:12px;background:white;position:sticky;top:0;box-shadow:0 3px 10px #0001}
+button{border:0;border-radius:11px;padding:12px 16px;cursor:pointer;font-weight:bold;background:#e8edff;color:#244bb3}
+button:hover{filter:brightness(.95)}
+main{max-width:1050px;margin:auto;padding:20px 14px}
+.page{display:none}.page.active{display:block}
+.hero,.card{background:white;padding:22px;border-radius:18px;margin-bottom:16px;box-shadow:0 4px 18px #2233660c}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+.emoji{font-size:36px}
+h2{margin-top:0}
+.action{background:#2864e8;color:white;margin-top:8px}
+input,select,textarea{display:block;width:100%;padding:12px;border:1px solid #cbd5ed;border-radius:10px;margin:10px 0;font:inherit}
+.result{padding:13px;background:#edf8f0;border-radius:10px;margin-top:12px;white-space:pre-wrap}
+.question{background:#f2f5ff;padding:14px;border-radius:12px;margin:12px 0}
+.small{font-size:13px;color:#64748b}
+footer{text-align:center;padding:24px;color:#667085}
+</style>
+</head>
+<body>
+<header>
+<h1>📚 УчиУм</h1>
+<p>Учи, играй и откривай! 🚀</p>
+<p>Образователна платформа за ученици от 1. до 12. клас</p>
+</header>
+<nav>
+<button onclick="page('home')">🏠 Начало</button>
+<button onclick="page('games')">🎮 Игри</button>
+<button onclick="page('quiz')">🧠 Викторина</button>
+<button onclick="page('maps')">🌍 Карти</button>
+<button onclick="page('worksheets')">📝 Работни листове</button>
+<button onclick="page('ai')">🤖 ИИ помощник</button>
+</nav>
+<main>
+<section id="home" class="page active">
+<div class="hero">
+<h2>Добре дошъл в УчиУм! 🎉</h2>
+<p>Ученето може да бъде приключение! Избери клас и започни да откриваш нови знания.</p>
+<label for="grade">Избери своя клас:</label>
+<select id="grade">
+<option>1. клас</option><option>2. клас</option><option>3. клас</option><option>4. клас</option><option>5. клас</option><option>6. клас</option><option selected>7. клас</option><option>8. клас</option><option>9. клас</option><option>10. клас</option><option>11. клас</option><option>12. клас</option>
+</select>
+<button class="action" onclick="welcome()">Започни! ✨</button>
+<div id="welcomeResult"></div>
+</div>
+<div class="grid">
+<div class="card"><div class="emoji">🎮</div><h3>Игри</h3><p>Учи чрез забавни задачи.</p><button onclick="page('games')">Играй</button></div>
+<div class="card"><div class="emoji">🧠</div><h3>Викторини</h3><p>Провери какво знаеш.</p><button onclick="page('quiz')">Отговори</button></div>
+<div class="card"><div class="emoji">📝</div><h3>Работни листове</h3><p>Подготви упражнения.</p><button onclick="page('worksheets')">Създай</button></div>
+</div>
+</section>
+
+<section id="games" class="page">
+<div class="hero"><h2>🎮 Игри за ума</h2><p>Избери правилния отговор!</p></div>
+<div class="card">
+<h3>Игра: Бърза сметка</h3>
+<p id="mathQuestion">Колко е 7 × 8?</p>
+<input id="mathAnswer" placeholder="Твоят отговор" type="number">
+<button class="action" onclick="checkMath()">Провери</button>
+<button onclick="newMath()">Нова задача</button>
+<div id="mathResult"></div>
+</div>
+<div class="card">
+<h3>Игра: Познай столицата</h3>
+<p>Коя е столицата на България?</p>
+<button onclick="capital('София')">София</button>
+<button onclick="capital('Пловдив')">Пловдив</button>
+<button onclick="capital('Варна')">Варна</button>
+<div id="capitalResult"></div>
+</div>
+</section>
+
+<section id="quiz" class="page">
+<div class="hero"><h2>🧠 Викторина</h2><p>Отговори на пет въпроса и виж резултата си.</p></div>
+<div class="card" id="quizBox"></div>
+</section>
+
+<section id="maps" class="page">
+<div class="hero"><h2>🌍 Интерактивен географски кът</h2><p>Избери място, за да научиш повече.</p></div>
+<div class="grid">
+<div class="card"><div class="emoji">🇧🇬</div><h3>България</h3><p>Столица: София. България се намира в Югоизточна Европа.</p></div>
+<div class="card"><div class="emoji">🇬🇷</div><h3>Гърция</h3><p>Столица: Атина. Известна е с древната си история и островите.</p></div>
+<div class="card"><div class="emoji">🇮🇹</div><h3>Италия</h3><p>Столица: Рим. Тук се намира древният Колизеум.</p></div>
+<div class="card"><div class="emoji">🌍</div><h3>Континенти</h3><p>Седемте континента са Азия, Африка, Северна Америка, Южна Америка, Антарктида, Европа и Австралия.</p></div>
+</div>
+<p class="small">Това е учебен кът с факти, а не карта с реално географско мащабиране.</p>
+</section>
+
+<section id="worksheets" class="page">
+<div class="hero"><h2>📝 Работни листове</h2><p>Създай упражнения и ги подготви за печат.</p></div>
+<div class="card">
+<label for="subject">Учебен предмет</label>
+<select id="subject"><option>Математика</option><option>Български език</option><option>История</option><option>География</option><option>Човекът и природата</option><option>Английски език</option></select>
+<label for="topic">Тема на работния лист</label>
+<input id="topic" placeholder="Например: Древна Гърция">
+<label for="tasks">Колко задачи искаш?</label>
+<select id="tasks"><option>5</option><option>10</option><option>15</option></select>
+<button class="action" onclick="makeSheet()">Създай работен лист</button>
+<button onclick="window.print()">🖨️ Печат</button>
+<div id="sheetResult"></div>
+</div>
+</section>
+
+<section id="ai" class="page">
+<div class="hero"><h2>🤖 ИИ помощник</h2><p>Напиши въпрос или тема, по която искаш помощ.</p></div>
+<div class="card">
+<label for="aiQuestion">Твоят въпрос</label>
+<textarea id="aiQuestion" rows="4" placeholder="Например: Обясни ми дробите с лесен пример."></textarea>
+<button class="action" onclick="askAI()">Изпрати въпроса</button>
+<div id="aiResult" class="result">Тук ще се появи отговорът.</div>
+<p class="small">Демонстрационен режим: този помощник използва предварително зададени обяснения, а не свързан онлайн ИИ модел.</p>
+</div>
+</section>
+</main>
+<footer>📚 УчиУм · Учи, играй и откривай!<br><span class="small">Образованието е приключение.</span></footer>
+
+<script>
+function page(id){
+document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+window.scrollTo({top:0,behavior:'smooth'});
+}
+function welcome(){
+document.getElementById('welcomeResult').innerHTML='<div class="result">Страхотно! Избра '+document.getElementById('grade').value+'. Избери игра или викторина и започни! 🎉</div>';
+}
+let a=7,b=8;
+function newMath(){
+a=Math.floor(Math.random()*12)+1;b=Math.floor(Math.random()*12)+1;
+document.getElementById('mathQuestion').textContent='Колко е '+a+' × '+b+'?';
+document.getElementById('mathAnswer').value='';
+document.getElementById('mathResult').textContent='';
+}
+function checkMath(){
+let v=document.getElementById('mathAnswer').value;
+document.getElementById('mathResult').innerHTML=v!==''&&Number(v)===a*b?'<div class="result">✅ Вярно! Браво!</div>':'<div class="result">Опитай отново! Подсказка: умножи '+a+' по '+b+'.</div>';
+}
+function capital(v){
+document.getElementById('capitalResult').innerHTML=v==='София'?'<div class="result">✅ Точно така! София е столицата на България.</div>':'<div class="result">❌ Не е това. Опитай отново!</div>';
+}
+const qs=[
+{q:'Колко е 9 × 6?',a:['42','54','63'],c:1},
+{q:'Коя е столицата на България?',a:['Варна','София','Бургас'],c:1},
+{q:'Коя планета наричаме Червената планета?',a:['Марс','Венера','Юпитер'],c:0},
+{q:'Колко страни има триъгълникът?',a:['Три','Четири','Пет'],c:0},
+{q:'Кой е написал „Под игото“?',a:['Иван Вазов','Елин Пелин','Христо Ботев'],c:0}
+];
+function buildQuiz(){
+let h='';
+qs.forEach((q,i)=>{
+h+='<div class="question"><b>'+(i+1)+'. '+q.q+'</b>';
+q.a.forEach((x,j)=>h+='<label style="display:block;margin:10px 0"><input style="width:auto" type="radio" name="q'+i+'" value="'+j+'"> '+x+'</label>');
+h+='</div>';
+});
+h+='<button class="action" onclick="gradeQuiz()">Провери резултата</button><div id="quizResult"></div>';
+document.getElementById('quizBox').innerHTML=h;
+}
+function gradeQuiz(){
+let score=0;
+qs.forEach((q,i)=>{
+let x=document.querySelector('input[name="q'+i+'"]:checked');
+if(x&&Number(x.value)===q.c)score++;
+});
+document.getElementById('quizResult').innerHTML='<div class="result">Резултат: '+score+' от '+qs.length+'. '+(score===qs.length?'Перфектно! 🏆':'Продължавай да упражняваш знанията си! 💪')+'</div>';
+}
+function makeSheet(){
+let sub=document.getElementById('subject').value;
+let topic=document.getElementById('topic').value.trim()||'Общи знания';
+let n=Number(document.getElementById('tasks').value);
+let h='<div class="result"><h3>Работен лист</h3><p><b>Предмет:</b> '+sub+'</p><p><b>Тема:</b> '+topic.replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</p><ol>';
+for(let i=1;i<=n;i++)h+='<li style="margin:14px 0">Запиши задача или въпрос по темата: '+topic.replace(/</g,'&lt;').replace(/>/g,'&gt;')+'.<br>Отговор: __________________________</li>';
+h+='</ol><p>Име: __________________ Дата: __________</p></div>';
+document.getElementById('sheetResult').innerHTML=h;
+}
+function askAI(){
+let q=document.getElementById('aiQuestion').value.trim();
+let answer='Напиши въпрос, за да ти помогна.';
+if(q){
+let s=q.toLowerCase();
+if(s.includes('дроб'))answer='Дробта показва част от едно цяло. Например 1/2 означава една от две равни части. В 3/4 числото 3 е числител, а 4 е знаменател.';
+else if(s.includes('българ')&&s.includes('столиц'))answer='Столицата на България е София.';
+else if(s.includes('древна гърция'))answer='Древна Гърция е цивилизация, известна с полисите, митологията, философията и развитието на демокрацията в Атина.';
+else if(s.includes('планет'))answer='В Слънчевата система има осем планети: Меркурий, Венера, Земя, Марс, Юпитер, Сатурн, Уран и Нептун.';
+else answer='Това е демонстрационният режим на УчиУм. За истински ИИ отговори трябва да свържем сайта с ИИ услуга. Междувременно опитай да зададеш въпрос за дроби, столицата на България, планетите или Древна Гърция.';
+}
+document.getElementById('aiResult').textContent=answer;
+}
+buildQuiz();
+</script>
+</body>
+</html>
