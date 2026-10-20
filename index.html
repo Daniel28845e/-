@@ -2,1094 +2,986 @@
 <!DOCTYPE html>
 <html lang="bg">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>УчиУм | Платформа за учители</title>
-
-  <style>
-    :root {
-      --background: #0b1020;
-      --panel: #151d34;
-      --border: #303b5c;
-      --text: #f4f5ff;
-      --muted: #aab4d0;
-      --purple: #9382ff;
-      --cyan: #4ad9e8;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      background:
-        radial-gradient(ellipse at top right, #30215a, transparent 40%),
-        var(--background);
-      color: var(--text);
-      font-family: Arial, sans-serif;
-    }
-
-    button, input, select, textarea {
-      font: inherit;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    .layout {
-      display: grid;
-      grid-template-columns: 245px minmax(0, 1fr);
-      min-height: 100vh;
-    }
-
-    aside {
-      padding: 22px 15px;
-      background: #0c1224;
-      border-right: 1px solid var(--border);
-    }
-
-    .logo {
-      padding: 8px 12px 28px;
-      font-size: 27px;
-      font-weight: bold;
-      letter-spacing: -1px;
-    }
-
-    .logo span {
-      color: var(--cyan);
-    }
-
-    .logo small {
-      display: block;
-      color: var(--muted);
-      font-size: 10px;
-      letter-spacing: 2px;
-      margin-top: 5px;
-    }
-
-    nav {
-      display: grid;
-      gap: 7px;
-    }
-
-    nav button {
-      padding: 12px;
-      border: 0;
-      border-radius: 12px;
-      text-align: left;
-      color: var(--muted);
-      background: transparent;
-    }
-
-    nav button:hover,
-    nav button.active {
-      color: white;
-      background: linear-gradient(
-        100deg,
-        #8c7aff40,
-        #4ad9e820
-      );
-    }
-
-    main {
-      width: 100%;
-      max-width: 1500px;
-      margin: auto;
-      padding: 30px;
-      min-width: 0;
-    }
-
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 15px;
-      margin-bottom: 27px;
-    }
-
-    h1 {
-      font-size: clamp(27px, 3vw, 39px);
-      margin: 7px 0;
-      letter-spacing: -1px;
-    }
-
-    h2 {
-      margin-top: 0;
-    }
-
-    .kicker {
-      color: var(--cyan);
-      font-size: 12px;
-      font-weight: bold;
-      letter-spacing: 2px;
-    }
-
-    .muted {
-      color: var(--muted);
-    }
-
-    .primary,
-    .secondary {
-      padding: 11px 15px;
-      border-radius: 11px;
-      font-weight: bold;
-    }
-
-    .primary {
-      color: white;
-      border: 0;
-      background: linear-gradient(110deg, var(--purple), #637eff);
-    }
-
-    .secondary {
-      color: white;
-      border: 1px solid var(--border);
-      background: #1c2743;
-    }
-
-    .hero {
-      padding: 36px;
-      border-radius: 23px;
-      border: 1px solid #4b477d;
-      background: linear-gradient(120deg, #282052, #17374a);
-      margin-bottom: 25px;
-    }
-
-    .hero h2 {
-      font-size: clamp(28px, 4vw, 42px);
-      line-height: 1.2;
-      margin: 12px 0;
-    }
-
-    .hero p {
-      max-width: 650px;
-      color: #d0d5ec;
-      line-height: 1.7;
-    }
-
-    .row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 20px;
-    }
-
-    .stats,
-    .tools {
-      display: grid;
-      gap: 14px;
-    }
-
-    .stats {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      margin: 22px 0 32px;
-    }
-
-    .stat,
-    .card,
-    .workspace,
-    .tool {
-      background: linear-gradient(145deg, #17213a, #11182b);
-      border: 1px solid var(--border);
-      border-radius: 17px;
-      padding: 20px;
-    }
-
-    .stat strong {
-      display: block;
-      font-size: 29px;
-      margin: 8px 0;
-    }
-
-    .tools {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-    .tool {
-      cursor: pointer;
-      transition: transform 0.18s, border-color 0.18s;
-    }
-
-    .tool:hover {
-      transform: translateY(-3px);
-      border-color: var(--purple);
-    }
-
-    .tool .emoji {
-      font-size: 29px;
-    }
-
-    .tool h3 {
-      margin: 9px 0 5px;
-    }
-
-    .tool p {
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .view {
-      display: none;
-    }
-
-    .view.active {
-      display: block;
-    }
-
-    .workspace {
-      padding: 25px;
-    }
-
-    .formgrid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 15px;
-    }
-
-    .field {
-      display: grid;
-      gap: 7px;
-    }
-
-    .field label {
-      font-size: 13px;
-      font-weight: bold;
-    }
-
-    .field input,
-    .field select,
-    .field textarea {
-      width: 100%;
-      padding: 12px;
-      color: white;
-      background: #0b1224;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-    }
-
-    .field textarea {
-      min-height: 120px;
-      resize: vertical;
-    }
-
-    .full {
-      grid-column: 1 / -1;
-    }
-
-    .result {
-      display: none;
-      margin-top: 20px;
-      padding: 20px;
-      background: #0c1427;
-      border: 1px dashed #56628a;
-      border-radius: 14px;
-    }
-
-    .result.show {
-      display: block;
-    }
-
-    .result li {
-      margin: 12px 0;
-    }
-
-    .notice {
-      padding: 14px;
-      border: 1px solid #51498b;
-      border-radius: 12px;
-      margin-top: 18px;
-      color: #dedbff;
-    }
-
-    footer {
-      color: #7f8aab;
-      font-size: 12px;
-      margin-top: 32px;
-      text-align: center;
-    }
-
-    @media (max-width: 1000px) {
-      .layout {
-        grid-template-columns: 1fr;
-      }
-
-      aside {
-        border-right: 0;
-        border-bottom: 1px solid var(--border);
-      }
-
-      nav {
-        display: flex;
-        overflow-x: auto;
-      }
-
-      nav button {
-        white-space: nowrap;
-      }
-
-      .stats {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .tools {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
-
-    @media (max-width: 600px) {
-      main {
-        padding: 17px 12px;
-      }
-
-      .hero {
-        padding: 23px;
-      }
-
-      .tools,
-      .formgrid {
-        grid-template-columns: 1fr;
-      }
-
-      .full {
-        grid-column: auto;
-      }
-    }
-
-    @media print {
-      body {
-        background: white;
-        color: black;
-      }
-
-      aside,
-      header,
-      footer,
-      .no-print {
-        display: none !important;
-      }
-
-      main {
-        padding: 0;
-      }
-
-      .view {
-        display: none !important;
-      }
-
-      .view.active {
-        display: block !important;
-      }
-
-      .workspace,
-      .result {
-        background: white;
-        color: black;
-        border: 0;
-      }
-
-      .result.show {
-        display: block;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>УчиУм | Образователна работилница</title>
+<style>
+:root{--bg:#090d1a;--sidebar:#0c1224;--panel:#131b30;--panel2:#18233b;--border:#303c5d;--text:#f5f6ff;--muted:#a9b5d2;--a:#9a6bff;--b:#3bd9e8;--c:#ff5fbc;--d:#70f0b0;--glow:0 0 28px color-mix(in srgb,var(--a) 18%,transparent);--fontScale:1}
+*{box-sizing:border-box}
+html{font-size:calc(16px * var(--fontScale));scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;min-height:100vh;line-height:1.5}
+body.effects:before{content:"";position:fixed;inset:-20%;pointer-events:none;z-index:-1;background:radial-gradient(ellipse at 80% 10%,color-mix(in srgb,var(--a) 20%,transparent),transparent 35%),radial-gradient(ellipse at 20% 80%,color-mix(in srgb,var(--b) 14%,transparent),transparent 32%),radial-gradient(ellipse at 70% 75%,color-mix(in srgb,var(--c) 10%,transparent),transparent 30%);animation:drift 16s ease-in-out infinite alternate}
+@keyframes drift{from{transform:translate3d(-1%,0,0) rotate(0)}to{transform:translate3d(1%,1%,0) rotate(3deg)}}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;transition:transform .18s,border-color .18s,filter .18s}
+button:hover{filter:brightness(1.08)}
+button:active{transform:scale(.98)}
+:focus-visible{outline:2px solid var(--b);outline-offset:3px}
+.layout{display:grid;grid-template-columns:255px minmax(0,1fr);min-height:100vh}
+.sidebar{position:sticky;top:0;height:100vh;overflow:auto;padding:22px 14px;background:color-mix(in srgb,var(--sidebar) 92%,transparent);border-right:1px solid var(--border);backdrop-filter:blur(18px);z-index:5}
+.logo{padding:6px 12px 24px;font-size:1.75rem;font-weight:900;letter-spacing:-1.2px}
+.logo span{background:linear-gradient(100deg,var(--b),var(--a),var(--c));background-clip:text;color:transparent}
+.logo small{display:block;color:var(--muted);font-size:.62rem;letter-spacing:2px;margin-top:5px;font-weight:700}
+.nav-label{padding:14px 12px 5px;color:var(--muted);font-size:.68rem;letter-spacing:1.6px;text-transform:uppercase}
+.nav{display:grid;gap:5px}
+.nav button{border:1px solid transparent;background:transparent;color:var(--muted);text-align:left;padding:11px 12px;border-radius:12px;display:flex;gap:10px;align-items:center}
+.nav button.active,.nav button:hover{color:var(--text);border-color:color-mix(in srgb,var(--a) 50%,var(--border));background:linear-gradient(100deg,color-mix(in srgb,var(--a) 22%,transparent),color-mix(in srgb,var(--b) 9%,transparent));box-shadow:inset 3px 0 var(--a)}
+.side-note{margin:24px 5px 0;padding:13px;border:1px solid var(--border);border-radius:13px;color:var(--muted);font-size:.78rem}
+.main{width:100%;max-width:1600px;margin:0 auto;padding:28px clamp(14px,3vw,40px);min-width:0}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:25px}
+.eyebrow{font-size:.72rem;font-weight:800;letter-spacing:2px;color:var(--b);text-transform:uppercase}
+h1{font-size:clamp(1.8rem,3vw,2.6rem);letter-spacing:-1.2px;line-height:1.15;margin:7px 0}
+h2{margin:0 0 12px;font-size:1.45rem;letter-spacing:-.4px}
+h3{margin:8px 0;font-size:1.06rem}
+p{margin:8px 0}
+.muted{color:var(--muted)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:11px;border:1px solid var(--border);font-weight:750;color:var(--text);background:var(--panel2);text-decoration:none}
+.btn.primary{border:0;background:linear-gradient(110deg,var(--a),color-mix(in srgb,var(--b) 72%,var(--a)));box-shadow:var(--glow)}
+.btn.danger{border-color:#8e4058;background:#482033}
+.btn.small{padding:7px 10px;font-size:.85rem}
+.hero{padding:clamp(22px,4vw,42px);border-radius:24px;border:1px solid color-mix(in srgb,var(--a) 65%,var(--border));background:linear-gradient(120deg,color-mix(in srgb,var(--a) 22%,var(--panel)),color-mix(in srgb,var(--b) 13%,var(--panel)));box-shadow:var(--glow);position:relative;overflow:hidden}
+.hero:after{content:"✦";position:absolute;right:5%;top:6%;font-size:clamp(4rem,10vw,9rem);color:color-mix(in srgb,var(--b) 25%,transparent);pointer-events:none}
+.hero h2{font-size:clamp(2rem,4vw,3.4rem);max-width:760px;line-height:1.08;margin:13px 0}
+.hero p{max-width:700px;color:var(--muted);line-height:1.75}
+.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:18px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin:20px 0 30px}
+.stat,.card,.workspace,.tool,.setting-card{background:linear-gradient(145deg,var(--panel),color-mix(in srgb,var(--panel) 75%,var(--bg)));border:1px solid var(--border);border-radius:17px;padding:18px;min-width:0}
+.stat strong{display:block;font-size:2rem;margin:5px 0}
+.stat .symbol{font-size:1.2rem}
+.tools{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.tool{cursor:pointer;transition:transform .2s,border-color .2s,box-shadow .2s}
+.tool:hover{transform:translateY(-3px);border-color:var(--a);box-shadow:var(--glow)}
+.emoji{font-size:1.8rem}
+.tool p{color:var(--muted);font-size:.9rem}
+.view{display:none}
+.view.active{display:block;animation:fadeIn .24s ease}
+@keyframes fadeIn{from{opacity:.3;transform:translateY(5px)}to{opacity:1;transform:none}}
+.workspace{padding:clamp(17px,3vw,27px)}
+.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:18px}
+.field{display:grid;gap:7px;min-width:0}
+.field label{font-size:.83rem;font-weight:750}
+.field input,.field select,.field textarea,.search{width:100%;padding:11px 12px;color:var(--text);background:color-mix(in srgb,var(--bg) 70%,var(--panel));border:1px solid var(--border);border-radius:10px;min-width:0}
+.field select option{background:var(--panel);color:var(--text)}
+.field textarea{min-height:115px;resize:vertical}
+.full{grid-column:1/-1}
+.result{display:none;margin-top:20px;padding:20px;background:color-mix(in srgb,var(--bg) 65%,var(--panel));border:1px dashed color-mix(in srgb,var(--b) 50%,var(--border));border-radius:14px;overflow-wrap:anywhere}
+.result.show{display:block}
+.result li{margin:10px 0}
+.notice{padding:13px 15px;border:1px solid color-mix(in srgb,var(--a) 55%,var(--border));border-radius:12px;margin-top:17px;color:var(--muted);font-size:.9rem}
+.list{display:grid;gap:12px;margin-top:14px}
+.material-card{padding:16px;border:1px solid var(--border);background:var(--panel);border-radius:14px}
+.material-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap}
+.material-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+.pill{display:inline-flex;padding:3px 9px;border-radius:999px;background:color-mix(in srgb,var(--a) 20%,var(--panel));color:var(--text);font-size:.75rem}
+.empty{padding:28px;text-align:center;border:1px dashed var(--border);border-radius:14px;color:var(--muted)}
+.theme-grid,.palette-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:12px 0 20px}
+.theme-choice,.palette-choice{padding:13px;border:1px solid var(--border);background:var(--panel);color:var(--text);border-radius:13px;text-align:left}
+.theme-choice.active,.palette-choice.active{border-color:var(--b);box-shadow:0 0 0 1px var(--b)}
+.swatches{display:flex;gap:5px;margin-bottom:8px}
+.swatches i{display:block;width:18px;height:18px;border-radius:50%}
+.setting-row{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;padding:14px 0;border-bottom:1px solid var(--border)}
+.setting-row:last-child{border-bottom:0}
+.checkline{display:flex;gap:9px;align-items:center}
+.checkline input{accent-color:var(--a);width:18px;height:18px}
+.mobile-menu{display:none}
+.footer{color:var(--muted);font-size:.75rem;margin-top:30px;text-align:center}
+.toast{position:fixed;right:20px;bottom:20px;background:var(--panel2);border:1px solid var(--b);padding:12px 16px;border-radius:12px;box-shadow:var(--glow);z-index:20;display:none;max-width:min(400px,calc(100vw - 40px))}
+.toast.show{display:block;animation:fadeIn .2s ease}
+.light-theme{--bg:#f3f5ff;--sidebar:#ffffff;--panel:#ffffff;--panel2:#edf0ff;--border:#d5dbef;--text:#202643;--muted:#606b88}
+.contrast-theme{--bg:#000;--sidebar:#050505;--panel:#101010;--panel2:#171717;--border:#777;--text:#fff;--muted:#ddd}
+.aurora-theme body{}
+.glass-theme .stat,.glass-theme .card,.glass-theme .workspace,.glass-theme .tool,.glass-theme .setting-card{backdrop-filter:blur(16px);background:color-mix(in srgb,var(--panel) 75%,transparent)}
+@media(max-width:1050px){.layout{grid-template-columns:1fr}.sidebar{position:relative;height:auto;padding:12px;border-right:0;border-bottom:1px solid var(--border)}.logo{padding:4px 8px 12px}.nav-label,.side-note{display:none}.nav{display:flex;overflow-x:auto;padding-bottom:4px}.nav button{white-space:nowrap;flex:0 0 auto}.main{padding-top:20px}.tools{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.main{padding:16px 12px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.tools,.formgrid{grid-template-columns:1fr}.full{grid-column:auto}.theme-grid,.palette-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{padding:23px}.topbar{align-items:flex-start}.topbar .btn{width:100%}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;scroll-behavior:auto!important;transition:none!important}}
+@media print{body{background:white!important;color:black!important}body:before,.sidebar,.topbar,.footer,.no-print,.actions button,.material-actions{display:none!important}.layout{display:block}.main{padding:0;max-width:none}.view{display:none!important}.view.active{display:block!important}.workspace,.result,.material-card{background:white!important;color:black!important;border:0!important;box-shadow:none!important;padding:0}.result.show{display:block!important}.muted{color:#444!important}details{display:block}details>*{display:block}a{color:black}}
+</style>
 </head>
-
-<body>
+<body class="effects">
 <div class="layout">
+<aside class="sidebar">
+<div class="logo">Учи<span>Ум</span> ✦<small>ОБРАЗОВАТЕЛНА РАБОТИЛНИЦА</small></div>
+<div class="nav-label">Работно пространство</div>
+<nav class="nav" aria-label="Основно меню">
+<button class="active" data-page="home">⌂ Начало</button>
+<button data-page="games">🎮 Игри</button>
+<button data-page="quizzes">⚡ Викторини</button>
+<button data-page="worksheets">📝 Работни листове</button>
+<button data-page="tests">☑️ Тестове</button>
+<button data-page="presentations">📽️ Презентации</button>
+<button data-page="classes">👩‍🏫 Класове</button>
+<button data-page="library">📚 Библиотека</button>
+<button data-page="settings">⚙️ Настройки</button>
+</nav>
+<div class="side-note">💾 Данните се пазят локално в този браузър. Прави резервно копие редовно.</div>
+</aside>
 
-  <aside>
-    <div class="logo">
-      Учи<span>Ум</span> ✦
-      <small>ПЛАТФОРМА ЗА УЧИТЕЛИ</small>
-    </div>
+<main class="main">
+<header class="topbar">
+<div>
+<div class="eyebrow">ТВОЯТА УЧЕБНА ЛАБОРАТОРИЯ</div>
+<h1 id="pageTitle">Добре дошли в УчиУм! ✨</h1>
+<div class="muted">Подготвяй материали, организирай идеи и учи с въображение.</div>
+</div>
+<button class="btn primary no-print" onclick="go('library')">📚 Моите материали</button>
+</header>
 
-    <nav>
-      <button class="active" data-page="home">⌂ Начало</button>
-      <button data-page="games">🎮 Игри и викторини</button>
-      <button data-page="worksheets">📝 Работни листове</button>
-      <button data-page="tests">☑ Тестове</button>
-      <button data-page="presentations">📽 Презентации</button>
-      <button data-page="classes">👩‍🏫 Моите класове</button>
-      <button data-page="library">📚 Моите материали</button>
-      <button data-page="account">👤 Учителски профил</button>
-    </nav>
-  </aside>
-
-  <main>
-    <header>
-      <div>
-        <div class="kicker">ТВОЯТА УЧИТЕЛСКА РАБОТИЛНИЦА</div>
-        <h1 id="pageTitle">Добре дошли в УчиУм! ✨</h1>
-        <div class="muted">
-          Подготвяй уроци, създавай игри и вдъхновявай.
-        </div>
-      </div>
-
-      <button class="primary no-print" onclick="go('games')">
-        ＋ Създай материал
-      </button>
-    </header>
-
-    <section class="view active" id="home">
-      <div class="hero">
-        <div class="kicker">ИДЕИТЕ ТИ СТАВАТ УРОЦИ</div>
-        <h2>По-малко подготовка.<br>Повече вдъхновение.</h2>
-        <p>
-          Създавай игри, викторини, работни листове, тестове
-          и презентации за учениците си на едно място.
-        </p>
-        <div class="row">
-          <button class="primary" onclick="go('games')">
-            🎮 Създай игра
-          </button>
-          <button class="secondary" onclick="go('worksheets')">
-            📝 Работен лист
-          </button>
-        </div>
-      </div>
-
-      <div class="stats">
-        <div class="stat">
-          <div class="muted">Мои материали</div>
-          <strong id="statMaterials">0</strong>
-          <small class="muted">в тази сесия</small>
-        </div>
-        <div class="stat">
-          <div class="muted">Игри и викторини</div>
-          <strong id="statGames">0</strong>
-          <small class="muted">създадени</small>
-        </div>
-        <div class="stat">
-          <div class="muted">Работни листове</div>
-          <strong id="statWorksheets">0</strong>
-          <small class="muted">създадени</small>
-        </div>
-        <div class="stat">
-          <div class="muted">Класове</div>
-          <strong id="statClasses">0</strong>
-          <small class="muted">добавени</small>
-        </div>
-      </div>
-
-      <h2>Инструменти за преподаване</h2>
-      <div class="tools">
-        <div class="tool" onclick="go('games')">
-          <div class="emoji">🎮</div>
-          <h3>Игри и викторини</h3>
-          <p>Създавай въпроси по всеки учебен предмет.</p>
-          <span>Отвори инструмента ↗</span>
-        </div>
-        <div class="tool" onclick="go('worksheets')">
-          <div class="emoji">📝</div>
-          <h3>Работни листове</h3>
-          <p>Подготвяй задачи за упражнение и печат.</p>
-          <span>Отвори инструмента ↗</span>
-        </div>
-        <div class="tool" onclick="go('tests')">
-          <div class="emoji">☑️</div>
-          <h3>Тестове</h3>
-          <p>Създавай тестове с отговори за учителя.</p>
-          <span>Отвори инструмента ↗</span>
-        </div>
-        <div class="tool" onclick="go('presentations')">
-          <div class="emoji">📽️</div>
-          <h3>Презентации</h3>
-          <p>Планирай структурата на урока си.</p>
-          <span>Отвори инструмента ↗</span>
-        </div>
-        <div class="tool" onclick="go('classes')">
-          <div class="emoji">👩‍🏫</div>
-          <h3>Моите класове</h3>
-          <p>Организирай класове и списъци с ученици.</p>
-          <span>Отвори инструмента ↗</span>
-        </div>
-        <div class="tool" onclick="go('library')">
-          <div class="emoji">📚</div>
-          <h3>Моите материали</h3>
-          <p>Преглеждай материалите от тази сесия.</p>
-          <span>Отвори библиотеката ↗</span>
-        </div>
-      </div>
-    </section>
-
-    <section class="view" id="games">
-      <div class="workspace">
-        <div class="kicker">ТВОРЧЕСКА РАБОТИЛНИЦА</div>
-        <h2>Създай игра или викторина</h2>
-        <p class="muted">
-          Въведи въпросите и верните отговори. Работи с всички предмети
-          и класове от 1. до 12. клас.
-        </p>
-
-        <div class="formgrid">
-          <div class="field">
-            <label for="gameTitle">Име на играта</label>
-            <input id="gameTitle" placeholder="Напр. Мисия: България">
-          </div>
-          <div class="field">
-            <label for="gameType">Вид активност</label>
-            <select id="gameType">
-              <option>Викторина</option>
-              <option>Вярно или невярно</option>
-              <option>Отворен отговор</option>
-              <option>Състезание по точки</option>
-              <option>Игра за отбори</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="gameSubject">Предмет</label>
-            <select id="gameSubject" class="subject"></select>
-          </div>
-          <div class="field">
-            <label for="gameGrade">Клас</label>
-            <select id="gameGrade" class="grade"></select>
-          </div>
-          <div class="field full">
-            <label for="gameTopic">Тема</label>
-            <input id="gameTopic" placeholder="Напр. Древна Гърция">
-          </div>
-          <div class="field full">
-            <label for="gameQuestions">
-              Въпроси, по един на ред във формат: въпрос | отговор
-            </label>
-            <textarea id="gameQuestions"
-              placeholder="Коя е столицата на България? | София&#10;Колко е 7 × 8? | 56"></textarea>
-          </div>
-        </div>
-
-        <div class="row">
-          <button class="primary" onclick="createGame()">✦ Създай игра</button>
-          <button class="secondary" onclick="fillExample()">Попълни пример</button>
-        </div>
-        <div class="result" id="gameResult"></div>
-      </div>
-    </section>
-
-    <section class="view" id="worksheets">
-      <div class="workspace">
-        <div class="kicker">ЗА УПРАЖНЕНИЕ И ПЕЧАТ</div>
-        <h2>Генератор на работни листове</h2>
-        <div class="formgrid">
-          <div class="field">
-            <label for="wsTitle">Заглавие</label>
-            <input id="wsTitle" placeholder="Работен лист">
-          </div>
-          <div class="field">
-            <label for="wsSubject">Предмет</label>
-            <select id="wsSubject" class="subject"></select>
-          </div>
-          <div class="field">
-            <label for="wsGrade">Клас</label>
-            <select id="wsGrade" class="grade"></select>
-          </div>
-          <div class="field">
-            <label for="wsTopic">Тема</label>
-            <input id="wsTopic" placeholder="Тема на задачите">
-          </div>
-          <div class="field">
-            <label for="wsCount">Брой задачи</label>
-            <select id="wsCount">
-              <option>5</option><option selected>10</option>
-              <option>15</option><option>20</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="wsTasks">Задачи, по една на ред</label>
-            <textarea id="wsTasks" placeholder="Реши задачата..."></textarea>
-          </div>
-        </div>
-        <div class="row">
-          <button class="primary" onclick="createWorksheet()">Създай лист</button>
-          <button class="secondary" onclick="printResult('wsResult')">🖨 Печат / PDF</button>
-        </div>
-        <div class="result" id="wsResult"></div>
-      </div>
-    </section>
-
-    <section class="view" id="tests">
-      <div class="workspace">
-        <div class="kicker">ПРОВЕРКА НА ЗНАНИЯТА</div>
-        <h2>Създател на тестове</h2>
-        <div class="formgrid">
-          <div class="field">
-            <label for="testTitle">Заглавие на теста</label>
-            <input id="testTitle" placeholder="Тест № 1">
-          </div>
-          <div class="field">
-            <label for="testSubject">Предмет</label>
-            <select id="testSubject" class="subject"></select>
-          </div>
-          <div class="field">
-            <label for="testGrade">Клас</label>
-            <select id="testGrade" class="grade"></select>
-          </div>
-          <div class="field">
-            <label for="testTopic">Тема</label>
-            <input id="testTopic" placeholder="Тема на теста">
-          </div>
-          <div class="field full">
-            <label for="testQuestions">
-              Въпроси, по един на ред във формат: въпрос | верен отговор
-            </label>
-            <textarea id="testQuestions"
-              placeholder="Какво е съществително име? | Дума, която назовава предмет, лице или явление"></textarea>
-          </div>
-        </div>
-        <div class="row">
-          <button class="primary" onclick="createTest()">Създай тест</button>
-          <button class="secondary" onclick="printResult('testResult')">🖨 Печат / PDF</button>
-        </div>
-        <div class="result" id="testResult"></div>
-      </div>
-    </section>
-
-    <section class="view" id="presentations">
-      <div class="workspace">
-        <div class="kicker">ПЛАНИРАЙ УРОКА</div>
-        <h2>План за презентация</h2>
-        <p class="muted">
-          Този инструмент създава план, който можеш да прехвърлиш
-          в PowerPoint или Google Slides.
-        </p>
-        <div class="formgrid">
-          <div class="field">
-            <label for="presTitle">Заглавие</label>
-            <input id="presTitle" placeholder="Напр. Древна Гърция">
-          </div>
-          <div class="field">
-            <label for="presSubject">Предмет</label>
-            <select id="presSubject" class="subject"></select>
-          </div>
-          <div class="field">
-            <label for="presGrade">Клас</label>
-            <select id="presGrade" class="grade"></select>
-          </div>
-          <div class="field">
-            <label for="presSlides">Брой слайдове</label>
-            <select id="presSlides">
-              <option>5</option><option selected>8</option>
-              <option>10</option><option>12</option>
-            </select>
-          </div>
-          <div class="field full">
-            <label for="presGoals">Цели и основни идеи</label>
-            <textarea id="presGoals" placeholder="Какво трябва да научат учениците?"></textarea>
-          </div>
-        </div>
-        <div class="row">
-          <button class="primary" onclick="createPresentation()">Създай структура</button>
-          <button class="secondary" onclick="printResult('presResult')">🖨 Печат / PDF</button>
-        </div>
-        <div class="result" id="presResult"></div>
-      </div>
-    </section>
-
-    <section class="view" id="classes">
-      <div class="workspace">
-        <div class="kicker">ОРГАНИЗИРАЙ КЛАСА</div>
-        <h2>Моите класове</h2>
-        <div class="formgrid">
-          <div class="field">
-            <label for="className">Име на класа</label>
-            <input id="className" placeholder="5. А">
-          </div>
-          <div class="field">
-            <label for="classYear">Учебна година</label>
-            <input id="classYear" value="2026/2027">
-          </div>
-          <div class="field full">
-            <label for="classStudents">Ученици, по един на ред</label>
-            <textarea id="classStudents" placeholder="Ученик 1&#10;Ученик 2"></textarea>
-          </div>
-        </div>
-        <div class="row">
-          <button class="primary" onclick="createClass()">＋ Добави клас</button>
-        </div>
-        <div class="result" id="classResult"></div>
-        <div class="notice">
-          Демо режим: не въвеждай истински лични данни на ученици.
-          Постоянното и защитено съхранение ще бъде добавено отделно.
-        </div>
-      </div>
-    </section>
-
-    <section class="view" id="library">
-      <div class="workspace">
-        <div class="kicker">ТВОЯТА БИБЛИОТЕКА</div>
-        <h2>Моите материали</h2>
-        <div id="libraryList" class="muted">
-          Все още няма създадени материали.
-        </div>
-      </div>
-    </section>
-
-    <section class="view" id="account">
-      <div class="workspace">
-        <div class="kicker">УЧИТЕЛСКИ ПРОФИЛ</div>
-        <h2>Добре дошли в УчиУм</h2>
-        <p>
-          Следващата стъпка е свързването на истинска регистрация
-          и вход за учители.
-        </p>
-        <div class="notice">
-          Това е демонстрационна версия. Формата за вход още не е
-          свързана с база данни, затова не въвеждай парола тук.
-        </div>
-      </div>
-    </section>
-
-    <footer>
-      УчиУм · Демонстрационна версия за учители
-    </footer>
-  </main>
+<section class="view active" id="home">
+<div class="hero">
+<div class="eyebrow">ИДЕИТЕ ТИ СТАВАТ УРОЦИ</div>
+<h2>По-малко хаос.<br>Повече „Еврика!“ ✨</h2>
+<p>Създавай игри, викторини, работни листове, тестове и планове за презентации на едно място. Материалите ти се запазват в този браузър.</p>
+<div class="actions">
+<button class="btn primary" onclick="go('games')">🎮 Създай игра</button>
+<button class="btn" onclick="go('worksheets')">📝 Работен лист</button>
+<button class="btn" onclick="go('quizzes')">⚡ Нова викторина</button>
+</div>
 </div>
 
+<div class="stats">
+<div class="stat"><span class="muted">Всички материали</span><strong id="statMaterials">0</strong><span class="muted">в библиотеката</span></div>
+<div class="stat"><span class="muted">Игри и викторини</span><strong id="statGames">0</strong><span class="muted">създадени</span></div>
+<div class="stat"><span class="muted">Работни листове</span><strong id="statWorksheets">0</strong><span class="muted">създадени</span></div>
+<div class="stat"><span class="muted">Класове</span><strong id="statClasses">0</strong><span class="muted">организирани</span></div>
+</div>
+
+<h2>Бърз достъп</h2>
+<div class="tools">
+<div class="tool" onclick="go('games')"><div class="emoji">🎮</div><h3>Игри</h3><p>Направи занимание с въпроси и отговори.</p></div>
+<div class="tool" onclick="go('quizzes')"><div class="emoji">⚡</div><h3>Викторини</h3><p>Подготви кратка проверка на знанията.</p></div>
+<div class="tool" onclick="go('worksheets')"><div class="emoji">📝</div><h3>Работни листове</h3><p>Подготви задачи за упражнение и печат.</p></div>
+<div class="tool" onclick="go('tests')"><div class="emoji">☑️</div><h3>Тестове</h3><p>Създай въпроси и ключ с отговори.</p></div>
+<div class="tool" onclick="go('presentations')"><div class="emoji">📽️</div><h3>Презентации</h3><p>Подреди идеите си в план за слайдове.</p></div>
+<div class="tool" onclick="go('library')"><div class="emoji">📚</div><h3>Библиотека</h3><p>Намери, редактирай или отпечатай материал.</p></div>
+</div>
+
+<div class="notice">🔐 Локалното запазване не е облачна синхронизация. При смяна на браузър или изчистване на данните може да загубиш материалите. Използвай „Архивиране“ в настройките.</div>
+</section>
+
+<section class="view" id="games">
+<div class="workspace">
+<div class="eyebrow">ТВОРЧЕСКА РАБОТИЛНИЦА</div>
+<h2>Създай игра</h2>
+<p class="muted">Добави въпроси по избран предмет. Формат: въпрос | отговор.</p>
+<div class="formgrid">
+<div class="field"><label for="gameTitle">Име на играта</label><input id="gameTitle" placeholder="Мисия: България"></div>
+<div class="field"><label for="gameType">Вид активност</label><select id="gameType"><option>Игра с въпроси</option><option>Вярно или невярно</option><option>Отворен отговор</option><option>Състезание по точки</option><option>Игра за отбори</option></select></div>
+<div class="field"><label for="gameSubject">Предмет</label><select id="gameSubject" class="subject"></select></div>
+<div class="field"><label for="gameGrade">Клас</label><select id="gameGrade" class="grade"></select></div>
+<div class="field full"><label for="gameTopic">Тема</label><input id="gameTopic" placeholder="Напр. Древна Гърция"></div>
+<div class="field full"><label for="gameQuestions">Въпроси, по един на ред: въпрос | отговор</label><textarea id="gameQuestions" placeholder="Коя е столицата на България? | София&#10;Колко е 7 × 8? | 56"></textarea></div>
+</div>
+<div class="actions"><button class="btn primary" onclick="createGame('games')">✦ Създай игра</button><button class="btn" onclick="fillExample('game')">Попълни пример</button></div>
+<div class="result" id="gameResult"></div>
+</div>
+</section>
+
+<section class="view" id="quizzes">
+<div class="workspace">
+<div class="eyebrow">БЪРЗА ПРОВЕРКА</div>
+<h2>Създай викторина</h2>
+<p class="muted">Направи викторина за преговор или състезание в клас.</p>
+<div class="formgrid">
+<div class="field"><label for="quizTitle">Заглавие</label><input id="quizTitle" placeholder="Голямата викторина"></div>
+<div class="field"><label for="quizMode">Режим</label><select id="quizMode"><option>Индивидуално</option><option>По отбори</option><option>Срещу времето</option></select></div>
+<div class="field"><label for="quizSubject">Предмет</label><select id="quizSubject" class="subject"></select></div>
+<div class="field"><label for="quizGrade">Клас</label><select id="quizGrade" class="grade"></select></div>
+<div class="field full"><label for="quizTopic">Тема</label><input id="quizTopic" placeholder="Тема на викторината"></div>
+<div class="field full"><label for="quizQuestions">Въпроси, по един на ред: въпрос | отговор</label><textarea id="quizQuestions" placeholder="Коя планета е известна като Червената планета? | Марс"></textarea></div>
+</div>
+<div class="actions"><button class="btn primary" onclick="createGame('quizzes')">⚡ Създай викторина</button><button class="btn" onclick="fillExample('quiz')">Попълни пример</button></div>
+<div class="result" id="quizResult"></div>
+</div>
+</section>
+
+<section class="view" id="worksheets">
+<div class="workspace">
+<div class="eyebrow">ЗА УПРАЖНЕНИЕ И ПЕЧАТ</div>
+<h2>Генератор на работни листове</h2>
+<div class="formgrid">
+<div class="field"><label for="wsTitle">Заглавие</label><input id="wsTitle" placeholder="Работен лист"></div>
+<div class="field"><label for="wsSubject">Предмет</label><select id="wsSubject" class="subject"></select></div>
+<div class="field"><label for="wsGrade">Клас</label><select id="wsGrade" class="grade"></select></div>
+<div class="field"><label for="wsTopic">Тема</label><input id="wsTopic" placeholder="Тема на задачите"></div>
+<div class="field"><label for="wsCount">Брой примерни редове, ако не въведеш задачи</label><select id="wsCount"><option>5</option><option selected>10</option><option>15</option><option>20</option></select></div>
+<div class="field"><label for="wsTasks">Задачи, по една на ред</label><textarea id="wsTasks" placeholder="Реши задачата...&#10;Обясни с пример..."></textarea></div>
+</div>
+<div class="actions"><button class="btn primary" onclick="createWorksheet()">Създай лист</button><button class="btn" onclick="printResult('wsResult')">🖨 Печат / PDF</button></div>
+<div class="result" id="wsResult"></div>
+</div>
+</section>
+
+<section class="view" id="tests">
+<div class="workspace">
+<div class="eyebrow">ПРОВЕРКА НА ЗНАНИЯТА</div>
+<h2>Създател на тестове</h2>
+<div class="formgrid">
+<div class="field"><label for="testTitle">Заглавие на теста</label><input id="testTitle" placeholder="Тест № 1"></div>
+<div class="field"><label for="testSubject">Предмет</label><select id="testSubject" class="subject"></select></div>
+<div class="field"><label for="testGrade">Клас</label><select id="testGrade" class="grade"></select></div>
+<div class="field"><label for="testTopic">Тема</label><input id="testTopic" placeholder="Тема на теста"></div>
+<div class="field full"><label for="testQuestions">Въпроси, по един на ред: въпрос | верен отговор</label><textarea id="testQuestions" placeholder="Какво е съществително име? | Дума, която назовава предмет, лице или явление"></textarea></div>
+</div>
+<div class="actions"><button class="btn primary" onclick="createTest()">Създай тест</button><button class="btn" onclick="printResult('testResult')">🖨 Печат / PDF</button></div>
+<div class="result" id="testResult"></div>
+</div>
+</section>
+
+<section class="view" id="presentations">
+<div class="workspace">
+<div class="eyebrow">ПЛАНИРАЙ УРОКА</div>
+<h2>План за презентация</h2>
+<p class="muted">Създай структура, която можеш да прехвърлиш в PowerPoint или Google Slides.</p>
+<div class="formgrid">
+<div class="field"><label for="presTitle">Заглавие</label><input id="presTitle" placeholder="Напр. Древна Гърция"></div>
+<div class="field"><label for="presSubject">Предмет</label><select id="presSubject" class="subject"></select></div>
+<div class="field"><label for="presGrade">Клас</label><select id="presGrade" class="grade"></select></div>
+<div class="field"><label for="presSlides">Брой слайдове</label><select id="presSlides"><option>5</option><option selected>8</option><option>10</option><option>12</option></select></div>
+<div class="field full"><label for="presGoals">Цели и основни идеи</label><textarea id="presGoals" placeholder="Какво трябва да научи аудиторията?"></textarea></div>
+</div>
+<div class="actions"><button class="btn primary" onclick="createPresentation()">Създай структура</button><button class="btn" onclick="printResult('presResult')">🖨 Печат / PDF</button></div>
+<div class="result" id="presResult"></div>
+</div>
+</section>
+
+<section class="view" id="classes">
+<div class="workspace">
+<div class="eyebrow">ОРГАНИЗИРАЙ КЛАСА</div>
+<h2>Моите класове</h2>
+<p class="muted">За безопасност използвай само примерни имена, а не истински лични данни на ученици.</p>
+<div class="formgrid">
+<div class="field"><label for="className">Име на класа</label><input id="className" placeholder="5. А"></div>
+<div class="field"><label for="classYear">Учебна година</label><input id="classYear" value="2026/2027"></div>
+<div class="field full"><label for="classStudents">Ученици (по желание), по един на ред</label><textarea id="classStudents" placeholder="Примерен ученик 1&#10;Примерен ученик 2"></textarea></div>
+</div>
+<div class="actions"><button class="btn primary" onclick="createClass()">＋ Добави клас</button></div>
+<div id="classList" class="list"></div>
+<div class="notice">Данните се пазят само в локалното хранилище на браузъра. То не е защитена училищна база данни.</div>
+</div>
+</section>
+
+<section class="view" id="library">
+<div class="workspace">
+<div class="eyebrow">ТВОЯТА БИБЛИОТЕКА</div>
+<h2>Моите материали</h2>
+<div class="field"><label for="librarySearch">Търси по заглавие, предмет или тип</label><input class="search" id="librarySearch" placeholder="Напиши дума за търсене…" oninput="renderLibrary()"></div>
+<div class="actions no-print"><button class="btn" onclick="go('settings')">📦 Архивирай / възстанови</button><button class="btn" onclick="addLibraryNote()">＋ Добави бележка</button></div>
+<div id="libraryList" class="list"></div>
+</div>
+</section>
+
+<section class="view" id="settings">
+<div class="workspace">
+<div class="eyebrow">НАПРАВИ УЧИУМ СВОЙ</div>
+<h2>Настройки и архивиране</h2>
+<h3>Избери тема</h3>
+<div class="theme-grid" id="themeGrid">
+<button class="theme-choice" data-theme="neon" onclick="setTheme('neon')">🌌 Неонова<br><small class="muted">Тъмна и ярка</small></button>
+<button class="theme-choice" data-theme="aurora" onclick="setTheme('aurora')">🌈 Полярно сияние<br><small class="muted">Многоцветна</small></button>
+<button class="theme-choice" data-theme="glass" onclick="setTheme('glass')">🪟 Стъклена<br><small class="muted">Меки панели</small></button>
+<button class="theme-choice" data-theme="light" onclick="setTheme('light')">☀️ Светла<br><small class="muted">Светъл фон</small></button>
+</div>
+
+<h3>Цветова палитра</h3>
+<div class="palette-grid" id="paletteGrid">
+<button class="palette-choice" data-palette="cosmic" onclick="setPalette('cosmic')"><span class="swatches"><i style="background:#9a6bff"></i><i style="background:#3bd9e8"></i><i style="background:#ff5fbc"></i></span>Космическа</button>
+<button class="palette-choice" data-palette="ocean" onclick="setPalette('ocean')"><span class="swatches"><i style="background:#299dff"></i><i style="background:#35e6ce"></i><i style="background:#657cff"></i></span>Океан</button>
+<button class="palette-choice" data-palette="sunset" onclick="setPalette('sunset')"><span class="swatches"><i style="background:#ff7a45"></i><i style="background:#ff4fa3"></i><i style="background:#ffd166"></i></span>Залез</button>
+<button class="palette-choice" data-palette="forest" onclick="setPalette('forest')"><span class="swatches"><i style="background:#58d68d"></i><i style="background:#b4e853"></i><i style="background:#2dd4bf"></i></span>Гора</button>
+<button class="palette-choice" data-palette="candy" onclick="setPalette('candy')"><span class="swatches"><i style="background:#ff70c5"></i><i style="background:#a78bfa"></i><i style="background:#70d6ff"></i></span>Бонбони</button>
+<button class="palette-choice" data-palette="mono" onclick="setPalette('mono')"><span class="swatches"><i style="background:#d4d4d8"></i><i style="background:#9298a5"></i><i style="background:#ffffff"></i></span>Монохром</button>
+</div>
+
+<div class="setting-row">
+<div><b>Размер на текста</b><div class="muted">Настрой четимостта на платформата.</div></div>
+<select id="fontSize" onchange="setFontSize(this.value)" class="search" style="width:auto">
+<option value="0.9">Малък</option><option value="1" selected>Удобен</option><option value="1.12">Голям</option><option value="1.25">Много голям</option>
+</select>
+</div>
+
+<div class="setting-row">
+<div><b>Плавни многоцветни ефекти</b><div class="muted">Декоративен фон с меки цветове.</div></div>
+<label class="checkline"><input id="effectsToggle" type="checkbox" checked onchange="toggleEffects(this.checked)"> Включени</label>
+</div>
+
+<div class="setting-row">
+<div><b>Автоматично запазване</b><div class="muted">Материалите и черновите на формите се пазят локално.</div></div>
+<span class="pill">Включено</span>
+</div>
+
+<h3 style="margin-top:24px">Резервно копие</h3>
+<p class="muted">Експортирай материалите, класовете и настройките във файл. Възстановяването заменя текущите локални данни, затова първо направи архив.</p>
+<div class="actions">
+<button class="btn primary" onclick="exportBackup()">⬇ Изтегли архив (.json)</button>
+<label class="btn" for="backupFile">⬆ Възстанови архив</label>
+<input type="file" id="backupFile" accept="application/json,.json" hidden onchange="importBackup(event)">
+</div>
+<div class="notice">⚠️ Архивът може да съдържа въведеното от теб. Пази го на лично и надеждно място и не споделяй файл с лични данни.</div>
+<h3 style="margin-top:24px">Управление на данните</h3>
+<button class="btn danger" onclick="clearAllData()">Изтрий всички локални данни</button>
+</div>
+</section>
+
+<footer class="footer">УчиУм · Образователна работилница · Данните се пазят локално</footer>
+</main>
+</div>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
 <script>
-const subjects = [
-  "Български език и литература",
-  "Математика",
-  "Английски език",
-  "Друг чужд език",
-  "История и цивилизации",
-  "География и икономика",
-  "Човекът и природата",
-  "Биология и здравно образование",
-  "Физика и астрономия",
-  "Химия и опазване на околната среда",
-  "Информационни технологии",
-  "Компютърно моделиране",
-  "Технологии и предприемачество",
-  "Изобразително изкуство",
-  "Музика",
-  "Физическо възпитание и спорт",
-  "Философия",
-  "Гражданско образование",
-  "Икономика",
-  "Професионална подготовка",
-  "Друг предмет"
+'use strict';
+
+const STORAGE_KEY='uchium_data_v3';
+const SETTINGS_KEY='uchium_settings_v3';
+const DRAFTS_KEY='uchium_drafts_v3';
+
+const subjects=[
+'Български език и литература',
+'Математика',
+'Английски език',
+'Друг чужд език',
+'История и цивилизации',
+'География и икономика',
+'Човекът и природата',
+'Биология и здравно образование',
+'Физика и астрономия',
+'Химия и опазване на околната среда',
+'Информационни технологии',
+'Компютърно моделиране',
+'Технологии и предприемачество',
+'Изобразително изкуство',
+'Музика',
+'Физическо възпитание и спорт',
+'Философия',
+'Гражданско образование',
+'Икономика',
+'Предприемачество',
+'Професионална подготовка',
+'Професионално обучение',
+'Друг предмет'
 ];
 
-document.querySelectorAll(".subject").forEach(select => {
-  select.innerHTML = subjects.map(s =>
-    `<option>${s}</option>`
-  ).join("");
-});
-
-document.querySelectorAll(".grade").forEach(select => {
-  select.innerHTML = Array.from({length:12}, (_, i) =>
-    `<option>${i + 1}. клас</option>`
-  ).join("");
-});
-
-const titles = {
-  home: "Добре дошли в УчиУм! ✨",
-  games: "Игри и викторини",
-  worksheets: "Работни листове",
-  tests: "Създател на тестове",
-  presentations: "Презентации",
-  classes: "Моите класове",
-  library: "Моите материали",
-  account: "Учителски профил"
+const palettes={
+cosmic:['#9a6bff','#3bd9e8','#ff5fbc','#70f0b0'],
+ocean:['#299dff','#35e6ce','#657cff','#a4f3ff'],
+sunset:['#ff7a45','#ff4fa3','#ffd166','#ff9b71'],
+forest:['#58d68d','#b4e853','#2dd4bf','#a7f3d0'],
+candy:['#ff70c5','#a78bfa','#70d6ff','#f9a8d4'],
+mono:['#d4d4d8','#9298a5','#ffffff','#a3a3a3']
 };
 
-const materials = [];
-const classes = [];
+const pageTitles={
+home:'Добре дошли в УчиУм! ✨',
+games:'Игри',
+quizzes:'Викторини',
+worksheets:'Работни листове',
+tests:'Създател на тестове',
+presentations:'Презентации',
+classes:'Моите класове',
+library:'Моята библиотека',
+settings:'Настройки'
+};
 
-function go(page) {
-  document.querySelectorAll(".view").forEach(section => {
-    section.classList.toggle("active", section.id === page);
-  });
+let data={materials:[],classes:[]};
+let settings={theme:'neon',palette:'cosmic',fontSize:'1',effects:true};
+let toastTimer;
 
-  document.querySelectorAll("nav button").forEach(button => {
-    button.classList.toggle("active", button.dataset.page === page);
-  });
-
-  document.getElementById("pageTitle").textContent = titles[page];
-  window.scrollTo({top: 0, behavior: "smooth"});
-}
-
-document.querySelectorAll("nav button").forEach(button => {
-  button.addEventListener("click", () => go(button.dataset.page));
+document.querySelectorAll('.subject').forEach(s=>{
+s.innerHTML=subjects.map(x=>`<option>${escapeHTML(x)}</option>`).join('');
 });
 
-function value(id) {
-  return document.getElementById(id).value.trim();
+document.querySelectorAll('.grade').forEach(s=>{
+s.innerHTML=Array.from({length:12},(_,i)=>`<option>${i+1}. клас</option>`).join('');
+});
+
+function safeParse(text,fallback){
+try{return JSON.parse(text)||fallback}
+catch{return fallback}
 }
 
-function escapeHTML(text) {
-  return String(text).replace(/[&<>"']/g, char => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#39;"
-  })[char]);
+function loadData(){
+const stored=safeParse(localStorage.getItem(STORAGE_KEY),null);
+if(stored&&Array.isArray(stored.materials)&&Array.isArray(stored.classes)){
+data=stored;
+}else{
+data={materials:[],classes:[]};
+}
+settings={...settings,...safeParse(localStorage.getItem(SETTINGS_KEY),{})};
+applySettings();
+restoreDrafts();
+renderAll();
 }
 
-function lines(id) {
-  return value(id).split("\n").map(x => x.trim()).filter(Boolean);
+function persist(){
+try{
+localStorage.setItem(STORAGE_KEY,JSON.stringify(data));
+updateStats();
+}catch(e){
+notify('Не успях да запазя данните. Провери свободното място в браузъра.');
+}
 }
 
-function updateStats() {
-  document.getElementById("statMaterials").textContent = materials.length;
-  document.getElementById("statGames").textContent =
-    materials.filter(m => m.type === "Игра" || m.type === "Викторина").length;
-  document.getElementById("statWorksheets").textContent =
-    materials.filter(m => m.type === "Работен лист").length;
-  document.getElementById("statClasses").textContent = classes.length;
-
-  document.getElementById("libraryList").innerHTML = materials.length
-    ? materials.map(m =>
-        `<div class="card" style="margin:12px 0">
-          <b>${escapeHTML(m.title)}</b>
-          <p class="muted">${escapeHTML(m.type)} · ${escapeHTML(m.subject)}</p>
-          <button class="secondary" onclick="printMaterial(${m.id})">Печат / PDF</button>
-        </div>`
-      ).join("")
-    : "Все още няма създадени материали.";
+function saveSettings(){
+try{localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings))}
+catch{}
 }
 
-function saveMaterial(type, title, subject, grade, html) {
-  materials.unshift({
-    id: Date.now() + Math.random(),
-    type, title, subject, grade, html
-  });
-  updateStats();
+function escapeHTML(text){
+return String(text??'').replace(/[&<>"']/g,c=>({
+'&':'&amp;',
+'<':'&lt;',
+'>':'&gt;',
+'"':'&quot;',
+"'":'&#39;'
+}[c]));
 }
 
-function showResult(id, html) {
-  const result = document.getElementById(id);
-  result.innerHTML = html;
-  result.classList.add("show");
-  result.scrollIntoView({behavior:"smooth", block:"nearest"});
+function value(id){
+return (document.getElementById(id)?.value||'').trim();
 }
 
-function fillExample() {
-  document.getElementById("gameTitle").value = "Мисия: провери знанията";
-  document.getElementById("gameTopic").value = "Общи знания";
-  document.getElementById("gameQuestions").value =
-    "Колко е 7 × 8? | 56\nКоя е столицата на България? | София\nКолко дни има една седмица? | 7";
+function lines(id){
+return value(id).split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
 }
 
-function createGame() {
-  const title = value("gameTitle") || "Моята игра";
-  const subject = value("gameSubject");
-  const grade = value("gameGrade");
-  const topic = value("gameTopic") || "Свободна тема";
-  const type = value("gameType");
-
-  const questions = lines("gameQuestions").map(line => {
-    const parts = line.split("|");
-    return {
-      question: parts[0].trim(),
-      answer: parts.slice(1).join("|").trim() || "Добави отговор"
-    };
-  });
-
-  if (!questions.length) {
-    alert("Добави поне един въпрос.");
-    return;
-  }
-
-  const html = `
-    <h2>${escapeHTML(title)}</h2>
-    <p>${escapeHTML(subject)} · ${escapeHTML(grade)} · ${escapeHTML(topic)}</p>
-    <p>Вид игра: ${escapeHTML(type)}</p>
-    <ol>${questions.map(q => `
-      <li>
-        ${escapeHTML(q.question)}
-        <details>
-          <summary>Покажи отговора</summary>
-          ${escapeHTML(q.answer)}
-        </details>
-      </li>
-    `).join("")}</ol>
-    <p>Идея: раздели класа на отбори и давай по една точка за верен отговор.</p>
-    <button class="secondary no-print" onclick="window.print()">🖨 Печат / PDF</button>
-  `;
-
-  showResult("gameResult", html);
-  saveMaterial(type === "Викторина" ? "Викторина" : "Игра",
-    title, subject, grade, html);
+function uid(){
+return (crypto&&crypto.randomUUID)?crypto.randomUUID():String(Date.now())+'-'+Math.random().toString(16).slice(2);
 }
 
-function createWorksheet() {
-  const title = value("wsTitle") || "Работен лист";
-  const subject = value("wsSubject");
-  const grade = value("wsGrade");
-  const topic = value("wsTopic") || "________________";
-  let tasks = lines("wsTasks");
-
-  if (!tasks.length) {
-    tasks = Array.from({length:Number(value("wsCount"))}, (_, i) =>
-      `${i + 1}. __________________________________________`
-    );
-  }
-
-  const html = `
-    <h2>${escapeHTML(title)}</h2>
-    <p><b>Предмет:</b> ${escapeHTML(subject)} · <b>Клас:</b> ${escapeHTML(grade)}</p>
-    <p><b>Тема:</b> ${escapeHTML(topic)}</p>
-    <p>Име: __________________________ Дата: ______________</p>
-    <ol>${tasks.map(task => `
-      <li style="margin-bottom:28px">
-        ${escapeHTML(task)}
-        <div style="height:20px;border-bottom:1px solid #aaa"></div>
-      </li>
-    `).join("")}</ol>
-    <button class="secondary no-print" onclick="window.print()">🖨 Печат / PDF</button>
-  `;
-
-  showResult("wsResult", html);
-  saveMaterial("Работен лист", title, subject, grade, html);
+function go(page){
+if(!pageTitles[page])return;
+document.querySelectorAll('.view').forEach(s=>s.classList.toggle('active',s.id===page));
+document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));
+document.getElementById('pageTitle').textContent=pageTitles[page];
+window.scrollTo({top:0,behavior:'smooth'});
+if(page==='library')renderLibrary();
+if(page==='classes')renderClasses();
 }
 
-function createTest() {
-  const title = value("testTitle") || "Тест";
-  const subject = value("testSubject");
-  const grade = value("testGrade");
-  const topic = value("testTopic") || "________________";
+document.querySelectorAll('.nav button').forEach(b=>{
+b.addEventListener('click',()=>go(b.dataset.page));
+});
 
-  const questions = lines("testQuestions").map(line => {
-    const parts = line.split("|");
-    return {
-      question: parts[0].trim(),
-      answer: parts.slice(1).join("|").trim()
-    };
-  });
-
-  if (!questions.length) {
-    alert("Добави поне един въпрос във формат: въпрос | отговор");
-    return;
-  }
-
-  const html = `
-    <h2>${escapeHTML(title)}</h2>
-    <p>${escapeHTML(subject)} · ${escapeHTML(grade)} · ${escapeHTML(topic)}</p>
-    <p>Име: __________________________ Дата: ______________</p>
-    <ol>${questions.map(q => `
-      <li style="margin-bottom:24px">
-        ${escapeHTML(q.question)}
-        <div style="height:22px;border-bottom:1px solid #aaa"></div>
-      </li>
-    `).join("")}</ol>
-    <details>
-      <summary><b>Ключ с отговори за учителя</b></summary>
-      <ol>${questions.map(q => `<li>${escapeHTML(q.answer)}</li>`).join("")}</ol>
-    </details>
-    <button class="secondary no-print" onclick="window.print()">🖨 Печат / PDF</button>
-  `;
-
-  showResult("testResult", html);
-  saveMaterial("Тест", title, subject, grade, html);
+function notify(message){
+const el=document.getElementById('toast');
+el.textContent=message;
+el.classList.add('show');
+clearTimeout(toastTimer);
+toastTimer=setTimeout(()=>el.classList.remove('show'),2800);
 }
 
-function createPresentation() {
-  const title = value("presTitle") || "Презентация за урок";
-  const subject = value("presSubject");
-  const grade = value("presGrade");
-  const count = Number(value("presSlides"));
-  const goals = value("presGoals") || "Добави основните идеи на урока.";
-
-  const suggestions = [
-    "Заглавие и въведение",
-    "Цели на урока",
-    "Основни понятия",
-    "Обяснение на темата",
-    "Пример или казус",
-    "Практическа задача",
-    "Обобщение",
-    "Въпроси за обсъждане",
-    "Проверка на знанията",
-    "Изводи и домашна работа",
-    "Допълнителни примери",
-    "Източници"
-  ];
-
-  const html = `
-    <h2>${escapeHTML(title)}</h2>
-    <p>${escapeHTML(subject)} · ${escapeHTML(grade)}</p>
-    <h3>Цели и идеи</h3>
-    <p>${escapeHTML(goals)}</p>
-    <h3>Структура на слайдовете</h3>
-    <ol>${Array.from({length:count}, (_, i) => `
-      <li style="margin-bottom:18px">
-        <b>${escapeHTML(suggestions[i] || "Допълнителен слайд")}</b>
-        <p>Бележки и визуални материали: ____________________</p>
-      </li>
-    `).join("")}</ol>
-    <p>Това е план за презентация, който можеш да прехвърлиш в PowerPoint.</p>
-    <button class="secondary no-print" onclick="window.print()">🖨 Печат / PDF</button>
-  `;
-
-  showResult("presResult", html);
-  saveMaterial("Презентация", title, subject, grade, html);
+function updateStats(){
+const mats=data.materials;
+document.getElementById('statMaterials').textContent=mats.length;
+document.getElementById('statGames').textContent=mats.filter(m=>['Игра','Викторина'].includes(m.type)).length;
+document.getElementById('statWorksheets').textContent=mats.filter(m=>m.type==='Работен лист').length;
+document.getElementById('statClasses').textContent=data.classes.length;
 }
 
-function createClass() {
-  const name = value("className");
-
-  if (!name) {
-    alert("Въведи име на класа.");
-    return;
-  }
-
-  const students = lines("classStudents");
-  classes.unshift({name, students, year:value("classYear")});
-
-  document.getElementById("classResult").innerHTML = `
-    <h2>${escapeHTML(name)}</h2>
-    <p>Учебна година: ${escapeHTML(value("classYear"))}</p>
-    <p>Брой ученици: ${students.length}</p>
-    <ol>${students.map(s => `<li>${escapeHTML(s)}</li>`).join("")}</ol>
-  `;
-  document.getElementById("classResult").classList.add("show");
-  updateStats();
+function saveMaterial(type,title,subject,grade,html,plain=''){
+const material={
+id:uid(),
+type,
+title,
+subject,
+grade,
+html,
+plain,
+createdAt:new Date().toISOString()
+};
+data.materials.unshift(material);
+persist();
+renderLibrary();
+notify('Материалът е запазен в библиотеката.');
+return material;
 }
 
-function printResult(id) {
-  const result = document.getElementById(id);
-
-  if (!result.classList.contains("show")) {
-    alert("Първо създай материала.");
-    return;
-  }
-
-  window.print();
+function showResult(id,html){
+const el=document.getElementById(id);
+el.innerHTML=html;
+el.classList.add('show');
+el.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
-function printMaterial(id) {
-  const material = materials.find(m => m.id === id);
-  if (!material) return;
-
-  const printWindow = window.open("", "_blank");
-  if (!printWindow) {
-    alert("Разреши изскачащите прозорци, за да отпечаташ материала.");
-    return;
-  }
-
-  printWindow.document.write(`
-    <!DOCTYPE html>
-    <html lang="bg">
-    <head>
-      <meta charset="UTF-8">
-      <title>${escapeHTML(material.title)}</title>
-      <style>
-        body { font:16px/1.6 Arial,sans-serif; margin:35px; }
-        li { margin-bottom:12px; }
-      </style>
-    </head>
-    <body>${material.html}</body>
-    </html>
-  `);
-
-  printWindow.document.close();
-  printWindow.focus();
-  printWindow.print();
+function fillExample(kind){
+if(kind==='game'){
+document.getElementById('gameTitle').value='Мисия: провери знанията';
+document.getElementById('gameTopic').value='Общи знания';
+document.getElementById('gameQuestions').value='Колко е 7 × 8? | 56\nКоя е столицата на България? | София\nКолко дни има една седмица? | 7';
+}else{
+document.getElementById('quizTitle').value='Бърза викторина';
+document.getElementById('quizTopic').value='Общи знания';
+document.getElementById('quizQuestions').value='Коя е столицата на България? | София\nКолко е 5 × 6? | 30\nКолко дни има една седмица? | 7';
 }
+saveDrafts();
+notify('Примерът е попълнен.');
+}
+
+function parseQA(id){
+return lines(id).map(line=>{
+const p=line.split('|');
+return{
+question:p[0].trim(),
+answer:p.slice(1).join('|').trim()||'Добави отговор'
+};
+}).filter(q=>q.question);
+}
+
+function createGame(page){
+const quiz=page==='quizzes';
+const prefix=quiz?'quiz':'game';
+const type=quiz?'Викторина':'Игра';
+const title=value(prefix+'Title')||(quiz?'Моята викторина':'Моята игра');
+const subject=value(prefix+'Subject');
+const grade=value(prefix+'Grade');
+const topic=value(prefix+'Topic')||'Свободна тема';
+const questions=parseQA(prefix+'Questions');
+
+if(!questions.length){
+alert('Добави поне един въпрос във формат: въпрос | отговор.');
+return;
+}
+
+const mode=quiz?value('quizMode'):value('gameType');
+const html=`
+<h2>${escapeHTML(title)}</h2>
+<p><b>${escapeHTML(subject)}</b> · ${escapeHTML(grade)} · ${escapeHTML(topic)}</p>
+<p>Режим: ${escapeHTML(mode)}</p>
+<ol>
+${questions.map(q=>`
+<li style="margin-bottom:14px">
+${escapeHTML(q.question)}
+<details>
+<summary>Покажи отговора</summary>
+<p>${escapeHTML(q.answer)}</p>
+</details>
+</li>`).join('')}
+</ol>
+<p>Идея: давай точка за всеки верен отговор.</p>
+<button class="btn no-print" onclick="window.print()">🖨 Печат / PDF</button>
+`;
+const plain=`${title}\n${subject} · ${grade} · ${topic}\n`+
+questions.map((q,i)=>`${i+1}. ${q.question}\nОтговор: ${q.answer}`).join('\n');
+
+showResult(quiz?'quizResult':'gameResult',html);
+saveMaterial(type,title,subject,grade,html,plain);
+}
+
+function createWorksheet(){
+const title=value('wsTitle')||'Работен лист';
+const subject=value('wsSubject');
+const grade=value('wsGrade');
+const topic=value('wsTopic')||'________________';
+const tasks=lines('wsTasks');
+const finalTasks=tasks.length?tasks:Array.from(
+{length:Number(value('wsCount'))||10},
+(_,i)=>`${i+1}. __________________________________________`
+);
+
+const html=`
+<h2>${escapeHTML(title)}</h2>
+<p><b>Предмет:</b> ${escapeHTML(subject)} · <b>Клас:</b> ${escapeHTML(grade)}</p>
+<p><b>Тема:</b> ${escapeHTML(topic)}</p>
+<p>Име: __________________________ Дата: ______________</p>
+<ol>
+${finalTasks.map(t=>`
+<li style="margin-bottom:26px">
+${escapeHTML(t)}
+<div style="height:24px;border-bottom:1px solid #aaa"></div>
+</li>`).join('')}
+</ol>
+<button class="btn no-print" onclick="window.print()">🖨 Печат / PDF</button>
+`;
+
+showResult('wsResult',html);
+saveMaterial('Работен лист',title,subject,grade,html,
+`${title}\n${subject} · ${grade}\n${finalTasks.join('\n')}`);
+}
+
+function createTest(){
+const title=value('testTitle')||'Тест';
+const subject=value('testSubject');
+const grade=value('testGrade');
+const topic=value('testTopic')||'________________';
+const qs=parseQA('testQuestions');
+
+if(!qs.length){
+alert('Добави поне един въпрос във формат: въпрос | отговор.');
+return;
+}
+
+const html=`
+<h2>${escapeHTML(title)}</h2>
+<p>${escapeHTML(subject)} · ${escapeHTML(grade)} · ${escapeHTML(topic)}</p>
+<p>Име: __________________________ Дата: ______________</p>
+<ol>
+${qs.map(q=>`
+<li style="margin-bottom:24px">
+${escapeHTML(q.question)}
+<div style="height:22px;border-bottom:1px solid #aaa"></div>
+</li>`).join('')}
+</ol>
+<details>
+<summary><b>Ключ с отговори за учителя</b></summary>
+<ol>${qs.map(q=>`<li>${escapeHTML(q.answer)}</li>`).join('')}</ol>
+</details>
+<button class="btn no-print" onclick="window.print()">🖨 Печат / PDF</button>
+`;
+
+showResult('testResult',html);
+saveMaterial('Тест',title,subject,grade,html,
+`${title}\n${qs.map((q,i)=>`${i+1}. ${q.question}\nОтговор: ${q.answer}`).join('\n')}`);
+}
+
+function createPresentation(){
+const title=value('presTitle')||'Презентация за урок';
+const subject=value('presSubject');
+const grade=value('presGrade');
+const count=Number(value('presSlides'))||8;
+const goals=value('presGoals')||'Добави основните идеи на урока.';
+const suggestions=[
+'Заглавие и въведение',
+'Цели на урока',
+'Основни понятия',
+'Обяснение на темата',
+'Пример или казус',
+'Практическа задача',
+'Обобщение',
+'Въпроси за обсъждане',
+'Проверка на знанията',
+'Изводи и домашна работа',
+'Допълнителни примери',
+'Източници'
+];
+
+const html=`
+<h2>${escapeHTML(title)}</h2>
+<p>${escapeHTML(subject)} · ${escapeHTML(grade)}</p>
+<h3>Цели и идеи</h3>
+<p>${escapeHTML(goals)}</p>
+<h3>Структура на слайдовете</h3>
+<ol>
+${Array.from({length:count},(_,i)=>`
+<li style="margin-bottom:16px">
+<b>${escapeHTML(suggestions[i]||'Допълнителен слайд')}</b>
+<p>Бележки и визуални материали: ____________________</p>
+</li>`).join('')}
+</ol>
+<button class="btn no-print" onclick="window.print()">🖨 Печат / PDF</button>
+`;
+
+showResult('presResult',html);
+saveMaterial('Презентация',title,subject,grade,html,
+`${title}\n${goals}\n${suggestions.slice(0,count).join('\n')}`);
+}
+
+function createClass(){
+const name=value('className');
+if(!name){
+alert('Въведи име на класа.');
+return;
+}
+const year=value('classYear')||'Не е посочена';
+const students=lines('classStudents');
+data.classes.unshift({
+id:uid(),
+name,
+year,
+students,
+createdAt:new Date().toISOString()
+});
+persist();
+renderClasses();
+document.getElementById('className').value='';
+document.getElementById('classStudents').value='';
+notify('Класът е запазен.');
+}
+
+function renderClasses(){
+const el=document.getElementById('classList');
+if(!data.classes.length){
+el.innerHTML='<div class="empty">Все още няма добавени класове.</div>';
+return;
+}
+el.innerHTML=data.classes.map(c=>`
+<div class="material-card">
+<div class="material-top">
+<div><h3>${escapeHTML(c.name)}</h3><span class="pill">${escapeHTML(c.year)}</span></div>
+<span class="muted">${(c.students||[]).length} ученици</span>
+</div>
+${c.students?.length?`<details><summary>Покажи списъка</summary><ol>${c.students.map(s=>`<li>${escapeHTML(s)}</li>`).join('')}</ol></details>`:''}
+<div class="material-actions no-print">
+<button class="btn small" onclick="printClass('${c.id}')">🖨 Печат</button>
+<button class="btn small danger" onclick="deleteClass('${c.id}')">Изтрий</button>
+</div>
+</div>`).join('');
+}
+
+function deleteClass(id){
+if(!confirm('Да изтрия ли този клас?'))return;
+data.classes=data.classes.filter(c=>c.id!==id);
+persist();
+renderClasses();
+notify('Класът е изтрит.');
+}
+
+function printClass(id){
+const c=data.classes.find(x=>x.id===id);
+if(!c)return;
+openPrint(`<h1>${escapeHTML(c.name)}</h1><p>Учебна година: ${escapeHTML(c.year)}</p><ol>${(c.students||[]).map(s=>`<li>${escapeHTML(s)}</li>`).join('')}</ol>`,c.name);
+}
+
+function renderLibrary(){
+const el=document.getElementById('libraryList');
+if(!el)return;
+const q=(document.getElementById('librarySearch')?.value||'').toLocaleLowerCase('bg');
+const list=data.materials.filter(m=>[m.title,m.type,m.subject,m.grade,m.plain].join(' ').toLocaleLowerCase('bg').includes(q));
+
+if(!list.length){
+el.innerHTML=`<div class="empty">${data.materials.length?'Няма намерени материали.':'Все още няма създадени материали. Създай първия си материал от менюто.'}</div>`;
+return;
+}
+
+el.innerHTML=list.map(m=>`
+<article class="material-card">
+<div class="material-top">
+<div><h3>${escapeHTML(m.title)}</h3><p class="muted">${escapeHTML(m.subject||'Без предмет')} · ${escapeHTML(m.grade||'Без клас')}</p></div>
+<span class="pill">${escapeHTML(m.type)}</span>
+</div>
+<div class="material-actions no-print">
+<button class="btn small" onclick="viewMaterial('${m.id}')">👁 Преглед</button>
+<button class="btn small" onclick="editMaterial('${m.id}')">✏️ Редактирай</button>
+<button class="btn small" onclick="printMaterial('${m.id}')">🖨 Печат / PDF</button>
+<button class="btn small danger" onclick="deleteMaterial('${m.id}')">Изтрий</button>
+</div>
+</article>`).join('');
+}
+
+function viewMaterial(id){
+const m=data.materials.find(x=>x.id===id);
+if(!m)return;
+let view=document.getElementById('materialPreview');
+if(!view){
+view=document.createElement('div');
+view.id='materialPreview';
+view.className='result';
+document.querySelector('#library .workspace').appendChild(view);
+}
+view.innerHTML=`
+<div class="material-top">
+<h2>${escapeHTML(m.title)}</h2>
+<button class="btn small no-print" onclick="document.getElementById('materialPreview').classList.remove('show')">Затвори</button>
+</div>
+<div>${m.html}</div>`;
+view.classList.add('show');
+view.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function editMaterial(id){
+const m=data.materials.find(x=>x.id===id);
+if(!m)return;
+const newTitle=prompt('Редактирай заглавието:',m.title);
+if(newTitle===null)return;
+const newPlain=prompt('Редактирай текстовото съдържание (въведи обикновен текст):',m.plain||m.title);
+if(newPlain===null)return;
+m.title=newTitle.trim()||m.title;
+m.plain=newPlain;
+m.html=`<h2>${escapeHTML(m.title)}</h2><p>${escapeHTML(m.subject||'')} ${escapeHTML(m.grade||'')}</p><div style="white-space:pre-wrap">${escapeHTML(newPlain)}</div><button class="btn no-print" onclick="window.print()">🖨 Печат / PDF</button>`;
+persist();
+renderLibrary();
+notify('Промените са запазени.');
+}
+
+function deleteMaterial(id){
+if(!confirm('Да изтрия ли този материал?'))return;
+data.materials=data.materials.filter(m=>m.id!==id);
+persist();
+renderLibrary();
+notify('Материалът е изтрит.');
+}
+
+function printMaterial(id){
+const m=data.materials.find(x=>x.id===id);
+if(m)openPrint(m.html,m.title);
+}
+
+function openPrint(html,title='УчиУм'){
+const w=window.open('','_blank');
+if(!w){
+alert('Разреши изскачащите прозорци, за да отпечаташ материала.');
+return;
+}
+w.document.open();
+w.document.write(`<!DOCTYPE html><html lang="bg"><head><meta charset="utf-8"><title>${escapeHTML(title)}</title><style>body{font:16px/1.6 Arial,sans-serif;margin:32px;color:#111}li{margin-bottom:12px}button{display:none}summary{cursor:pointer}@media print{body{margin:18mm}}</style></head><body>${html}</body></html>`);
+w.document.close();
+w.focus();
+setTimeout(()=>w.print(),200);
+}
+
+function printResult(id){
+const el=document.getElementById(id);
+if(!el.classList.contains('show')){
+alert('Първо създай материала.');
+return;
+}
+window.print();
+}
+
+function addLibraryNote(){
+const title=prompt('Заглавие на бележката:');
+if(title===null||!title.trim())return;
+const plain=prompt('Текст на бележката:','');
+if(plain===null)return;
+saveMaterial('Бележка',title.trim(),'Общи','Всички класове',
+`<h2>${escapeHTML(title.trim())}</h2><div style="white-space:pre-wrap">${escapeHTML(plain)}</div><button class="btn no-print" onclick="window.print()">🖨 Печат / PDF</button>`,
+plain);
+renderLibrary();
+}
+
+function applySettings(){
+document.body.classList.remove('light-theme','aurora-theme','glass-theme','contrast-theme');
+if(settings.theme==='light')document.body.classList.add('light-theme');
+if(settings.theme==='aurora')document.body.classList.add('aurora-theme');
+if(settings.theme==='glass')document.body.classList.add('glass-theme');
+if(settings.theme==='contrast')document.body.classList.add('contrast-theme');
+
+const p=palettes[settings.palette]||palettes.cosmic;
+['--a','--b','--c','--d'].forEach((k,i)=>document.documentElement.style.setProperty(k,p[i]));
+document.documentElement.style.setProperty('--fontScale',settings.fontSize||'1');
+document.body.classList.toggle('effects',settings.effects!==false);
+
+const fs=document.getElementById('fontSize');
+if(fs)fs.value=settings.fontSize||'1';
+const et=document.getElementById('effectsToggle');
+if(et)et.checked=settings.effects!==false;
+
+document.querySelectorAll('[data-theme]').forEach(b=>b.classList.toggle('active',b.dataset.theme===settings.theme));
+document.querySelectorAll('[data-palette]').forEach(b=>b.classList.toggle('active',b.dataset.palette===settings.palette));
+}
+
+function setTheme(theme){
+settings.theme=theme;
+applySettings();
+saveSettings();
+notify('Темата е променена.');
+}
+
+function setPalette(palette){
+settings.palette=palette;
+applySettings();
+saveSettings();
+notify('Цветовата палитра е променена.');
+}
+
+function setFontSize(size){
+settings.fontSize=size;
+applySettings();
+saveSettings();
+}
+
+function toggleEffects(enabled){
+settings.effects=enabled;
+applySettings();
+saveSettings();
+}
+
+function exportBackup(){
+const backup={
+app:'УчиУм',
+version:3,
+exportedAt:new Date().toISOString(),
+data,
+settings,
+drafts:safeParse(localStorage.getItem(DRAFTS_KEY),'{}')
+};
+const blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});
+const url=URL.createObjectURL(blob);
+const a=document.createElement('a');
+a.href=url;
+a.download=`uchium-backup-${new Date().toISOString().slice(0,10)}.json`;
+document.body.appendChild(a);
+a.click();
+a.remove();
+URL.revokeObjectURL(url);
+notify('Архивът е изтеглен.');
+}
+
+function importBackup(event){
+const file=event.target.files?.[0];
+if(!file)return;
+const reader=new FileReader();
+reader.onload=()=>{
+try{
+const backup=JSON.parse(reader.result);
+const incoming=backup.data||backup;
+if(!Array.isArray(incoming.materials)||!Array.isArray(incoming.classes)){
+throw new Error('Файлът не е архив на УчиУм.');
+}
+if(!confirm('Възстановяването ще замени текущите материали и класове. Продължаваме ли?'))return;
+data={materials:incoming.materials,classes:incoming.classes};
+if(backup.settings)settings={...settings,...backup.settings};
+if(backup.drafts)localStorage.setItem(DRAFTS_KEY,JSON.stringify(backup.drafts));
+persist();
+saveSettings();
+applySettings();
+renderAll();
+notify('Архивът е възстановен успешно.');
+}catch(e){
+alert('Не успях да прочета архива. Избери валиден JSON архив на УчиУм.');
+}
+};
+reader.readAsText(file);
+event.target.value='';
+}
+
+function clearAllData(){
+if(!confirm('Сигурен ли си? Това ще изтрие всички материали, класове и чернови от този браузър.'))return;
+if(!confirm('Последна проверка: изтриваш ли всички локални данни? Направи архив, ако искаш да ги запазиш.'))return;
+data={materials:[],classes:[]};
+localStorage.removeItem(STORAGE_KEY);
+localStorage.removeItem(DRAFTS_KEY);
+persist();
+renderAll();
+notify('Локалните данни са изтрити.');
+}
+
+function saveDrafts(){
+const drafts={};
+document.querySelectorAll('input[id],textarea[id],select[id]').forEach(el=>{
+if(['librarySearch','fontSize','backupFile','effectsToggle'].includes(el.id))return;
+drafts[el.id]=el.value;
+});
+try{localStorage.setItem(DRAFTS_KEY,JSON.stringify(drafts))}
+catch{}
+}
+
+function restoreDrafts(){
+const drafts=safeParse(localStorage.getItem(DRAFTS_KEY),{});
+Object.entries(drafts).forEach(([id,v])=>{
+const el=document.getElementById(id);
+if(el&&typeof v==='string')el.value=v;
+});
+}
+
+let draftSaveTimer;
+document.addEventListener('input',e=>{
+if(e.target.matches('input,textarea,select')){
+clearTimeout(draftSaveTimer);
+draftSaveTimer=setTimeout(saveDrafts,250);
+}
+});
+document.addEventListener('change',e=>{
+if(e.target.matches('input,textarea,select'))saveDrafts();
+});
+
+function renderAll(){
+updateStats();
+renderLibrary();
+renderClasses();
+applySettings();
+}
+
+loadData();
 </script>
 </body>
 </html>
