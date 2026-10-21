@@ -3,414 +3,356 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>УчиУм | Учи по умен начин</title>
+<title>УчиУм | Образователна платформа</title>
 <style>
-:root{--bg:#0a1020;--panel:#141e34;--panel2:#1b2944;--text:#f3f6ff;--muted:#aab8d2;--accent:#7c5cff;--accent2:#20d9c1;--border:#2b3b59;--good:#32d296;--bad:#ff7185}
+:root{--bg:#090d1a;--panel:#131b30;--panel2:#1b2742;--border:#303c5d;--text:#f5f6ff;--muted:#a9b5d2;--a:#9a6bff;--b:#3bd9e8;--c:#ff5fbc}
 *{box-sizing:border-box}
-body{margin:0;background:radial-gradient(ellipse at top,#19274b 0,#0a1020 55%);color:var(--text);font-family:Arial,sans-serif;min-height:100vh}
+body{margin:0;background:var(--bg);color:var(--text);font:16px Arial,sans-serif}
 button,input,select,textarea{font:inherit}
-button{cursor:pointer;border:0;border-radius:11px;padding:11px 15px;font-weight:700;transition:.2s}
-button:hover{filter:brightness(1.12);transform:translateY(-1px)}
-.primary{background:linear-gradient(135deg,var(--accent),#a35cff);color:white}
-.secondary{background:var(--panel2);color:var(--text);border:1px solid var(--border)}
-.success{background:#124b43;color:#8fffe0}
-.danger{background:#512538;color:#ffc3ce}
-header{padding:24px max(20px,calc((100% - 1200px)/2));border-bottom:1px solid var(--border);background:#0c1425dd}
-.brand{display:flex;align-items:center;gap:12px}
-.logo{width:48px;height:48px;border-radius:15px;background:linear-gradient(135deg,#7c5cff,#21d9c1);display:grid;place-items:center;font-size:25px}
-h1{font-size:27px;margin:0}
-header p{margin:6px 0 0;color:var(--muted)}
-nav{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
-nav button{background:transparent;color:var(--muted);border:1px solid transparent}
-nav button.active,nav button:hover{background:var(--panel2);color:white;border-color:var(--border)}
-main{max-width:1200px;margin:auto;padding:24px 20px 70px}
-.page{display:none}.page.active{display:block}
-.hero{padding:30px;border:1px solid var(--border);border-radius:22px;background:linear-gradient(120deg,#202d50,#171d36 70%);margin-bottom:22px}
-.hero h2{font-size:clamp(27px,4vw,42px);margin:0 0 12px}
-.hero p{color:var(--muted);line-height:1.6;max-width:700px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
-.card{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:20px;min-width:0}
-.card h3{margin:0 0 12px}
-.card p{color:var(--muted);line-height:1.5}
-.bigicon{font-size:32px;margin-bottom:12px}
-label{display:block;font-size:14px;font-weight:700;margin:13px 0 7px}
-input,select,textarea{width:100%;padding:12px;background:#0d1729;color:var(--text);border:1px solid var(--border);border-radius:10px;outline:none}
-input:focus,select:focus,textarea:focus{border-color:var(--accent)}
-textarea{resize:vertical;min-height:90px}
-.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.row>*{flex:1}
+button{cursor:pointer;border:0;border-radius:10px;padding:11px 15px;background:var(--a);color:white;font-weight:bold}
+button:hover{filter:brightness(1.15)}
+input,select,textarea{width:100%;padding:12px;border:1px solid var(--border);border-radius:10px;background:#0d1427;color:var(--text);margin:6px 0 14px}
+textarea{min-height:100px;resize:vertical}
+header{padding:20px 24px;background:#0c1224;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
+.logo{font-size:27px;font-weight:900;color:var(--b)}.logo span{color:var(--a)}
+header small{color:var(--muted)}
+.layout{display:grid;grid-template-columns:225px 1fr;min-height:calc(100vh - 80px)}
+nav{background:#0c1224;padding:16px;border-right:1px solid var(--border)}
+nav button{display:block;width:100%;text-align:left;margin:5px 0;background:transparent;color:var(--muted)}
+nav button.active,nav button:hover{background:var(--panel2);color:white}
+main{padding:25px;min-width:0;max-width:1250px;width:100%;margin:auto}
+h1{font-size:clamp(25px,4vw,38px);margin:0 0 10px}
+h2{margin-top:0}p,.muted{color:var(--muted);line-height:1.6}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:20px 0}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:20px;margin:14px 0}
+.tile{cursor:pointer;transition:.2s}.tile:hover{transform:translateY(-3px);border-color:var(--a)}
+.emoji{font-size:30px}.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}.row>*{flex:1}
 .row button{flex:0 0 auto}
-.muted{color:var(--muted)}
-.small{font-size:13px}
-.section-title{display:flex;justify-content:space-between;gap:15px;align-items:center;flex-wrap:wrap;margin:22px 0 14px}
-.section-title h2{margin:0}
-.question{background:#0e182b;border:1px solid var(--border);padding:17px;border-radius:14px;margin:12px 0}
-.question h4{margin:0 0 12px;line-height:1.5}
-.options{display:grid;gap:8px}
-.option{display:flex;align-items:center;gap:10px;background:var(--panel2);padding:10px 12px;border-radius:10px;cursor:pointer;border:1px solid transparent}
-.option:hover{border-color:var(--accent)}
-.option input{width:auto}
-.answerbox{margin-top:10px}
-.feedback{margin-top:10px;font-weight:bold}
-.correct{color:var(--good)}.incorrect{color:var(--bad)}
-.pill{display:inline-block;padding:5px 9px;background:#29385b;border-radius:20px;font-size:12px;color:#dce5ff}
-hr{border:0;border-top:1px solid var(--border);margin:20px 0}
-.empty{text-align:center;padding:30px;color:var(--muted)}
-#worksheetPaper{background:white;color:#172033;padding:28px;border-radius:8px;margin-top:18px}
-#worksheetPaper h2{margin:0 0 8px}
-.paper-head{display:flex;gap:18px;flex-wrap:wrap;margin:16px 0 22px}
-.paper-head span{flex:1;min-width:180px;border-bottom:1px solid #555;padding-bottom:8px}
-.paper-question{margin:18px 0 24px;break-inside:avoid}
-.paper-question p{margin:0 0 10px}
-.write-line{height:32px;border-bottom:1px solid #b7bdc9}
-.paper-choice{margin:7px 0 7px 18px}
-.stats{font-size:28px;font-weight:800}
-footer{text-align:center;color:var(--muted);padding:24px;border-top:1px solid var(--border)}
-.notice{padding:13px;border:1px solid #3b527a;border-radius:12px;color:#c7d7ff;background:#142441;line-height:1.5}
-@media(max-width:600px){header{padding:18px}main{padding:18px 12px}.hero{padding:22px}.row>*{min-width:100%}h1{font-size:23px}}
-@media print{
-body{background:white;color:#172033}
-header,footer,nav,.no-print,.hero,.screen-only{display:none!important}
-main{max-width:none;padding:0;margin:0}
-.page{display:none!important}
-#worksheets.page.active{display:block!important}
-#worksheetPaper{display:block!important;margin:0;padding:10mm;background:white;color:#172033}
-.paper-question{break-inside:avoid}
-.write-line{height:30px}
-}
+.tag{display:inline-block;padding:5px 9px;border-radius:20px;background:#292044;color:#d9caff;font-size:12px}
+.answer{display:block;margin:8px 0;padding:12px;border:1px solid var(--border);border-radius:10px;cursor:pointer}
+.answer:hover{border-color:var(--b)}.answer input{width:auto;margin:0 8px 0 0}
+.hidden{display:none!important}
+.notice{padding:12px;border-radius:10px;background:#122b37;color:#a6f2ff;margin:12px 0}
+footer{text-align:center;color:var(--muted);padding:25px}
+@media(max-width:700px){.layout{grid-template-columns:1fr}nav{display:grid;grid-template-columns:repeat(2,1fr);border-right:0;border-bottom:1px solid var(--border)}nav button{font-size:13px;padding:10px}main{padding:15px}header{padding:16px}}
+@media print{body{background:white;color:black}header,nav,.no-print,footer{display:none!important}.layout{display:block}main{padding:0;max-width:none}.card{background:white;color:black;border:1px solid #aaa;break-inside:avoid}.muted,p{color:#333}input,textarea,select{background:white;color:black;border:0;border-bottom:1px solid #aaa}.answer{border-color:#aaa}}
 </style>
 </head>
 <body>
 <header>
- <div class="brand">
-  <div class="logo">🧠</div>
-  <div><h1>УчиУм</h1><p>Учи по умен начин. Създавай. Откривай. Успявай.</p></div>
- </div>
- <nav id="navigation">
-  <button class="active" data-page="home">🏠 Начало</button>
-  <button data-page="generator">✨ Измисли въпроси</button>
-  <button data-page="quiz">🎯 Викторина</button>
-  <button data-page="worksheets">📝 Творческа работилница</button>
-  <button data-page="library">📚 Моите материали</button>
-  <button data-page="settings">⚙️ Настройки</button>
- </nav>
+  <div class="topbar-brand">
+    <div class="logo">Учи<span>Ум</span> ✦</div>
+    <small>Платформа за учене, преподаване и творчество</small>
+  </div>
+  <div class="row no-print" style="flex:0 1 280px">
+    <button onclick="showPage('worksheets')">＋ Създай материал</button>
+  </div>
 </header>
 
+<div class="layout">
+<nav class="no-print" id="nav">
+  <button class="active" data-page="home" onclick="showPage('home')">🏠 Начало</button>
+  <button data-page="games" onclick="showPage('games')">🎮 Игри</button>
+  <button data-page="quizzes" onclick="showPage('quizzes')">🧠 Викторини</button>
+  <button data-page="worksheets" onclick="showPage('worksheets')">✏️ Творческа работилница</button>
+  <button data-page="tests" onclick="showPage('tests')">📝 Тестове</button>
+  <button data-page="presentations" onclick="showPage('presentations')">📽️ Презентации</button>
+  <button data-page="classes" onclick="showPage('classes')">👩‍🏫 Класове</button>
+  <button data-page="library" onclick="showPage('library')">📚 Библиотека</button>
+  <button data-page="settings" onclick="showPage('settings')">⚙️ Настройки</button>
+</nav>
+
 <main>
-<section class="page active" id="home">
- <div class="hero">
-  <span class="pill">ТВОЯТА УЧЕБНА ЛАБОРАТОРИЯ</span>
-  <h2>Знанието е приключение. 🚀</h2>
-  <p>Създавай въпроси, подготвяй работни листове, упражнявай се с викторини и разпечатвай материалите си. Всичко е събрано в едно място.</p>
-  <div class="row">
-   <button class="primary" onclick="showPage('generator')">✨ Създай въпроси</button>
-   <button class="secondary" onclick="showPage('worksheets')">📝 Направи работен лист</button>
+<section id="home" class="page">
+  <span class="tag">ТВОЯТА УЧЕБНА ВСЕЛЕНА</span>
+  <h1>Добре дошъл в УчиУм! 🚀</h1>
+  <p>Създавай работни листове, тестове, викторини и учебни материали на едно място.</p>
+  <div class="grid">
+    <div class="card tile" onclick="showPage('worksheets')"><div class="emoji">✏️</div><h2>Творческа работилница</h2><p>Създай работен лист с въпроси и място за отговори.</p></div>
+    <div class="card tile" onclick="showPage('quizzes')"><div class="emoji">🧠</div><h2>Викторини</h2><p>Провери знанията си с въпроси с избираем отговор.</p></div>
+    <div class="card tile" onclick="showPage('tests')"><div class="emoji">📝</div><h2>Тестове</h2><p>Направи тест, провери отговорите и виж резултата.</p></div>
+    <div class="card tile" onclick="showPage('library')"><div class="emoji">📚</div><h2>Библиотека</h2><p>Отвори запазените си материали.</p></div>
   </div>
- </div>
- <div class="grid">
-  <div class="card"><div class="bigicon">✨</div><h3>Генератор на въпроси</h3><p>Избирай предмет, тема, трудност и брой. Комбинирай въпроси с избор на отговор и отворени задачи.</p><button class="primary" onclick="showPage('generator')">Започни</button></div>
-  <div class="card"><div class="bigicon">🎮</div><h3>Викторина</h3><p>Отговаряй, проверявай резултата и виж кои знания вече си овладял.</p><button class="primary" onclick="showPage('quiz')">Играй</button></div>
-  <div class="card"><div class="bigicon">🖨️</div><h3>Работни листове</h3><p>Подготвяй чисти листове за A4 с място за име, клас и писмени отговори.</p><button class="primary" onclick="showPage('worksheets')">Създай лист</button></div>
-  <div class="card"><div class="bigicon">📚</div><h3>Твоята библиотека</h3><p>Запазвай създадените материали в браузъра и ги отваряй отново.</p><button class="primary" onclick="showPage('library')">Моите материали</button></div>
- </div>
- <div class="section-title"><h2>📊 Твоето УчиУм табло</h2></div>
- <div class="grid">
-  <div class="card"><div class="muted">Запазени материали</div><div class="stats" id="statMaterials">0</div></div>
-  <div class="card"><div class="muted">Създадени въпроси</div><div class="stats" id="statQuestions">0</div></div>
-  <div class="card"><div class="muted">Последен резултат</div><div class="stats" id="statScore">–</div></div>
- </div>
+  <div class="card"><h2>✨ Какво можеш да правиш?</h2><p>Избирай предмет и тема, генерирай разнообразни въпроси, добавяй свои задачи, запазвай материалите и ги разпечатвай на хартия.</p></div>
 </section>
 
-<section class="page" id="generator">
- <div class="section-title"><h2>✨ Измисляне на въпроси</h2><span class="pill">Генератор</span></div>
- <p class="muted">Посочи какво учиш и създай комплект с разнообразни задачи.</p>
- <div class="grid">
+<section id="worksheets" class="page hidden">
+  <h1>✏️ Творческа работилница</h1>
+  <p>Създай работен лист с въпроси със затворен и отворен отговор.</p>
   <div class="card">
-   <h3>Настройки на комплекта</h3>
-   <label for="subject">Предмет</label>
-   <select id="subject">
-    <option>Общи знания</option><option>История</option><option>География</option><option>Биология</option><option>Математика</option><option>Български език</option><option>Литература</option><option>Физика</option><option>Химия</option><option>Астрономия</option><option>Информатика</option><option>Английски език</option>
-   </select>
-   <label for="topic">Тема</label>
-   <input id="topic" placeholder="Например: Древна Гърция">
-   <label for="grade">Клас / ниво</label>
-   <select id="grade"><option>Начално ниво</option><option>5.–7. клас</option><option>8.–10. клас</option><option>11.–12. клас</option><option>Предизвикателство</option></select>
-   <label for="count">Брой въпроси</label>
-   <select id="count"><option value="5">5 въпроса</option><option value="10" selected>10 въпроса</option><option value="15">15 въпроса</option><option value="20">20 въпроса</option></select>
-   <label for="mix">Видове въпроси</label>
-   <select id="mix"><option value="mixed">Смесени: затворени и отворени</option><option value="closed">Само затворени</option><option value="open">Само отворени</option></select>
-   <label for="difficulty">Трудност</label>
-   <select id="difficulty"><option>Лесна</option><option selected>Средна</option><option>Трудна</option></select>
-   <button class="primary" style="width:100%;margin-top:18px" onclick="generateQuestions()">✨ ИЗМИСЛИ ВЪПРОСИ</button>
-   <p class="small muted">Важно: генераторът използва вградени примерни знания и шаблони. За свободно генериране по всяка тема с изкуствен интелект е необходима отделна AI услуга.</p>
+    <label>Заглавие на работния лист</label>
+    <input id="wTitle" placeholder="Например: Древна Гърция">
+    <div class="row">
+      <div><label>Име на ученика</label><input id="wName" placeholder="Име и фамилия"></div>
+      <div><label>Клас</label><input id="wClass" placeholder="Например: 5. клас"></div>
+      <div><label>Дата</label><input id="wDate" type="date"></div>
+    </div>
+    <div class="row">
+      <div><label>Предмет</label>
+        <select id="wSubject">
+          <option>История</option><option>География</option><option>Български език</option><option>Литература</option><option>Математика</option><option>Човекът и природата</option><option>Биология</option><option>Физика</option><option>Химия</option><option>Информатика</option><option>Английски език</option><option>Общи знания</option>
+        </select>
+      </div>
+      <div><label>Тема</label><input id="wTopic" placeholder="Например: Планетите"></div>
+    </div>
+    <div class="row">
+      <div><label>Брой въпроси</label><select id="wCount"><option>5</option><option selected>10</option><option>15</option><option>20</option></select></div>
+      <div><label>Трудност</label><select id="wLevel"><option>Лесна</option><option selected>Средна</option><option>Трудна</option></select></div>
+      <div><label>Вид въпроси</label><select id="wType"><option value="both">Смесени</option><option value="closed">Само затворени</option><option value="open">Само отворени</option></select></div>
+    </div>
+    <button onclick="generateWorksheet()">✨ Създай въпросите</button>
+    <button onclick="addCustomQuestion()" style="background:#354666">＋ Добави свой въпрос</button>
   </div>
+  <div id="worksheetPreview"></div>
+  <div class="row no-print">
+    <button onclick="saveWorksheet()">💾 Запази в библиотеката</button>
+    <button onclick="window.print()" style="background:#354666">🖨️ Принтирай / PDF</button>
+  </div>
+</section>
+
+<section id="quizzes" class="page hidden">
+  <h1>🧠 Викторини</h1><p>Избери тема и тествай знанията си.</p>
   <div class="card">
-   <h3>Как работи?</h3>
-   <p>🧩 <b>Затворени въпроси</b><br>Няколко възможни отговора и посочен верен отговор, когато има проверено знание в базата.</p>
-   <p>✍️ <b>Отворени въпроси</b><br>Задачи за обяснение, сравнение, описание и аргументация.</p>
-   <p>🎚️ <b>Различна трудност</b><br>От припомняне на факти до задачи, изискващи разсъждение.</p>
-   <p>🖨️ <b>Готово за печат</b><br>Изпрати комплекта в „Творческа работилница“ и го отпечатай на хартия.</p>
-   <div class="notice">За точни въпроси по конкретен урок въведи ясна тема. Ако не разполагаме с проверен факт за нея, генераторът ще създаде отворена задача, вместо да измисля фалшив верен отговор.</div>
+    <label>Тема</label><input id="qTopic" placeholder="Например: Слънчевата система">
+    <label>Предмет</label><select id="qSubject"><option>Общи знания</option><option>История</option><option>География</option><option>Математика</option><option>Биология</option></select>
+    <button onclick="startQuiz()">▶ Започни викторина</button>
   </div>
- </div>
- <div class="section-title"><h2>Твоят комплект</h2><div class="row"><button class="secondary" onclick="sendToWorksheet()">📝 Към работен лист</button><button class="secondary" onclick="saveCurrent()">💾 Запази</button></div></div>
- <div id="generatedQuestions"><div class="empty">Тук ще се появят създадените въпроси. Избери настройки и натисни бутона. ✨</div></div>
+  <div id="quizArea"></div>
 </section>
 
-<section class="page" id="quiz">
- <div class="section-title"><h2>🎯 Викторина</h2><span class="pill">Провери знанията си</span></div>
- <div class="card">
-  <div class="row">
-   <div><label for="quizSubject">Предмет</label><select id="quizSubject"><option>Общи знания</option><option>История</option><option>География</option><option>Биология</option><option>Математика</option><option>Астрономия</option></select></div>
-   <div><label for="quizCount">Въпроси</label><select id="quizCount"><option value="5">5</option><option value="10">10</option></select></div>
-   <button class="primary" onclick="startQuiz()">🚀 Започни викторина</button>
+<section id="games" class="page hidden">
+  <h1>🎮 Учебни игри</h1><p>Играй, отговаряй и събирай точки!</p>
+  <div class="grid">
+    <div class="card"><div class="emoji">⚡</div><h2>Бърз отговор</h2><p>Отговори на поредица от въпроси.</p><button onclick="showPage('quizzes')">Играй</button></div>
+    <div class="card"><div class="emoji">🎯</div><h2>Предизвикателство</h2><p>Създай викторина по избрана тема.</p><button onclick="showPage('quizzes')">Започни</button></div>
+    <div class="card"><div class="emoji">🧩</div><h2>Моята задача</h2><p>Направи собствен учебен лист.</p><button onclick="showPage('worksheets')">Създай</button></div>
   </div>
- </div>
- <div id="quizArea"></div>
 </section>
 
-<section class="page" id="worksheets">
- <div class="section-title"><h2>📝 Творческа работилница</h2><span class="pill">Формат A4</span></div>
- <div class="card no-print">
-  <h3>Настрой своя работен лист</h3>
-  <label for="worksheetTitle">Заглавие</label><input id="worksheetTitle" value="Работен лист">
-  <label for="studentName">Име на ученика (по желание)</label><input id="studentName" placeholder="Остави празно, за да има място за писане">
-  <label for="worksheetClass">Клас</label><input id="worksheetClass" placeholder="Например: 6. клас">
-  <label for="worksheetInstructions">Инструкции</label><textarea id="worksheetInstructions" placeholder="Прочети внимателно въпросите и запиши отговорите си."></textarea>
-  <div class="row" style="margin-top:15px">
-   <button class="primary" onclick="renderPaper()">🔄 Обнови листа</button>
-   <button class="success" onclick="window.print()">🖨️ Печат / Запази като PDF</button>
-   <button class="secondary" onclick="saveCurrent()">💾 Запази материал</button>
+<section id="tests" class="page hidden">
+  <h1>📝 Тестове</h1><p>Генерирай въпроси и направи тест за упражнение.</p>
+  <div class="card">
+    <label>Предмет</label><select id="tSubject"><option>История</option><option>География</option><option>Математика</option><option>Биология</option><option>Общи знания</option></select>
+    <label>Тема</label><input id="tTopic" placeholder="Въведи тема">
+    <button onclick="makeTest()">Създай тест</button>
   </div>
- </div>
- <div id="worksheetPaper">
-  <h2>Работен лист</h2><p>Създай въпроси в генератора, за да се появят тук.</p>
- </div>
+  <div id="testArea"></div>
 </section>
 
-<section class="page" id="library">
- <div class="section-title"><h2>📚 Моите материали</h2><button class="danger" onclick="clearLibrary()">Изтрий всички</button></div>
- <p class="muted">Материалите се запазват локално в този браузър. За пренасяне на друго устройство използвай архивиране.</p>
- <div class="row no-print" style="margin-bottom:18px">
-  <button class="secondary" onclick="exportData()">⬇️ Изтегли резервно копие</button>
-  <button class="secondary" onclick="document.getElementById('importFile').click()">⬆️ Импортирай копие</button>
-  <input id="importFile" type="file" accept=".json,application/json" hidden onchange="importData(event)">
- </div>
- <div id="libraryList" class="grid"></div>
+<section id="presentations" class="page hidden">
+  <h1>📽️ Презентации</h1><p>Направи план на презентация, който можеш да копираш в PowerPoint.</p>
+  <div class="card">
+    <label>Тема</label><input id="pTopic" placeholder="Тема на презентацията">
+    <label>Брой слайдове</label><select id="pCount"><option>5</option><option selected>7</option><option>10</option><option>12</option></select>
+    <button onclick="makePresentation()">Създай план</button>
+  </div>
+  <div id="presentationArea"></div>
 </section>
 
-<section class="page" id="settings">
- <div class="section-title"><h2>⚙️ Настройки</h2></div>
- <div class="grid">
-  <div class="card"><h3>🎨 Изглед</h3><p>Избери акцентния цвят на платформата.</p>
-   <label for="themeColor">Акцентен цвят</label>
-   <select id="themeColor" onchange="changeTheme(this.value)"><option value="#7c5cff">Лилаво</option><option value="#168bff">Синьо</option><option value="#00b894">Зелено</option><option value="#ff7a45">Оранжево</option><option value="#e84393">Розово</option></select>
-  </div>
-  <div class="card"><h3>💾 Данни</h3><p>Твоите материали се съхраняват в локалната памет на браузъра. Изчистването на данните на браузъра може да ги премахне.</p><button class="secondary" onclick="exportData()">Изтегли резервно копие</button></div>
-  <div class="card"><h3>ℹ️ За УчиУм</h3><p>УчиУм е образователен инструмент за създаване на въпроси, упражнения и работни листове.</p><p class="small muted">Този вариант работи без сървър и може да бъде публикуван чрез GitHub Pages.</p></div>
- </div>
+<section id="classes" class="page hidden">
+  <h1>👩‍🏫 Класове</h1><p>Организирай учебните си групи на това устройство.</p>
+  <div class="card"><label>Име на класа</label><input id="className" placeholder="Например: 5. А клас"><button onclick="addClass()">＋ Добави клас</button></div>
+  <div id="classList"></div>
+</section>
+
+<section id="library" class="page hidden">
+  <h1>📚 Библиотека</h1><p>Запазените материали се съхраняват в този браузър.</p>
+  <div id="libraryList"></div>
+</section>
+
+<section id="settings" class="page hidden">
+  <h1>⚙️ Настройки</h1>
+  <div class="card"><h2>Изглед</h2><label>Цвят на акцента</label><select id="accent" onchange="setAccent(this.value)"><option value="#9a6bff">Лилаво</option><option value="#1688ff">Синьо</option><option value="#00a878">Зелено</option><option value="#e84b9b">Розово</option><option value="#e58b24">Оранжево</option></select></div>
+  <div class="card"><h2>Резервно копие</h2><p>Изтегли или възстанови запазените материали.</p><button onclick="exportData()">Изтегли копие</button><label>Импортирай JSON файл</label><input type="file" accept=".json,application/json" onchange="importData(event)"></div>
+  <div class="card"><h2>За УчиУм</h2><p>Това е локална версия. Материалите се запазват в браузъра на устройството. За AI генериране на произволни въпроси е необходима отделна AI услуга и защитен сървър.</p></div>
 </section>
 </main>
-<footer>🧠 УчиУм · Учи с любопитство. Растѝ с всяка задача.</footer>
+</div>
+<footer>УчиУм ✦ Учи с любопитство, създавай с въображение.</footer>
 
 <script>
 const $=id=>document.getElementById(id);
-let generated=[];
-let lastScore=null;
-let quizQuestions=[];
-let quizAnswers={};
-let library=loadJSON("uchium_library",[]);
-let questionTotal=Number(localStorage.getItem("uchium_question_total")||0);
+const DBKEY="uchium_saved_v1";
+let saved=JSON.parse(localStorage.getItem(DBKEY)||"[]");
+let currentQuestions=[];
 
-function loadJSON(key,fallback){try{return JSON.parse(localStorage.getItem(key))??fallback}catch(e){return fallback}}
-function persist(){try{localStorage.setItem("uchium_library",JSON.stringify(library));localStorage.setItem("uchium_question_total",questionTotal)}catch(e){alert("Паметта на браузъра е пълна. Изтегли резервно копие и изтрий ненужни материали.")}updateStats()}
-function showPage(name){
- document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===name));
- document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===name));
- if(name==="worksheets")renderPaper();
- if(name==="library")renderLibrary();
- window.scrollTo({top:0,behavior:"smooth"});
+function showPage(id){
+ document.querySelectorAll(".page").forEach(p=>p.classList.add("hidden"));
+ $(id).classList.remove("hidden");
+ document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===id));
+ if(id==="library")renderLibrary();
+ if(id==="classes")renderClasses();
+ window.scrollTo(0,0);
 }
-$("navigation").addEventListener("click",e=>{const b=e.target.closest("button[data-page]");if(b)showPage(b.dataset.page)});
-function updateStats(){$("statMaterials").textContent=library.length;$("statQuestions").textContent=questionTotal;$("statScore").textContent=lastScore===null?"–":lastScore+"%"}
-function shuffle(arr){return [...arr].sort(()=>Math.random()-.5)}
-function mc(subject,question,options,answer,explanation=""){return{subject,type:"closed",question,options,answer,explanation}}
-function op(subject,question){return{subject,type:"open",question}}
-const bank={
- "Общи знания":[
- mc("Общи знания","Коя е най-голямата планета в Слънчевата система?",["Юпитер","Марс","Земя","Венера"],"Юпитер","Юпитер е най-голямата планета в Слънчевата система."),
- mc("Общи знания","Колко страни има шестоъгълник?",["5","6","7","8"],"6"),
- mc("Общи знания","Кой океан е най-голям?",["Атлантически","Индийски","Тих","Северен ледовит"],"Тих"),
- mc("Общи знания","Колко минути има в един час?",["30","45","60","100"],"60"),
- mc("Общи знания","Коя звезда е най-близо до Земята?",["Сириус","Слънцето","Полярната звезда","Вега"],"Слънцето")
- ],
- "История":[
- mc("История","Коя цивилизация е известна с демокрацията в Атина?",["Древногръцката","Древноегипетската","Шумерската","Маите"],"Древногръцката"),
- mc("История","Коя река е била жизненоважна за Древен Египет?",["Дунав","Нил","Рейн","Тибър"],"Нил"),
- mc("История","Къде са се провеждали древните олимпийски игри?",["Олимпия","Спарта","Рим","Троя"],"Олимпия"),
- mc("История","Коя древна държава е имала столица Рим?",["Римската империя","Персийската империя","Древен Египет","Вавилон"],"Римската империя")
- ],
- "География":[
- mc("География","Коя е столицата на България?",["Пловдив","Варна","София","Бургас"],"София"),
- mc("География","На кой континент се намира България?",["Азия","Европа","Африка","Южна Америка"],"Европа"),
- mc("География","Коя е най-дългата река в България?",["Марица","Искър","Струма","Тунджа"],"Искър"),
- mc("География","Кое море граничи с източната част на България?",["Черно море","Адриатическо море","Балтийско море","Средиземно море"],"Черно море")
- ],
- "Биология":[
- mc("Биология","Кой орган изпомпва кръвта в човешкото тяло?",["Стомахът","Сърцето","Белият дроб","Черният дроб"],"Сърцето"),
- mc("Биология","Как растенията използват слънчевата светлина, за да произвеждат хранителни вещества?",["Фотосинтеза","Изпарение","Храносмилане","Ферментация"],"Фотосинтеза"),
- mc("Биология","Коя част на растението обикновено поглъща вода от почвата?",["Цветът","Коренът","Плодът","Листният връх"],"Коренът")
- ],
- "Математика":[
- mc("Математика","Колко е 7 × 8?",["48","54","56","64"],"56"),
- mc("Математика","Колко градуса е правият ъгъл?",["45°","90°","120°","180°"],"90°"),
- mc("Математика","Кое число е просто?",["9","15","17","21"],"17"),
- mc("Математика","Колко е 144 ÷ 12?",["10","11","12","14"],"12")
- ],
- "Астрономия":[
- mc("Астрономия","Коя планета е известна с големите си пръстени?",["Сатурн","Меркурий","Марс","Земя"],"Сатурн"),
- mc("Астрономия","Какво е Слънцето?",["Планета","Звезда","Комета","Сателит"],"Звезда"),
- mc("Астрономия","Коя планета е най-близо до Слънцето?",["Венера","Земя","Меркурий","Марс"],"Меркурий")
- ]
+function escapeHTML(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+
+const banks={
+"Древна Гърция":[
+{q:"Къде се провеждали древните Олимпийски игри?",a:["Олимпия","Спарта","Атина","Троя"],c:0,why:"Древните Олимпийски игри се провеждали в Олимпия."},
+{q:"Кой бог бил владетел на боговете според древногръцката митология?",a:["Аполон","Зевс","Хермес","Арес"],c:1,why:"Зевс бил смятан за владетел на боговете."},
+{q:"Коя полисна държава е известна с военното си общество?",a:["Спарта","Коринт","Милет","Делфи"],c:0,why:"Спарта била известна с военното си възпитание."},
+{q:"Кой град се смята за родно място на демокрацията в Древна Гърция?",a:["Атина","Троя","Спарта","Микена"],c:0,why:"В Атина се развила ранна форма на демокрация."},
+{q:"Как се наричало мястото, посветено на боговете, в Олимпия?",a:["Светилище","Форум","Колизеум","Пирамида"],c:0,why:"Олимпия била важен религиозен център със светилища."}
+],
+"Слънчевата система":[
+{q:"Коя звезда е в центъра на Слънчевата система?",a:["Сириус","Слънцето","Полярната звезда","Вега"],c:1,why:"Слънцето е звездата в центъра на нашата система."},
+{q:"Коя е най-голямата планета в Слънчевата система?",a:["Земя","Марс","Юпитер","Венера"],c:2,why:"Юпитер е най-голямата планета в Слънчевата система."},
+{q:"Коя планета е известна с видимите си пръстени?",a:["Сатурн","Меркурий","Марс","Земя"],c:0,why:"Сатурн има впечатляваща система от пръстени."},
+{q:"Коя планета е домът на хората?",a:["Венера","Земя","Нептун","Юпитер"],c:1,why:"Хората живеят на планетата Земя."},
+{q:"Коя планета е най-близо до Слънцето?",a:["Меркурий","Земя","Марс","Сатурн"],c:0,why:"Меркурий е най-близката до Слънцето планета."}
+],
+"България":[
+{q:"Коя е столицата на България?",a:["Пловдив","Варна","София","Бургас"],c:2,why:"Столицата на България е София."},
+{q:"На коя дата България отбелязва националния си празник?",a:["3 март","6 септември","24 май","1 ноември"],c:0,why:"Националният празник е 3 март."},
+{q:"Коя планина е най-високата в България?",a:["Родопи","Рила","Пирин","Стара планина"],c:1,why:"В Рила се намира връх Мусала, най-високият в България."},
+{q:"Кое море граничи с България на изток?",a:["Черно море","Адриатическо море","Егейско море","Балтийско море"],c:0,why:"България има излаз на Черно море."},
+{q:"Кой е най-високият връх в България?",a:["Вихрен","Ботев","Мусала","Черни връх"],c:2,why:"Връх Мусала е висок 2925 метра."}
+],
+"Общи знания":[
+{q:"Колко дни има една обикновена година?",a:["364","365","366","360"],c:1,why:"Обикновената година има 365 дни."},
+{q:"Колко страни има триъгълникът?",a:["2","3","4","5"],c:1,why:"Триъгълникът има три страни."},
+{q:"Коя е естествената спътница на Земята?",a:["Марс","Луната","Слънцето","Венера"],c:1,why:"Луната е естественият спътник на Земята."},
+{q:"Колко минути има един час?",a:["30","45","60","100"],c:2,why:"Един час има 60 минути."},
+{q:"При каква температура водата замръзва при стандартно атмосферно налягане?",a:["0°C","10°C","50°C","100°C"],c:0,why:"Водата замръзва при 0°C при стандартно атмосферно налягане."}
+],
+"География":[
+{q:"Кой е най-големият океан на Земята?",a:["Атлантически","Индийски","Тих","Северен ледовит"],c:2,why:"Тихият океан е най-големият океан."},
+{q:"На кой континент се намира България?",a:["Азия","Европа","Африка","Южна Америка"],c:1,why:"България се намира в Европа."},
+{q:"Коя е най-дългата река в България?",a:["Марица","Искър","Струма","Янтра"],c:1,why:"Искър е най-дългата река, която протича изцяло в България."},
+{q:"Коя е столицата на Франция?",a:["Рим","Мадрид","Париж","Берлин"],c:2,why:"Столицата на Франция е Париж."}
+],
+"Математика":[
+{q:"Колко е 7 × 8?",a:["54","56","64","48"],c:1,why:"7 × 8 = 56."},
+{q:"Колко градуса е правият ъгъл?",a:["45°","90°","180°","360°"],c:1,why:"Правият ъгъл е 90 градуса."},
+{q:"Колко е 100 : 4?",a:["20","25","40","50"],c:1,why:"100 разделено на 4 е 25."},
+{q:"Кое число е просто?",a:["9","15","13","21"],c:2,why:"13 има точно два положителни делителя: 1 и 13."}
+],
+"Биология":[
+{q:"Кой орган изпомпва кръвта в човешкото тяло?",a:["Белият дроб","Стомахът","Сърцето","Черният дроб"],c:2,why:"Сърцето изпомпва кръвта през кръвоносната система."},
+{q:"Как растенията използват слънчевата светлина?",a:["За фотосинтеза","За дишане само през нощта","За да създават почва","За да произвеждат камъни"],c:0,why:"При фотосинтезата растенията използват светлина, за да произвеждат органични вещества."},
+{q:"Кой газ е необходим на хората за клетъчното дишане?",a:["Кислород","Хелий","Неон","Водород"],c:0,why:"Кислородът участва в клетъчното дишане."}
+],
+"История":[
+{q:"Коя цивилизация построила пирамидите в Гиза?",a:["Древните египтяни","Римляните","Викингите","Маите"],c:0,why:"Пирамидите в Гиза са построени в Древен Египет."},
+{q:"Кой град е бил център на Римската империя?",a:["Рим","Атина","Вавилон","Персеполис"],c:0,why:"Рим е историческият център на Римската империя."},
+{q:"Как се нарича периодът на Средновековието?",a:["Средни векове","Каменна ера","Новото време","Античност"],c:0,why:"Средновековието е исторически период между Античността и Новото време."}
+]
 };
-const openTemplates=[
-"Обясни със свои думи най-важните понятия по темата „{topic}“. Дай пример.",
-"Посочи три важни факта за „{topic}“ и обясни защо са значими.",
-"Сравни две понятия или събития, свързани с „{topic}“. Напиши поне две прилики или разлики.",
-"Състави собствен пример, който показва какво си научил за „{topic}“.",
-"Какво би се променило, ако едно важно условие по темата „{topic}“ беше различно? Обоснови отговора си.",
-"Напиши кратко обяснение на „{topic}“, така че ученик от по-малък клас да го разбере.",
-"Измисли един въпрос по темата „{topic}“ и напиши верния отговор.",
-"Кои са най-важните три неща, които трябва да запомним за „{topic}“?"
-];
-function getBank(subject){
- if(bank[subject])return bank[subject];
- if(subject==="Български език")return [
- mc(subject,"Коя дума е съществително име?",["красив","тичам","книга","бързо"],"книга"),
- mc(subject,"Кое изречение завършва с въпросителен знак?",["Днес е слънчево.","Къде е учебникът?","Отвори вратата!","Колко е красиво."],"Къде е учебникът?")
- ];
- if(subject==="Литература")return [
- mc(subject,"Кой е авторът на „Под игото“?",["Иван Вазов","Елин Пелин","Христо Ботев","Йордан Йовков"],"Иван Вазов"),
- mc(subject,"Кой жанр обикновено разказва за необикновени събития и герои?",["Приказка","Рецепта","Инструкция","Обява"],"Приказка")
- ];
- if(subject==="Физика")return [
- mc(subject,"В каква единица се измерва силата?",["Нютон","Метър","Литър","Секунда"],"Нютон"),
- mc(subject,"Какво привлича предметите към Земята?",["Гравитацията","Звукът","Светлината","Магнитният север"],"Гравитацията")
- ];
- if(subject==="Химия")return [
- mc(subject,"Кой е химичният символ на кислорода?",["O","K","H","C"],"O"),
- mc(subject,"Коя е формулата на водата?",["CO₂","H₂O","O₂","NaCl"],"H₂O")
- ];
- if(subject==="Информатика")return [
- mc(subject,"Кое от изброените е език за програмиране?",["JavaScript","HTML само по себе си","JPEG","Wi-Fi"],"JavaScript"),
- mc(subject,"Какво е алгоритъм?",["Последователност от стъпки за решаване на задача","Вид монитор","Файл с музика","Компютърен кабел"],"Последователност от стъпки за решаване на задача")
- ];
- if(subject==="Английски език")return [
- mc(subject,"Как се превежда „apple“ на български?",["Ябълка","Круша","Портокал","Слива"],"Ябълка"),
- mc(subject,"Коя дума означава „училище“?",["School","House","Chair","Window"],"School")
- ];
- return [];
+
+function findBank(topic,subject){
+ const t=(topic||"").toLocaleLowerCase("bg");
+ if(t.includes("гръц")||t.includes("олимп")||t.includes("атин")||t.includes("спарта"))return banks["Древна Гърция"];
+ if(t.includes("слън")||t.includes("планет")||t.includes("космос"))return banks["Слънчевата система"];
+ if(t.includes("българ")||t.includes("софия")||t.includes("мусала"))return banks["България"];
+ if(t.includes("географ")||t.includes("океан")||t.includes("континент")||t.includes("река"))return banks["География"];
+ if(t.includes("математ")||t.includes("ъгъл")||t.includes("умнож"))return banks["Математика"];
+ if(t.includes("биолог")||t.includes("растен")||t.includes("човешкото тяло"))return banks["Биология"];
+ if(t.includes("истор")||t.includes("рим")||t.includes("егип"))return banks["История"];
+ if(banks[subject])return banks[subject];
+ return banks["Общи знания"];
 }
-function generateQuestions(){
- const subject=$("subject").value,topic=$("topic").value.trim()||subject,grade=$("grade").value,diff=$("difficulty").value,count=+$("count").value,mix=$("mix").value;
- const base=shuffle(getBank(subject));
- const result=[];
- const closedCount=mix==="open"?0:mix==="closed"?count:Math.ceil(count/2);
- for(let i=0;i<Math.min(closedCount,count);i++){
-  if(base.length){
-   const q=base[i%base.length];
-   result.push({...q,question:q.question,source:"bank"});
-  }else{
-   result.push(op(subject,`По темата „${topic}“: избери едно основно понятие и обясни какво означава. Дай конкретен пример.`));
-  }
+function makeQuestionSet(topic,subject,count,type){
+ const bank=findBank(topic,subject);
+ const out=[];
+ for(let i=0;i<count;i++){
+  const base=bank[i%bank.length];
+  const closed={kind:"closed",q:base.q,a:[...base.a],c:base.c,why:base.why};
+  const open={kind:"open",q:[
+   "Обясни със свои думи най-важното за темата „"+topic+"“.",
+   "Посочи два важни факта за „"+topic+"“.",
+   "Защо темата „"+topic+"“ е важна? Обоснови отговора си.",
+   "Дай пример, свързан с „"+topic+"“, и го обясни.",
+   "Напиши кратко обобщение на наученото за „"+topic+"“."
+  ][i%5]};
+  if(type==="closed")out.push(closed);
+  else if(type==="open")out.push(open);
+  else out.push(i%2===0?closed:open);
  }
- while(result.length<count){
-  let template=openTemplates[(result.length+Math.floor(Math.random()*openTemplates.length))%openTemplates.length];
-  result.push(op(subject,template.replaceAll("{topic}",topic)));
+ return out;
+}
+function renderQuestion(q,i,showKey=false){
+ if(q.kind==="closed"){
+  return `<div class="card"><b>${i+1}. ${escapeHTML(q.q)}</b>${q.a.map((a,j)=>`<label class="answer"><input type="radio" name="ans${i}" value="${j}"> ${String.fromCharCode(65+j)}. ${escapeHTML(a)}</label>`).join("")}${showKey?`<p class="muted">Верен отговор: ${escapeHTML(q.a[q.c])}. ${escapeHTML(q.why)}</p>`:""}</div>`;
  }
- const varied=shuffle(result).map((q,i)=>({...q,id:Date.now()+i,subject,topic,grade,difficulty:diff}));
- generated=varied;
- questionTotal+=generated.length;persist();
- renderGenerated();
+ return `<div class="card"><b>${i+1}. ${escapeHTML(q.q)}</b><textarea placeholder="Напиши своя отговор..."></textarea><p class="muted">Отговори с пълни изречения.</p></div>`;
 }
-function renderGenerated(){
- const root=$("generatedQuestions");
- if(!generated.length){root.innerHTML='<div class="empty">Още няма въпроси.</div>';return}
- root.innerHTML=generated.map((q,i)=>`
- <div class="question">
- <div class="row"><span class="pill">${q.type==="closed"?"Затворен въпрос":"Отворен въпрос"}</span><span class="pill">${escapeHTML(q.subject||"Общи знания")}</span></div>
- <h4>${i+1}. ${escapeHTML(q.question)}</h4>
- ${q.type==="closed"?`<div class="options">${q.options.map(o=>`<label class="option"><input type="radio" name="g${i}" value="${escapeHTML(o)}"> ${escapeHTML(o)}</label>`).join("")}</div><button class="secondary" style="margin-top:10px" onclick="checkGenerated(${i})">Провери</button><div id="gf${i}" class="feedback"></div>`:`<textarea id="ga${i}" placeholder="Напиши отговора си тук..."></textarea><p class="small muted">Отвореният отговор се оценява от учител или чрез самопроверка.</p>`}
- </div>`).join("");
+function generateWorksheet(){
+ const topic=$("wTopic").value.trim()||"Общи знания";
+ const subject=$("wSubject").value;
+ const count=Number($("wCount").value);
+ currentQuestions=makeQuestionSet(topic,subject,count,$("wType").value);
+ const title=$("wTitle").value.trim()||"Работен лист: "+topic;
+ $("worksheetPreview").innerHTML=`<div class="card" id="printWorksheet"><h1>${escapeHTML(title)}</h1><p>Предмет: ${escapeHTML(subject)} · Тема: ${escapeHTML(topic)}</p><div class="row"><p>Име: ${escapeHTML($("wName").value)||"________________________________"}</p><p>Клас: ${escapeHTML($("wClass").value)||"____________"}</p><p>Дата: ${escapeHTML($("wDate").value)||"____________"}</p></div><hr>${currentQuestions.map((q,i)=>renderQuestion(q,i)).join("")}<p>Резултат: ______ / ______</p></div>`;
 }
-function checkGenerated(i){
- const q=generated[i];if(!q||q.type!=="closed")return;
- const selected=document.querySelector(`input[name="g${i}"]:checked`),f=$("gf"+i);
- if(!selected){f.textContent="Избери отговор.";f.className="feedback";return}
- const ok=selected.value===q.answer;
- f.className="feedback "+(ok?"correct":"incorrect");
- f.textContent=ok?"✅ Вярно! "+(q.explanation||"Добре се справи."):"❌ Не е това. Верният отговор е: "+q.answer+".";
+function addCustomQuestion(){
+ const q=prompt("Напиши своя въпрос:");
+ if(!q||!q.trim())return;
+ currentQuestions.push({kind:"open",q:q.trim()});
+ $("worksheetPreview").innerHTML+=renderQuestion(currentQuestions[currentQuestions.length-1],currentQuestions.length-1);
 }
-function sendToWorksheet(){if(!generated.length){alert("Първо създай въпроси.");return}showPage("worksheets");renderPaper()}
-function renderPaper(){
- const title=$("worksheetTitle").value.trim()||"Работен лист";
- const name=$("studentName").value.trim(),cl=$("worksheetClass").value.trim(),instructions=$("worksheetInstructions").value.trim();
- $("worksheetPaper").innerHTML=`<h2>${escapeHTML(title)}</h2><p style="color:#526078">УчиУм · Учебен материал</p>
- <div class="paper-head"><span>Име: ${name?escapeHTML(name):"________________________________"}</span><span>Клас: ${cl?escapeHTML(cl):"____________"}</span><span>Дата: ______________</span></div>
- ${instructions?`<p><b>Инструкции:</b> ${escapeHTML(instructions)}</p>`:"<p>Прочети внимателно въпросите и запиши отговорите си.</p>"}
- ${generated.length?generated.map((q,i)=>`<div class="paper-question"><p><b>${i+1}. ${escapeHTML(q.question)}</b></p>
- ${q.type==="closed"?q.options.map((o,j)=>`<div class="paper-choice">${String.fromCharCode(65+j)}. ${escapeHTML(o)}</div>`).join(""):`<div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>`}
- </div>`).join(""):"<p>Все още няма въпроси. Отвори „Измисли въпроси“ и създай комплект.</p>"}
- <div style="margin-top:30px;border-top:1px solid #cbd2df;padding-top:10px;font-size:12px;color:#68758b">УчиУм · Продължавай да задаваш въпроси!</div>`;
+function saveWorksheet(){
+ if(!currentQuestions.length)generateWorksheet();
+ const item={id:Date.now(),type:"Работен лист",title:$("wTitle").value.trim()||"Работен лист: "+($("wTopic").value||"Общи знания"),subject:$("wSubject").value,topic:$("wTopic").value,questions:currentQuestions,created:new Date().toLocaleString("bg-BG")};
+ saved.unshift(item);localStorage.setItem(DBKEY,JSON.stringify(saved));alert("Материалът е запазен в библиотеката!");renderLibrary();
 }
+let activeQuiz=[];
 function startQuiz(){
- const subject=$("quizSubject").value,count=+$("quizCount").value;
- let pool=shuffle(getBank(subject));
- if(!pool.length)pool=shuffle(Object.values(bank).flat());
- quizQuestions=pool.slice(0,count);quizAnswers={};
- $("quizArea").innerHTML=`<div class="card"><h3>Време е за знания! 🚀</h3><p class="muted">Избери по един отговор на въпрос.</p>${quizQuestions.map((q,i)=>`<div class="question"><h4>${i+1}. ${escapeHTML(q.question)}</h4><div class="options">${q.options.map(o=>`<label class="option"><input type="radio" name="quiz${i}" value="${escapeHTML(o)}" onchange="quizAnswers[${i}]=this.value"> ${escapeHTML(o)}</label>`).join("")}</div></div>`).join("")}<button class="primary" onclick="finishQuiz()">🏁 Провери резултата</button><div id="quizResult"></div></div>`;
+ const topic=$("qTopic").value.trim()||"Общи знания";
+ activeQuiz=makeQuestionSet(topic,$("qSubject").value,5,"closed");
+ $("quizArea").innerHTML=`<div class="card"><h2>Викторина: ${escapeHTML(topic)}</h2>${activeQuiz.map((q,i)=>renderQuestion(q,i)).join("")}<button onclick="gradeQuiz('quizArea',activeQuiz)">Провери отговорите</button><div id="quizResult"></div></div>`;
 }
-function finishQuiz(){
- let score=0;
- quizQuestions.forEach((q,i)=>{if(quizAnswers[i]===q.answer)score++});
- const pct=quizQuestions.length?Math.round(score/quizQuestions.length*100):0;
- lastScore=pct;updateStats();
- $("quizResult").innerHTML=`<hr><h2>Резултат: ${score} от ${quizQuestions.length} (${pct}%)</h2><p>${pct>=80?"🌟 Страхотно представяне!":pct>=50?"💪 Добър опит! Прегледай грешките и опитай отново.":"📚 Ученето е процес. Преговори темата и опитай пак."}</p>${quizQuestions.map((q,i)=>`<p class="${quizAnswers[i]===q.answer?"correct":"incorrect"}">${i+1}. ${quizAnswers[i]===q.answer?"✓":"✗"} ${escapeHTML(q.question)}<br><span class="muted">Верен отговор: ${escapeHTML(q.answer)}</span></p>`).join("")}`;
+function gradeQuiz(container,questions){
+ let score=0,answered=0;
+ questions.forEach((q,i)=>{const selected=document.querySelector(`#${container} input[name="ans${i}"]:checked`);if(selected){answered++;if(Number(selected.value)===q.c)score++;}});
+ const target=container==="quizArea"?"quizResult":"testResult";
+ $(target).innerHTML=`<div class="notice">Резултат: <b>${score} от ${questions.length}</b>. Отговорени въпроси: ${answered}.</div>`+questions.map((q,i)=>`<p>${i+1}. ${escapeHTML(q.q)}<br><b>Верен отговор:</b> ${escapeHTML(q.a[q.c])}<br><span class="muted">${escapeHTML(q.why)}</span></p>`).join("");
 }
-function saveCurrent(){
- if(!generated.length){alert("Няма създаден материал за запазване.");return}
- const title=$("topic").value.trim()||$("subject").value||"Моите въпроси";
- library.unshift({id:Date.now(),title,subject:$("subject").value,created:new Date().toLocaleString("bg-BG"),questions:generated});
- persist();alert("Материалът е запазен в „Моите материали“.");renderLibrary();
+let testQuestions=[];
+function makeTest(){
+ const topic=$("tTopic").value.trim()||"Общи знания";
+ testQuestions=makeQuestionSet(topic,$("tSubject").value,10,"closed");
+ $("testArea").innerHTML=`<div class="card"><h2>Тест: ${escapeHTML(topic)}</h2>${testQuestions.map((q,i)=>renderQuestion(q,i)).join("")}<button onclick="gradeQuiz('testArea',testQuestions)">Провери теста</button><div id="testResult"></div><button class="no-print" onclick="window.print()" style="background:#354666">Принтирай теста</button></div>`;
 }
+function makePresentation(){
+ const topic=$("pTopic").value.trim()||"Моята презентация";
+ const n=Number($("pCount").value);
+ const templates=["Заглавие и представяне на темата","Основни понятия","Исторически контекст или въведение","Важни факти","Примери и илюстрации","Интересни подробности","Заключение и обобщение","Въпроси към аудиторията"];
+ $("presentationArea").innerHTML=`<div class="card"><h2>${escapeHTML(topic)}</h2>${Array.from({length:n},(_,i)=>`<div class="card"><span class="tag">СЛАЙД ${i+1}</span><h2>${escapeHTML(i===0?topic:templates[(i-1)%(templates.length-1)+1])}</h2><p>Основна идея: ______________________________</p><p>Факти и обяснение: __________________________</p><p>Изображение или диаграма: ___________________</p></div>`).join("")}<button class="no-print" onclick="window.print()">Принтирай плана</button></div>`;
+}
+function addClass(){
+ const name=$("className").value.trim();if(!name)return alert("Въведи име на класа.");
+ const list=JSON.parse(localStorage.getItem("uchium_classes")||"[]");list.push({name,created:new Date().toLocaleDateString("bg-BG")});localStorage.setItem("uchium_classes",JSON.stringify(list));$("className").value="";renderClasses();
+}
+function renderClasses(){
+ const list=JSON.parse(localStorage.getItem("uchium_classes")||"[]");
+ $("classList").innerHTML=list.length?list.map((c,i)=>`<div class="card"><b>🏫 ${escapeHTML(c.name)}</b><p>Добавен: ${escapeHTML(c.created)}</p><button onclick="removeClass(${i})" style="background:#713d59">Изтрий</button></div>`).join(""):"<p>Все още няма добавени класове.</p>";
+}
+function removeClass(i){const l=JSON.parse(localStorage.getItem("uchium_classes")||"[]");l.splice(i,1);localStorage.setItem("uchium_classes",JSON.stringify(l));renderClasses();}
 function renderLibrary(){
- const root=$("libraryList");
- if(!library.length){root.innerHTML='<div class="card empty">📚 Библиотеката ти е празна. Създай въпроси и натисни „Запази“.</div>';return}
- root.innerHTML=library.map(m=>`<div class="card"><span class="pill">${escapeHTML(m.subject||"Материал")}</span><h3 style="margin-top:12px">${escapeHTML(m.title)}</h3><p>${(m.questions||[]).length} въпроса</p><p class="small">${escapeHTML(m.created||"")}</p><div class="row"><button class="primary" onclick="openMaterial(${m.id})">Отвори</button><button class="danger" onclick="deleteMaterial(${m.id})">Изтрий</button></div></div>`).join("");
+ saved=JSON.parse(localStorage.getItem(DBKEY)||"[]");
+ $("libraryList").innerHTML=saved.length?saved.map(item=>`<div class="card"><span class="tag">${escapeHTML(item.type||"Материал")}</span><h2>${escapeHTML(item.title)}</h2><p>${escapeHTML(item.subject||"")} · ${escapeHTML(item.created||"")}</p><button onclick="openSaved(${item.id})">Отвори</button> <button onclick="deleteSaved(${item.id})" style="background:#713d59">Изтрий</button></div>`).join(""):"<div class='card'><h2>Библиотеката е празна</h2><p>Създай материал и натисни „Запази в библиотеката“.</p></div>";
 }
-function openMaterial(id){
- const m=library.find(x=>x.id===id);if(!m)return;
- generated=m.questions||[];
- $("topic").value=m.title||"";$("subject").value=m.subject||"Общи знания";
- renderGenerated();showPage("generator");
+function openSaved(id){
+ const item=saved.find(x=>x.id===id);if(!item)return;
+ showPage("worksheets");$("wTitle").value=item.title||"";$("wSubject").value=item.subject||"История";$("wTopic").value=item.topic||"";
+ currentQuestions=item.questions||[];
+ $("worksheetPreview").innerHTML=`<div class="card"><h1>${escapeHTML(item.title)}</h1>${currentQuestions.map((q,i)=>renderQuestion(q,i)).join("")}</div>`;
 }
-function deleteMaterial(id){if(confirm("Да изтрия ли този материал?")){library=library.filter(m=>m.id!==id);persist();renderLibrary()}}
-function clearLibrary(){if(confirm("Сигурен ли си, че искаш да изтриеш всички запазени материали?")){library=[];persist();renderLibrary()}}
+function deleteSaved(id){saved=saved.filter(x=>x.id!==id);localStorage.setItem(DBKEY,JSON.stringify(saved));renderLibrary();}
+function setAccent(color){document.documentElement.style.setProperty("--a",color);localStorage.setItem("uchium_accent",color);}
 function exportData(){
- const data={app:"УчиУм",version:1,library,questionTotal,lastScore};
+ const data={saved,classes:JSON.parse(localStorage.getItem("uchium_classes")||"[]"),version:1};
  const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
- const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="uchium-rezervno-kopie.json";a.click();URL.revokeObjectURL(a.href);
+ const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="uchium-backup.json";a.click();URL.revokeObjectURL(a.href);
 }
 function importData(event){
  const file=event.target.files[0];if(!file)return;
  const reader=new FileReader();
- reader.onload=()=>{try{const data=JSON.parse(reader.result);if(!Array.isArray(data.library))throw new Error("Невалиден файл");library=data.library;questionTotal=Number(data.questionTotal||0);persist();renderLibrary();alert("Резервното копие е импортирано.")}catch(e){alert("Файлът не е валидно резервно копие на УчиУм.")}};
- reader.readAsText(file);event.target.value="";
+ reader.onload=()=>{try{const data=JSON.parse(reader.result);if(data.saved){saved=data.saved;localStorage.setItem(DBKEY,JSON.stringify(saved));}if(data.classes)localStorage.setItem("uchium_classes",JSON.stringify(data.classes));renderLibrary();renderClasses();alert("Копието е възстановено.");}catch(e){alert("Файлът не е валидно копие на УчиУм.");}};
+ reader.readAsText(file);
 }
-function changeTheme(color){document.documentElement.style.setProperty("--accent",color);localStorage.setItem("uchium_theme",color)}
-function escapeHTML(value){return String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-const savedTheme=localStorage.getItem("uchium_theme");if(savedTheme){changeTheme(savedTheme);$("themeColor").value=savedTheme}
-updateStats();
+const oldAccent=localStorage.getItem("uchium_accent");if(oldAccent)setAccent(oldAccent);
+$("wDate").value=new Date().toISOString().slice(0,10);
 </script>
 </body>
 </html>
