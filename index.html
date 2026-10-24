@@ -208,4 +208,6 @@ let draftSaveTimer;document.addEventListener('input',e=>{if(e.target.matches('in
 function renderAll(){updateStats();renderLibrary();renderClasses();applySettings()}
 document.getElementById('presTheme')?.addEventListener('change',renderSlidePreview);document.getElementById('presTitle')?.addEventListener('input',()=>{if(slideDeck.length===1&&activeSlide===0&&!value('slideBody')){slideDeck[0].title=value('presTitle');renderSlideEditor()}});loadData();
 </script>
-</body></html>
+</body>
+</html>
+
